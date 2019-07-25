@@ -1,0 +1,8 @@
+@font-face {
+    font-family: 'harryp';
+    src: url('../fonts/HARRP___.TTF') format('truetype');
+}
+
+.en-font{
+  font-family: harryp;
+}
