@@ -12,7 +12,7 @@
                   class="dohyeon-font"
                   required
                 ></v-text-field>
-              </v-flex>
+              </v-flex>s
             </v-layout>
             <v-layout justify-center ma-2>
               <v-flex xs12 sm8>
@@ -33,13 +33,17 @@
             xs12
             sm4
           >
-            <v-btn @click="signIn()" block flat class="dohyeon-font subheading">로그인</v-btn>
+            <v-btn @click="signIn()" block flat class="dohyeon-font subheading">
+              로그인
+            </v-btn>
           </v-flex>
           <v-flex
             xs12
             sm4
           >
-          <v-btn color="" @click="isLoginStage(false)" class="dohyeon-font subheading" block flat>회원가입</v-btn>
+          <v-btn color="" @click="isLoginStage(false)" class="dohyeon-font subheading" block flat>
+            회원가입
+          </v-btn>
         </v-flex>
         </v-layout>
         <v-layout justify-center ma-2>
@@ -47,8 +51,12 @@
             xs12
             sm8
           >
-            <v-btn round color="#df4a31" dark v-on:click="loginWithGoogle" style="width:100%;"><v-icon size="25" class="mr-2">fa-google</v-icon> Google 로그인</v-btn>
-            <v-btn round color="#4662b0" dark v-on:click="loginWithFacebook" style="width:100%;"><v-icon size="25" class="mr-2">fa-facebook</v-icon> Facebook 로그인</v-btn>
+            <v-btn round color="#df4a31" dark v-on:click="loginWithGoogle" style="width:100%;">
+              <v-icon size="25" class="mr-2">fa-google</v-icon> Google 로그인
+            </v-btn>
+            <v-btn round color="#4662b0" dark v-on:click="loginWithFacebook" style="width:100%;">
+              <v-icon size="25" class="mr-2">fa-facebook</v-icon> Facebook 로그인
+            </v-btn>
           </v-flex>
         </v-layout>
       </v-container>
@@ -107,20 +115,6 @@
               ></v-text-field>
             </v-flex>
           </v-layout>
-          <!-- <v-layout justify-center ma-2>
-            <v-flex
-              xs12
-              sm8
-            >
-              <v-text-field
-                v-model="signup.github"
-                :rules="GithubRules"
-                label="Github 계정"
-                class="dohyeon-font"
-                required
-              ></v-text-field>
-            </v-flex>
-          </v-layout> -->
         </v-form>
         <v-layout justify-center ma-2>
           <v-flex
@@ -133,7 +127,9 @@
             xs12
             sm4
           >
-          <v-btn color="" @click="isLoginStage(true)" class="dohyeon-font subheading" block flat>뒤로</v-btn>
+          <v-btn color="" @click="isLoginStage(true)" class="dohyeon-font subheading" block flat>
+            뒤로
+          </v-btn>
         </v-flex>
         </v-layout>
       </v-container>

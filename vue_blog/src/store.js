@@ -26,12 +26,12 @@ export default new Vuex.Store({
       localStorage.setItem('accessToken', state.accessToken);
     },
     addImageLink(state, link) {
-      console.log(`${link} store.js`);
+      console.log(`${link} store.js`); // eslint-disable-line no-console
       link += '<br>';
       state.ImageLink += link;
     },
     addImageURL(state, url) {
-      console.log(`${url} store.js`);
+      console.log(`${url} store.js`); // eslint-disable-line no-console
       state.ImageURL = url;
     },
     updatePortfolios(state, data) {

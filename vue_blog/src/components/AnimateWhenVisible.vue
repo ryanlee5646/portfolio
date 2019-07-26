@@ -1,7 +1,8 @@
 <template>
   <div>
     <transition :name="name" :appear="appear">
-      <div v-if="isVisible" :style="{ animationDuration: `${duration}s`, transitionDuration: `${duration}s` }">
+      <div v-if="isVisible"
+        :style="{ animationDuration: `${duration}s`, transitionDuration: `${duration}s` }">
         <slot></slot>
       </div>
     </transition>
@@ -13,11 +14,15 @@ let isPassiveSupported = false;
 
 try {
   const options = Object.defineProperty({}, 'passive', {
-    get: () => isPassiveSupported = true
+    get: () => {
+      isPassiveSupported = true;
+      return isPassiveSupported;
+    },
   });
 
   window.addEventListener('test', null, options);
 } catch (err) {
+  console.log(err); // eslint-disable-line no-console
 }
 
 export default {

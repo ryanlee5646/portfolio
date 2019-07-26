@@ -18,8 +18,10 @@
         </div>
 
         <transition-group name="filter" tag="div" class="row justify-content-center">
-          <div class="col-md-4 col-lg-auto portfolio-item" v-for="post in filteredPosts" :key="post.created_at">
-            <img :src="post.portfolio.thumbnail" alt="Alt"/>
+          <div class="col-md-4 col-lg-auto portfolio-item"
+           v-for="i in filteredPosts.length > limits ? limits : filteredPosts.length"
+           :key="filteredPosts[i].created_at">
+            <img :src="filteredPosts[i].portfolio.thumbnail" alt="Alt"/>
             <div class="portfolio-link">
               <a href="#" class="popup_content" target="_blank">See</a>
             </div>
@@ -30,7 +32,7 @@
 </template>
 <script>
 import $ from 'jquery';
-import FirebaseService from '@/services/FirebaseService';
+// import FirebaseService from '@/services/FirebaseService';
 import Title from './Title.vue';
 
 export default {
@@ -42,7 +44,7 @@ export default {
     };
   },
   props: {
-    limits: { type: Number, default: 4 },
+    limits: { type: Number, default: 8 },
     loadMore: { type: Boolean, default: false },
     column: { type: Number, default: 1 },
     portfolios: { type: Array },
@@ -53,7 +55,7 @@ export default {
   },
   mounted() {
     $(() => {
-      const Page = (function () {
+      const Page = ((() => {
         const $navArrows = $('#nav-arrows').hide();
         const $shadow = $('#shadow').hide();
         const slicebox = $('#sb-slider').slicebox({
@@ -65,10 +67,7 @@ export default {
           cuboidsRandom: true,
           disperseFactor: 30,
         });
-        const init = function () {
-          initEvents();
-        };
-        var initEvents = function () {
+        const initEvents = () => {
           // add navigation events
           $navArrows.children(':first').on('click', () => {
             slicebox.next();
@@ -79,8 +78,11 @@ export default {
             return false;
           });
         };
+        const init = () => {
+          initEvents();
+        };
         return { init };
-      }());
+      })());
       Page.init();
     });
   },

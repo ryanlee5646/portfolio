@@ -33,15 +33,15 @@ setOptions({
     url: 'https://api.imgur.com/',
     process: (fieldName, file, metadata, load, error, progress, abort) => {
       const formData = new FormData();
-      const pond = document.querySelector('.filepond--root');
+      // const pond = document.querySelector('.filepond--root');
 
       formData.append('image', file);
-      console.log(file);
+      console.log(file); // eslint-disable-line no-console
       const xmlHttpRequest = new XMLHttpRequest();
       xmlHttpRequest.onprogress = (e) => {
         progress(true, e.loaded, e.total);
       };
-      xmlHttpRequest.onload = function () {
+      xmlHttpRequest.onload = () => {
         if (xmlHttpRequest.status >= 200 && xmlHttpRequest.status < 300) {
           // the load method accepts either a string (id) or an object
           progress(true, 1, 1);
@@ -54,19 +54,19 @@ setOptions({
       xmlHttpRequest.setRequestHeader('Authorization', 'Client-ID b51957d2d1f4b57');
       xmlHttpRequest.setRequestHeader('Accept', 'application/json');
 
-      xmlHttpRequest.onreadystatechange = function (obj) {
-        if (xmlHttpRequest.readyState == 4) {
-          if (xmlHttpRequest.status == 200) {
+      xmlHttpRequest.onreadystatechange = (obj) => {
+        if (xmlHttpRequest.readyState === 4) {
+          if (xmlHttpRequest.status === 200) {
             const result = JSON.parse(xmlHttpRequest.responseText);
-            console.log(result);
-            console.log(`이름${file.name}  , URL : ${result.data.link}`);
+            console.log(result); // eslint-disable-line no-console
+            console.log(`이름${file.name}  , URL : ${result.data.link}`); // eslint-disable-line no-console
 
-            window.vueStore.commit('addImageLink', `  파일이름 :  ${file.name}<br>` + `  URL : ${result.data.link}`);
+            window.vueStore.commit('addImageLink', `  파일이름 :  ${file.name}<br>URL : ${result.data.link}`);
             window.vueStore.commit('addImageURL', result.data.link);
             // window.vueStore.commit('addImageTitle', file.name);
             // alert(result.data.link + " 이미지 URL");
           } else {
-            alert('업로드 실패');
+            alert('업로드 실패'); // eslint-disable-line no-alert
           }
         }
       };
@@ -83,7 +83,7 @@ export default {
   },
   methods: {
     handleFilePondInit() {
-      console.log('FilePond has initialized');
+      console.log('FilePond has initialized'); // eslint-disable-line no-console
       // this.$store.state.ImageTitle = '';
       this.$store.state.ImageLink = '';
     },

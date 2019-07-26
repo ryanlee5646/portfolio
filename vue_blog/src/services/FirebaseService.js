@@ -19,7 +19,6 @@ firebase.initializeApp(config);
 const firestore = firebase.firestore();
 
 export default {
-
   // getPosts() {
   //     const postsCollection = firestore.collection(POSTS)
   //     return postsCollection
@@ -42,8 +41,8 @@ export default {
   // },
   getPortfolios() {
     const user = firebase.auth().currentUser;
-    console.log('유저!!');
-    console.log(user);
+    console.log('유저!!'); // eslint-disable-line no-console
+    console.log(user); // eslint-disable-line no-console
     // const portfolioCollection = firestore.collection(USERS).doc(user.email).collection(PORTFOLIOS);
     const portfolioCollection = firestore.collection(USERS).doc('ryanlee5646@gmail.com').collection(PORTFOLIOS);
     return portfolioCollection
@@ -57,7 +56,7 @@ export default {
   },
   // 회원가입 -> 데이터베이스( 위: 용성, 아래: 규진)
   addUser(email, name) {
-    alert(`${'[postId]' + ' '}${email} ${name}`);
+    alert(`[postId] ${email} ${name}`); // eslint-disable-line no-alert
     return firestore.collection(USERS).doc(email).set({
       email,
       name,
@@ -70,7 +69,7 @@ export default {
       // Handle Errors here.
       const errorCode = error.code;
       const errorMessage = error.message;
-      alert(`회원가입 오류 발생 !!                                                   [Error] ${errorCode} ${errorMessage}`);
+      alert(`회원가입 오류 발생 !! [Error] ${errorCode} ${errorMessage}`); // eslint-disable-line no-alert
     });
 
     return firestore.collection(USERS).doc(signup.email).set({
@@ -84,16 +83,16 @@ export default {
   },
   // 로그인
   signIn(login) {
-    return firebase.auth().signInWithEmailAndPassword(login.email, login.password).then((result) => {
-      // let accessToken = result.credential.accessToken
-      const { user } = result;
-      alert('[로그인 성공]');
-      return result;
-    }).catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      alert(`존재하지 않는 아이디와 패스워드 입니다. ^^                               [Error] ${errorCode} ${errorMessage}`);
-    });
+    return firebase.auth()
+      .signInWithEmailAndPassword(login.email, login.password).then((result) => {
+        // let accessToken = result.credential.accessToken
+        alert('[로그인 성공]'); // eslint-disable-line no-alert
+        return result;
+      }).catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        alert(`존재하지 않는 아이디와 패스워드 입니다. ^^ [Error] ${errorCode} ${errorMessage}`); // eslint-disable-line no-alert
+      });
   },
 
   isRegistered(email) {
@@ -103,42 +102,41 @@ export default {
       .get()
       .then(docSnapshots => docSnapshots.docs.map((doc) => {
         if (doc.exists) {
-          alert('[isRegistered] 존재하는 ID 입니다.');
+          alert('[isRegistered] 존재하는 ID 입니다.'); // eslint-disable-line no-alert
           return true;
         }
-        alert('[isRegistered] 존재 하지않는 ID 입니다.');
+        alert('[isRegistered] 존재 하지않는 ID 입니다.'); // eslint-disable-line no-alert
         return false;
       })).catch((error) => {
-        console.log('[isRegistered] Error getting document:', error);
+        console.log('[isRegistered] Error getting document:', error); // eslint-disable-line no-console
       });
   },
   loginWithGoogle() {
     const provider = new firebase.auth.GoogleAuthProvider();
     return firebase.auth().signInWithPopup(provider).then((result) => {
-      const { accessToken } = result.credential;
       const { user } = result;
-      console.log(user);
+      console.log(user); // eslint-disable-line no-console
       return result;
     }).catch((error) => {
-      console.error('[Google Login Error]', error);
+      console.error('[Google Login Error]', error); // eslint-disable-line no-console
     });
   },
   logout(obj) {
     new firebase.auth().signOut().then(() => {
       obj.$store.commit('logout');
     }).catch((error) => {
-      alert(error);
+      alert(error); // eslint-disable-line no-alert
     });
   },
   loginWithFacebook() {
     const provider = new firebase.auth.FacebookAuthProvider();
     return firebase.auth().signInWithPopup(provider).then((result) => {
-      const { accessToken } = result.credential;
+      // const { accessToken } = result.credential;
       const { user } = result; // facebook 로그인한 유저 정보
-      console.log(user.email);
+      console.log(user.email); // eslint-disable-line no-console
       return result;
     }).catch((error) => {
-      console.error('[Facebook Login Error]', error);
+      console.error('[Facebook Login Error]', error); // eslint-disable-line no-console
     });
   },
 
@@ -166,7 +164,7 @@ export default {
         log: firebase.firestore.FieldValue.serverTimestamp(),
       })
       .catch((error) => {
-        console.log('로그인 기록에 실패했습니다');
+        console.log(`로그인 기록에 실패했습니다. ${error}`); // eslint-disable-line no-console
       });
   },
 
