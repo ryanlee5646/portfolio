@@ -2,7 +2,7 @@
 <template>
   <section id="portfolio" class="my-portfolio position">
       <Title :title="category.name" :description="category.description"/>
-
+      <a href="/portfolio/write" > write </a>
       <div class="section-content">
         <div class="portfolio-table controls">
           <ul class="breadcrumbs">
@@ -18,10 +18,14 @@
         </div>
 
         <transition-group name="filter" tag="div" class="row justify-content-center">
-          <div class="col-md-4 col-lg-auto portfolio-item" v-for="post in filteredPosts" :key="post.created_at">
-            <img :src="post.portfolio.thumbnail" alt="Alt"/>
+          <div class="col-md-4 col-lg-auto portfolio-item" v-for="(post, index) in filteredPosts"
+           :key="post.created_at" :uid="post.uid" :idx="index">
+            <img :src="post.portfolio.thumbnail" alt="Alt" style="width : 100%; height: 100%;"/>
             <div class="portfolio-link">
-              <a href="#" class="popup_content" target="_blank">See</a>
+              <a>{{post.uid}}</a>
+              <a>{{index}}</a>
+              <!-- <a @click="routePath(post.uid)">seedeeee</a> -->
+              <a href="/portfolio/view/acrKqb3TuKTJz9h4Dnkp"  class="popup_content" target="_blank">See</a>
             </div>
           </div>
         </transition-group>
@@ -98,6 +102,10 @@ export default {
     },
     filter(name) {
       this.currentFilter = name;
+    },
+    routePath(uid){
+      console.log(uid + " 넘어옴?");
+      this.$router.push({path: '/portfolio/view/acrKqb3TuKTJz9h4Dnkp ' })
     },
   },
   computed: {

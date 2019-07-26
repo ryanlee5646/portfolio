@@ -5,6 +5,7 @@ import 'firebase/auth';
 const POSTS = 'posts';
 const PORTFOLIOS = 'portfolios';
 const USERS = 'users';
+const PORTFOLIO_REPLYS = 'portfolio_replys'
 
 // Setup Firebase
 const config = {
@@ -52,6 +53,8 @@ export default {
       .then(docSnapshots => docSnapshots.docs.map((doc) => {
         const data = doc.data();
         data.created_at = new Date(data.created_at.toDate());
+        data.uid = doc.id; //포트폴리오 uid
+        // console.log(data.uid + " 포폴 uid");
         return data;
       }));
   },
@@ -86,7 +89,9 @@ export default {
   signIn(login) {
     return firebase.auth().signInWithEmailAndPassword(login.email, login.password).then((result) => {
       // let accessToken = result.credential.accessToken
-      const { user } = result;
+      const {
+        user
+      } = result;
       alert('[로그인 성공]');
       return result;
     }).catch((error) => {
@@ -115,8 +120,12 @@ export default {
   loginWithGoogle() {
     const provider = new firebase.auth.GoogleAuthProvider();
     return firebase.auth().signInWithPopup(provider).then((result) => {
-      const { accessToken } = result.credential;
-      const { user } = result;
+      const {
+        accessToken
+      } = result.credential;
+      const {
+        user
+      } = result;
       console.log(user);
       return result;
     }).catch((error) => {
@@ -133,15 +142,52 @@ export default {
   loginWithFacebook() {
     const provider = new firebase.auth.FacebookAuthProvider();
     return firebase.auth().signInWithPopup(provider).then((result) => {
-      const { accessToken } = result.credential;
-      const { user } = result; // facebook 로그인한 유저 정보
+      const {
+        accessToken
+      } = result.credential;
+      const {
+        user
+      } = result; // facebook 로그인한 유저 정보
       console.log(user.email);
       return result;
     }).catch((error) => {
       console.error('[Facebook Login Error]', error);
     });
   },
+  // 포트폴리오 댓글 작성
+  PortfolioReply(portfolioReply, portfolioUID) {
+    // portfolioUID - 현재 선택한 포트폴리오의 uid - p8WgVvAYp7C546Ev4frP
+    let user = JSON.parse(localStorage.getItem("user") || "{}");
+    const portfolioCollection = firestore.collection(USERS).doc(user.email);
+    var userEmail = firebase.auth().currentUser.email;
+    var email = userEmail.split('@');
+    // console.log( email[0] + " "+ portfolioReply + " !!!!");
+    portfolioReply.email = email[0]; //유저의 이메일에서 아이디만 저장
+    // console.log(portfolioCollection + " @@@@@@@@@@@@@@@@@@@@@");
+    return firestore.collection(USERS).doc(`${user.email}`).collection(PORTFOLIOS).doc(portfolioUID).collection(PORTFOLIO_REPLYS).add({
+      portfolioReply,
+      created_at: firebase.firestore.FieldValue.serverTimestamp()
+    })
+  },
+  getPortfolioReply(portfolioUID) {
+    let user = firebase.auth().currentUser
+    // let user = JSON.parse(localStorage.getItem("user") || "{}");
+    console.log("댓글 가져오기!!");
+    const replyCollection = firestore.collection(USERS).doc(user.email).collection(PORTFOLIOS).doc(portfolioUID).collection(PORTFOLIO_REPLYS);
 
+    // console.log(replyCollection.content + " 댓글 옴??@?@?@?@?@?@?@?");
+    return replyCollection
+      .get()
+      .then((docSnapshots) => {
+        return docSnapshots.docs.map((doc) => {
+          let data = doc.data();
+          data.created_at = new Date(data.created_at.toDate());
+          data.uid = doc.id;
+          // console.log(data.uid + " 여긴가여");
+          return data;
+        })
+      })
+  },
   PortfolioWriter(portfolio) {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     return firestore.collection(USERS).doc(`${user.email}`).collection(PORTFOLIOS).add({
@@ -205,7 +251,9 @@ export default {
     return firestore.collection(USERS).doc(user.email).set({
       gitlabID: id,
       gitlabToken: token,
-    }, { merge: true });
+    }, {
+      merge: true
+    });
   },
   getUserInfo() {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
