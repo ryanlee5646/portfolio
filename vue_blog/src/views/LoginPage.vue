@@ -192,8 +192,8 @@ export default {
       localStorage.setItem('user', JSON.stringify(result.user));
       localStorage.setItem('accessToken', result.credential.accessToken);
       // database 에 추가되어있지 않다면 유저 등록
-      if (!FirebaseService.isRegistered(result.user.email)) {
-        FirebaseService.addUser(result.user.email, result.user.displayName);
+      if(!FirebaseService.isRegistered(result.user.email)){
+        FirebaseService.addUser(result.user.email, result.user.displayName, "visitor", result.user.photoURL)
       }
 
       FirebaseService.FirebaseLoginLog();
