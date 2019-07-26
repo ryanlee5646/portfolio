@@ -9,10 +9,10 @@
 </template>
 
 <script>
-  export default {
-    name: 'BtnMenu',
-    props: ['active']
-  }
+export default {
+  name: 'BtnMenu',
+  props: ['active'],
+};
 </script>
 
 <style scoped lang="scss">

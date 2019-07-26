@@ -1,8 +1,6 @@
 export default () => {
   if (typeof window.fetch !== 'function') {
-    return import('whatwg-fetch')
+    return import('whatwg-fetch');
   }
-
-  return Promise.resolve()
-}
-
+  return Promise.resolve();
+};

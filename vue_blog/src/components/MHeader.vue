@@ -4,10 +4,26 @@
     <transition name="fade">
       <nav class="nav-bar" v-if="isMenuVisible" @click="scrolling">
         <ul @click="isMenuVisible = !isMenuVisible">
-          <li><AnimateWhenVisible name="fadeUp"><a href="#about">About Me<span></span></a></AnimateWhenVisible></li>
-          <li><AnimateWhenVisible name="fadeUp" :duration="1.3"><a href="#experience">Experience<span></span></a></AnimateWhenVisible></li>
-          <li><AnimateWhenVisible name="fadeUp" :duration="1.6"><a href="#portfolio">Portfolio<span></span></a></AnimateWhenVisible></li>
-          <li><AnimateWhenVisible name="fadeUp" :duration="1.8"><a href="#contact">Contact<span></span></a></AnimateWhenVisible></li>
+          <li>
+            <AnimateWhenVisible name="fadeUp">
+              <a href="#about">About Us<span></span></a>
+            </AnimateWhenVisible>
+          </li>
+          <li>
+            <AnimateWhenVisible name="fadeUp" :duration="1.3">
+              <a href="#portfolio">Portfolio<span></span></a>
+            </AnimateWhenVisible>
+          </li>
+          <li>
+            <AnimateWhenVisible name="fadeUp" :duration="1.6">
+              <a href="#post">Post<span></span></a>
+            </AnimateWhenVisible>
+          </li>
+          <li>
+            <AnimateWhenVisible name="fadeUp" :duration="1.6">
+              <a href="#post">Post<span></span></a>
+            </AnimateWhenVisible>
+          </li>
         </ul>
       </nav>
     </transition>
@@ -15,7 +31,6 @@
 </template>
 
 <script>
-import $ from 'jquery';
 import BtnMenu from './BtnMenu.vue';
 import { animate } from '../utils';
 import FirebaseService from '@/services/FirebaseService';
@@ -41,28 +56,6 @@ export default {
       prevScrollpos = currentScrollPos;
     });
 
-    $('#favorite-btn').on('click', function (e) {
-      const bookmarkURL = window.location.href;
-      const bookmarkTitle = document.title;
-      let triggerDefault = false;
-
-      if (window.sidebar && window.sidebar.addPanel) {
-        window.sidebar.addPanel(bookmarkTitle, bookmarkURL, '');
-      } else if ((window.sidebar && (navigator.userAgent.toLowerCase().indexof('firefox') > -1)) || (window.opera && window.print)) {
-        const $this = $(this);
-        $this.attr('href', bookmarkURL);
-        $this.attr('title', bookmarkTitle);
-        $this.attr('rel', 'sidebar');
-        $this.off(e);
-        triggerDefault = true;
-      } else if (window.external && ('Addfavorite' in window.external)) {
-        window.external.addFavorite(bookmarkURL, bookmarkTitle);
-      } else {
-        alert(`${navigator.userAgent.toLowerCase().indexOf('mac') != -1 ? 'Cmd' : 'Ctrl'}+D 키를 눌러 즐겨찾기에 등록하실 수 있습니다.`);
-      }
-      return triggerDefault;
-    });
-
     // refresh 시 state 재입력
     this.$store.state.user = JSON.parse(localStorage.getItem('user') || '{}');
     this.$store.state.accessToken = localStorage.getItem('accessToken');
@@ -77,7 +70,7 @@ export default {
     doLogout() {
       FirebaseService.FirebaseLogoutLog();
       FirebaseService.logout(this);
-      alert('정상적으로 로그아웃 되었습니다.');
+      alert('정상적으로 로그아웃 되었습니다.'); // eslint-disable-line no-alert
     },
     getImageURL(filename) {
       return require(`../assets/icons/${filename}`);

@@ -8,6 +8,7 @@
         </ImgBanner>
         <router-view></router-view>
         <Portfolios :category="category" :portfolios="portfolios"></Portfolios>
+        <router-view></router-view>
       </div>
       <div class="loader wrapper" v-else key="loader">
        <div class="spinner-loader"></div>
@@ -85,8 +86,6 @@ export default {
     top: 0;
     width: 100%;
   }
-
-
   @keyframes spinner-loader {
     0%   {
       transform: rotateZ(0deg);
@@ -95,7 +94,6 @@ export default {
       transform: rotateZ(360deg);
     }
   }
-
   .spinner-loader {
     animation: spinner-loader 1500ms infinite linear;
 

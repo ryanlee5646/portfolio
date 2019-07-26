@@ -34,7 +34,7 @@
 </template>
 <script>
 import $ from 'jquery';
-import FirebaseService from '@/services/FirebaseService';
+// import FirebaseService from '@/services/FirebaseService';
 import Title from './Title.vue';
 
 export default {
@@ -46,7 +46,7 @@ export default {
     };
   },
   props: {
-    limits: { type: Number, default: 4 },
+    limits: { type: Number, default: 8 },
     loadMore: { type: Boolean, default: false },
     column: { type: Number, default: 1 },
     portfolios: { type: Array },
@@ -57,7 +57,7 @@ export default {
   },
   mounted() {
     $(() => {
-      const Page = (function () {
+      const Page = ((() => {
         const $navArrows = $('#nav-arrows').hide();
         const $shadow = $('#shadow').hide();
         const slicebox = $('#sb-slider').slicebox({
@@ -69,10 +69,7 @@ export default {
           cuboidsRandom: true,
           disperseFactor: 30,
         });
-        const init = function () {
-          initEvents();
-        };
-        var initEvents = function () {
+        const initEvents = () => {
           // add navigation events
           $navArrows.children(':first').on('click', () => {
             slicebox.next();
@@ -83,8 +80,11 @@ export default {
             return false;
           });
         };
+        const init = () => {
+          initEvents();
+        };
         return { init };
-      }());
+      })());
       Page.init();
     });
   },

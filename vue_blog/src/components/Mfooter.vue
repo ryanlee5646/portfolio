@@ -19,10 +19,6 @@
             </v-flex>
           </v-layout>
         </v-flex>
-        <!-- Weather -->
-        <v-flex xs12>
-          <a class="weatherwidget-io" href="https://forecast7.com/en/36d12128d34/gumi-si/" data-label_1="GUMI" data-label_2="WEATHER" data-theme="weather_one" >GUMI WEATHER</a>
-        </v-flex>
       </v-layout>
     </v-footer>
     <v-btn
@@ -40,8 +36,6 @@
 </template>
 
 <script>
-// weather script code
-!(function (d, s, id) { let js; const fjs = d.getElementsByTagName(s)[0]; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = 'https://weatherwidget.io/js/widget.min.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'weatherwidget-io-js'));
 export default {
   name: 'mfooter',
   mounted() {

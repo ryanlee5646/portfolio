@@ -22,7 +22,6 @@ export default {
       x: null,
       mode: '',
       timeout: 3000,
-      text: '크롬 브라우저에 최적화되어 있습니다',
     };
   },
   props: {
