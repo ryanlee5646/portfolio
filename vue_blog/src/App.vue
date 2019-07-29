@@ -8,7 +8,7 @@
         </ImgBanner>
         <router-view></router-view>
         <Portfolios :category="category" :portfolios="portfolios"></Portfolios>
-        <router-view></router-view>
+        <!-- <router-view></router-view> -->
       </div>
       <div class="loader wrapper" v-else key="loader">
        <div class="spinner-loader"></div>
@@ -54,6 +54,13 @@ export default {
       this.isLoaded = true;
       this.$nextTick(() => document.body.classList.remove('loading'));
     });
+    //
+    // FirebaseService.getPortfolioReply().then((data) => {
+    //   this.$store.commit('updatePortfolios',data);
+    //   this.portfolios = data;
+    //   this.isLoaded = true;
+    //   this.$nextTick(() => document.body.classList.remove('loading'));
+    // });
   },
   mounted() {
     const isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);

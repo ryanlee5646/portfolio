@@ -163,6 +163,7 @@ export default {
     const portfolioCollection = firestore.collection(USERS).doc(user.email);
     var userEmail = firebase.auth().currentUser.email;
     var email = userEmail.split('@');
+
     // console.log( email[0] + " "+ portfolioReply + " !!!!");
     portfolioReply.email = email[0]; //유저의 이메일에서 아이디만 저장
     // console.log(portfolioCollection + " @@@@@@@@@@@@@@@@@@@@@");
@@ -176,8 +177,8 @@ export default {
     // let user = JSON.parse(localStorage.getItem("user") || "{}");
     console.log("댓글 가져오기!!");
     const replyCollection = firestore.collection(USERS).doc(user.email).collection(PORTFOLIOS).doc(portfolioUID).collection(PORTFOLIO_REPLYS);
-
     // console.log(replyCollection.content + " 댓글 옴??@?@?@?@?@?@?@?");
+
     return replyCollection
       .get()
       .then((docSnapshots) => {
@@ -185,11 +186,42 @@ export default {
           let data = doc.data();
           data.created_at = new Date(data.created_at.toDate());
           data.uid = doc.id;
+          // this.$store.commit('updatePortfolioReplys', data);
           // console.log(data.uid + " 여긴가여");
           return data;
         })
       })
   },
+  // 댓글 삭제
+  deleteReply(index, portfolioUID, replyUID){
+    console.log("deleteReply!!");
+    let user = firebase.auth().currentUser
+    const replyCollection = firestore.collection(USERS).doc(user.email).collection(PORTFOLIOS).doc(portfolioUID).collection(PORTFOLIO_REPLYS);
+    // console.log(index + "인덱스 " + replyCollection);
+    // console.log(JSON.stringify(replyCollection[0]));
+    firestore.collection(USERS).doc(user.email).collection(PORTFOLIOS).doc(portfolioUID)
+      .collection(PORTFOLIO_REPLYS).doc(replyUID).delete().then(function(){
+        console.log("Document successfully deleted!");
+      }).catch(function (error) {
+          console.error(error);
+      })
+
+// );
+   // firestore.collection(USERS).doc(user.email).collection(PORTFOLIOS).doc(portfolioUID).collection(PORTFOLIO_REPLYS).doc(replyUID).Delete();
+
+    // replyCollection
+    //   .get()
+    //   .then((docSnapshots) => {
+    //      docSnapshots.docs.map((doc) => {
+    //       let data = doc.data();
+    //       console.log(data.portfolioReply);
+    //     })
+    //   })
+
+    // replyCollection.splice(0, 1);
+    // replyCollection.splice(index, 1);
+  },
+
   PortfolioWriter(portfolio) {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     return firestore.collection(USERS).doc(`${user.email}`).collection(PORTFOLIOS).add({
@@ -271,6 +303,11 @@ export default {
                 console.log(`[getGitLabID Error] firebase error. ${e}`);
             });
     },
+    // getNowUserInfo(){
+    //     const user = firebase.auth().currentUser;
+    //     console.log(user + " 로그인한 유저");
+    //     this.$store.commit('addNowUser',user);
+    // },
     getAllUserInfo() {
         return firestore.collection(USERS).get()
             .then(function(querySnapshot) {

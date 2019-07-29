@@ -3,6 +3,7 @@ import Router from 'vue-router';
 import PortfolioWriter from './views/PortfolioWriter.vue';
 import PortfolioView from './views/PortfolioView.vue';
 import AdminPage from './views/AdminPage.vue';
+import Reply from './views/Reply.vue';
 
 Vue.use(Router);
 
@@ -24,6 +25,12 @@ export default new Router({
             path: '/admin',
             name: 'AdminPage',
             component: AdminPage,
+        },
+        {
+            path: '/reply',
+            name: 'Reply',
+            component: Reply,
         }
+
     ],
 });

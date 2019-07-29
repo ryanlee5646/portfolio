@@ -11,6 +11,8 @@ export default new Vuex.Store({
     ImageLink: '',
     ImageURL: '',
     portfolios: [],
+    portfolioReplys : [],
+    nowUser : '',
   },
   mutations: {
     displayDrawer(state, flag) {
@@ -37,5 +39,11 @@ export default new Vuex.Store({
     updatePortfolios(state, data) {
       state.portfolios = data;
     },
+    updatePortfolioReplys(state, data){
+      state.portfolioReplys = data;
+    },
+    addNowUser(state, data){
+      state.nowUser = data;
+    }
   },
 });

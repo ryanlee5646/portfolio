@@ -2,30 +2,59 @@
   <v-container justify-center py-5>
     <v-layout justify-center>
       <v-flex xs8 class="notranslate text-xs-center">
-
+        <!--  -->
         <div v-for="i in $store.state.portfolios.length" >
           <div v-if="$store.state.portfolios[i -1].uid === id">
-              <!-- dsafhsdfklajsdklfjas;dflkjsdl;fjl; -->
-              {{i}}<br>
-
               <!-- {{id}}  acrKqb3TuKTJz9h4Dnkp -->
-              {{$store.state.portfolios[i -1].portfolio.title}} <br>
+              <!-- {{$store.state.portfolios[i -1].portfolio.title}} <br>
               {{$store.state.portfolios[i -1].portfolio.content}}<br>
-              <!--
-              startdate: "",
-              enddate: "",
-              sdate: "",
-              edate: "",
-              teams: ""
-             -->
-              <img :src = "$store.state.portfolios[i -1].portfolio.thumbnail" width="50px;">
+              <img :src = "$store.state.portfolios[i -1].portfolio.thumbnail" width="50px;"> -->
+              {{index = i-1}}
+              <div class="flex justify-center items-center h-screen">
+                <div class="max-w-sm rounded overflow-hidden shadow-lg">
+                <!-- <img class="w-full .text-pop-up-top" :src = "$store.state.portfolios[i -1].portfolio.thumbnail" alt="Sunset in the mountains"> -->
+                  <div class="px-6 py-4">
+                    <h2 class="font-bold text-xl mb-2"><b>" {{$store.state.portfolios[i -1].portfolio.title}} "</b></h2><hr>
+                    <p class="text-gray-700 text-base" v-html="compiledMarkdown">
+                      {{$store.state.portfolios[i -1].portfolio.content}}
+                    </p>
+                  </div>
+                  <div class="px-6 py-4">
+                    <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2">
+                       # {{$store.state.portfolios[i -1].portfolio.teams}}
+                     </span>
+                  </div>
+
+                  <!--  -->
+                  <div href="#" class="card px-6 py-4">
+                  	<div class="card__head">
+                  		<div class="card__image"></div>
+                  		<div class="card__author">
+                  			<div class="author">
+                  				<img src="https://s.gravatar.com/avatar/7ff9e93ff25e002bc49f4d69c0c3eac7?s=80" alt="Author of Tobias Reich" class="author__image">
+                  				<div class="author__content">
+                  					<p class="author__header">Developer</p>
+                  					<p class="author__subheader"># {{$store.state.portfolios[i -1].portfolio.teams}}</p>
+                  				</div>
+                  			</div>
+                  		</div>
+                  	</div>
+                  	<div class="card__body">
+                  		<h2 class="card__headline"><b>" {{$store.state.portfolios[i -1].portfolio.title}} "</b></h2>
+                  		<p class="card__text" v-html="compiledMarkdown">
+                        {{$store.state.portfolios[i -1].portfolio.content}} </p>
+                  	</div>
+                  	<div class="card__foot">
+                  		<span class="card__link">Read more</span>
+                  	</div>
+                  	<div class="card__border"></div>
+                  </div>
+                </div>
+              </div>
+
+
           </div>
         </div>
-
-        <h2>hello</h2>
-        <!-- <a @onclick="getPortfolios(this)">ggg</a> -->
-        <!-- <h2>{{getPortfolios.title}}</h2>-->
-        <!-- <h1>{{id}}</h1> -->
       </v-flex>
     </v-layout>
     <v-layout justify-center>
@@ -34,20 +63,14 @@
       </v-flex>
     </v-layout>
 
+
+
     <!-- 댓글 작성 -->
     <hr>
     <v-layout wrap justify-center>
       <div>
         <!-- <b-button class="button1" v-b-toggle.collapse-a.collapse-b>댓글 보기</b-button> -->
-
         <v-btn class="button1" v-b-toggle.collapse-a.collapse-b  @click="getPortfolioReply() " block flat>댓글 보기</v-btn>
-        <!-- Elements to collapse -->
-        <!-- <b-row class="mt-2"> -->
-          <!-- <b-col sm="10">
-            <b-form-textarea id="textarea-large" size="lg" placeholder="댓글을 작성해주세요."></b-form-textarea>
-            <v-btn to="/" block flat>Add</v-btn>
-          </b-col> -->
-        <!-- </b-row><br> -->
 
         <v-layout wrap justify-center>
           <div class="reply-write-area">
@@ -62,41 +85,35 @@
           </div>
         </v-layout><br>
         <hr>
-        <!-- <div class="reply-list-area">
-          <ul>
-            <li class rel>
-              <div class="status float-base">
-                <div class="column user-info">
-                  <span class="name">Name</span>
-                </div>
-                <div class="column date">
-                  <span >Date</span>
-                </div>
-              </div>
-              <div class="reply-content">
-                댓글 내용
-              </div>
-            </li>
-          </ul>
-        </div> -->
-
         <div>
+
+<!-- contenteditable -->
           <h2>All Replys</h2>
           <p>좋은 의견을 공유합시다^_^</p>
+          <div v-for="(r, index) in this.portfolioReplys">
+            <div class="bubble bubble-bottom-left" >" {{r.portfolioReply.content}} "</div><br>
+              <div class="bubble-r bubble-bottom-right" >"내가 작성한 댓글일 경우 "</div><br>
+          </div>
+
           <table>
             <tr>
               <th>Name</th>
               <th>Content</th>
               <th>Date</th>
+              <th></th>
+              <th></th>
             </tr>
-            <tr v-for="r in portfolioReplys">
-              <td>{{r.email}}</td>
-              <td>{{r.content}}</td>
+            <tr v-for="(r, index) in this.portfolioReplys">
+              <td>{{r.portfolioReply.email}}</td>
+              <td>{{r.portfolioReply.content}}</td>
               <td>-</td>
+              <!-- 현재 로그인한 유저와 댓글 작성자가 같을 경우에만 출력 -->
+              <!-- <td v-if="r.portfolioReply.email ===  "><button class="button" >수 정</button></td> -->
+              <td><button class="button" >수 정</button></td>
+              <td><a  @click="deleteReply(index)">삭 제</a></td>
             </tr>
           </table>
         </div>
-
       </div>
     </v-layout><br>
   </v-container>
@@ -114,7 +131,9 @@ export default {
       portfolioReply : {
         email : "",
         content: ""
-      }
+      },
+      nowUser : "",
+      index : ""
     }
   },
   props: {
@@ -128,7 +147,7 @@ export default {
       return (this.id === '-1') ? [] : this.$store.state.portfolios[0].portfolio;
     },
     compiledMarkdown() {
-      return marked(this.getPortfolios.content, { sanitize: true });
+      return marked(this.$store.state.portfolios[this.index].portfolio.content, { sanitize: true });
     },
   },
   methods: {
@@ -139,15 +158,78 @@ export default {
     },
     async getPortfolioReply() {
 			this.portfolioReplys = await FirebaseService.getPortfolioReply(this.id);
-      console.log(this.portfolioReplys + " 댓글 왔닝");
+      this.$store.commit('updatePortfolioReplys', this.portfolioReplys );
+      // this.$store.commit('updatePortfolioReplys', this.portfolioReplys);
+      // console.log(this.portfolioReplys + " 댓글 왔닝");
+      // console.log(this.$store.state.user + " ??????");
+    },
+    async deleteReply(index){
+      console.log(this.$store.state.portfolioReplys[index].uid + " 선택한 댓글?");
+      const result = await FirebaseService.deleteReply(index , this.id, this.$store.state.portfolioReplys[index].uid);
+      this.$store.state.portfolioReplys.splice(index, 1);
+    },
+    async editReply(index){
+      console.log(this.$store.state.portfolioReplys[index].uid + " 선택한 댓글?");
+      // const result = await FirebaseService.deleteReply(index , this.id, this.$store.state.portfolioReplys[index].uid);
+      this.$store.state.portfolioReplys.splice(index, 1);
     }
+    // async getUserInfo(){
+    //   this.nowUser = await FirebaseService.getUserInfo();
+    //   console.log(this.nowUser);
+    // }
   },
   mounted() {
-    console.log("view in???");
-    console.log(this.getPortfolios);
-  }
+    document.querySelectorAll('.card').forEach((elem) => {
+    	const head = elem.querySelector('.card__head')
+    	const image = elem.querySelector('.card__image')
+    	const author = elem.querySelector('.card__author')
+    	const body = elem.querySelector('.card__body')
+    	const foot = elem.querySelector('.card__foot')
 
+    	elem.onmouseenter = () => {
+    		elem.classList.add('hover')
+    		const imageScale = 1 + factor(head, body, 'height')
+    		image.style.transform = `scale(${ imageScale })`
+
+    		const bodyDistance = height(foot) * -1
+    		body.style.transform = `translateY(${ bodyDistance }px)`
+
+    		const authorDistance = distance(head, author, 'height')
+    		author.style.transform = `translateY(${ authorDistance }px)`
+
+    	}
+
+    	elem.onmouseleave = () => {
+    		elem.classList.remove('hover')
+    		image.style.transform = `none`
+    		body.style.transform = `none`
+    		author.style.transform = `none`
+    	}
+    })
+    // console.log(this.getPortfolios);
+  }
 };
+
+
+
+//
+const height = (elem) => {
+	return elem.getBoundingClientRect().height
+}
+
+const distance = (elemA, elemB, prop) => {
+	const sizeA = elemA.getBoundingClientRect()[prop]
+	const sizeB = elemB.getBoundingClientRect()[prop]
+	return sizeB - sizeA
+}
+
+const factor = (elemA, elemB, prop) => {
+	const sizeA = elemA.getBoundingClientRect()[prop]
+	const sizeB = elemB.getBoundingClientRect()[prop]
+	return sizeB / sizeA
+}
+
+
 </script>
 
 <style>
@@ -177,4 +259,290 @@ export default {
     }
 
     tr:hover {background-color:#f5f5f5;}
+
+    .button {
+      width: 140px;
+      height: 45px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 2.5px;
+      font-weight: 500;
+      color: #000;
+      background-color: #fff;
+      border: none;
+      border-radius: 45px;
+      box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease 0s;
+      cursor: pointer;
+      outline: none;
+      }
+
+    .button:hover {
+      background-color: #2EE59D;
+      box-shadow: 0px 15px 20px rgba(46, 229, 157, 0.4);
+      color: #fff;
+      transform: translateY(-7px);
+    }
+    /*  */
+    /* ----------------------------------------------
+ * Generated by Animista on 2019-7-29 13:59:13
+ * w: http://animista.net, t: @cssanimista
+ * ---------------------------------------------- */
+
+/**
+ * ----------------------------------------
+ * animation text-pop-up-top
+ * ----------------------------------------
+ */
+@-webkit-keyframes text-pop-up-top {
+  0% {
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+    -webkit-transform-origin: 50% 50%;
+            transform-origin: 50% 50%;
+    text-shadow: none;
+  }
+  100% {
+    -webkit-transform: translateY(-50px);
+            transform: translateY(-50px);
+    -webkit-transform-origin: 50% 50%;
+            transform-origin: 50% 50%;
+    text-shadow: 0 1px 0 #cccccc, 0 2px 0 #cccccc, 0 3px 0 #cccccc, 0 4px 0 #cccccc, 0 5px 0 #cccccc, 0 6px 0 #cccccc, 0 7px 0 #cccccc, 0 8px 0 #cccccc, 0 9px 0 #cccccc, 0 50px 30px rgba(0, 0, 0, 0.3);
+  }
+}
+@keyframes text-pop-up-top {
+  0% {
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+    -webkit-transform-origin: 50% 50%;
+            transform-origin: 50% 50%;
+    text-shadow: none;
+  }
+  100% {
+    -webkit-transform: translateY(-50px);
+            transform: translateY(-50px);
+    -webkit-transform-origin: 50% 50%;
+            transform-origin: 50% 50%;
+    text-shadow: 0 1px 0 #cccccc, 0 2px 0 #cccccc, 0 3px 0 #cccccc, 0 4px 0 #cccccc, 0 5px 0 #cccccc, 0 6px 0 #cccccc, 0 7px 0 #cccccc, 0 8px 0 #cccccc, 0 9px 0 #cccccc, 0 50px 30px rgba(0, 0, 0, 0.3);
+  }
+}
+.text-pop-up-top {
+	-webkit-animation: text-pop-up-top 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+	        animation: text-pop-up-top 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+}
+
+/*  */
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  background: white;
+  color: currentColor;
+  text-decoration: none;
+  overflow: hidden;
+  transition-property: color;
+  transition-delay: 0.15s;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+
+  /* border-radius: 50px; */
+}
+.card.hover {
+  color: white;
+  transition-delay: 0;
+}
+.card, .card__image, .card__image::after, .card__author, .card__body, .card__foot, .card__border {
+  transition-duration: 0.4s;
+  transition-timing-function: cubic-bezier(0.51, 0.92, 0.24, 1);
+}
+.card__head {
+  position: relative;
+  padding-top: 70%;
+}
+.card__author {
+  position: absolute;
+  padding: 2em;
+  left: 0;
+  bottom: 0;
+  color: white;
+  transition-property: -webkit-transform;
+  transition-property: transform;
+  transition-property: transform, -webkit-transform;
+  transition-delay: 0.15s;
+}
+.card.hover .card__author {
+  transition-delay: 0;
+}
+.card__image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-size: cover;
+  background-position: center;
+  background-image: url("https://images.unsplash.com/photo-1553787762-b5f5721f3270?ixlib=rb-1.2.1&auto=format&fit=crop&w=2100&q=80");
+  -webkit-transform-origin: top center;
+          transform-origin: top center;
+  transition-property: -webkit-transform;
+  transition-property: transform;
+  transition-property: transform, -webkit-transform;
+  transition-delay: 0.15s;
+}
+.card__image::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: .5;
+  background: linear-gradient(30deg, rgba(26, 42, 99, 0.85), rgba(26, 42, 99, 0.5));
+  transition-property: opacity;
+  transition-delay: 0.15s;
+}
+.card.hover .card__image {
+  transition-delay: 0;
+}
+.card.hover .card__image::after {
+  opacity: 1;
+  transition-delay: 0;
+}
+.card__body {
+  position: relative;
+  padding: 2em;
+  transition-property: -webkit-transform;
+  transition-property: transform;
+  transition-property: transform, -webkit-transform;
+  transition-delay: 0.15s;
+}
+.card.hover .card__body {
+  transition-delay: 0;
+}
+.card__headline {
+  font-weight: 400;
+  margin: 0 0 .8em;
+}
+.card__text {
+  line-height: 1.5;
+  margin: 0;
+  opacity: .8;
+}
+.card__foot {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 0 2em 2em;
+  opacity: 0;
+  transition-property: opacity;
+}
+.card.hover .card__foot {
+  opacity: 1;
+  transition-delay: 0.15s;
+}
+.card__link {
+  color: currentColor;
+  text-decoration: none;
+  border-bottom: 2px solid #b5272d;
+}
+.card__border {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 6px;
+  background: #b5272d;
+  -webkit-transform: scaleY(0);
+          transform: scaleY(0);
+  transition-property: -webkit-transform;
+  transition-property: transform;
+  transition-property: transform, -webkit-transform;
+}
+.card.hover .card__border {
+  -webkit-transform: none;
+          transform: none;
+  transition-delay: 0.15s;
+}
+
+.author {
+  display: flex;
+  align-items: center;
+}
+.author__image {
+  flex-shrink: 0;
+  margin-right: 1em;
+  width: 56px;
+  height: 56px;
+  border-radius: 100%;
+  overflow: hidden;
+}
+.author__content {
+  display: grid;
+  grid-gap: .4em;
+  font-size: .9em;
+}
+.author__header {
+  margin: 0;
+  font-weight: 600;
+}
+.author__subheader {
+  margin: 0;
+  opacity: .8;
+}
+/*  chat*/
+
+.bubble {
+ position: relative;
+ font-family: sans-serif;
+ font-size: 13px;
+ line-height: 15px;
+ width: 70%;
+ background: #999595;
+ border-radius: 40px;
+ padding: 20px;
+ text-align: center;
+ color: white;
+ font-weight: bold;
+}
+
+.bubble-bottom-left:before {
+ content: "";
+ width: 0px;
+ height: 0px;
+ position: absolute;
+ border-left: 24px solid  #999595;
+ border-right: 12px solid transparent;
+ border-top: 12px solid  #999595;
+ border-bottom: 20px solid transparent;
+ left: 32px;
+ bottom: -24px;
+}
+.bubble-r {
+  position: relative;
+  font-family: sans-serif;
+  font-size: 13px;
+  line-height: 15px;
+  width: 70%;
+  background: #989abe;
+  border-radius: 40px;
+  padding: 20px;
+  text-align: center;
+  color: white;
+  font-weight: bold;
+  margin-left: 25%;
+}
+.bubble-bottom-right:before {
+ content: "";
+ width: 0px;
+ height: 0px;
+ position: absolute;
+ border-left: 24px solid  #989abe;
+ border-right: 12px solid transparent;
+ border-top: 12px solid  #989abe;
+ border-bottom: 20px solid transparent;
+ right: 32px;
+ bottom: -24px;
+}
 </style>
