@@ -1,6 +1,6 @@
 <template>
   <v-dialog v-model="dialogShow" max-width="500px">
-    <v-card>
+    <v-card style="z-index: 100;">
       <v-container fluid v-if="isLogin">
         <v-form v-model="valid">
             <v-layout justify-center ma-2>
@@ -12,7 +12,7 @@
                   class="dohyeon-font"
                   required
                 ></v-text-field>
-              </v-flex>s
+              </v-flex>
             </v-layout>
             <v-layout justify-center ma-2>
               <v-flex xs12 sm8>
