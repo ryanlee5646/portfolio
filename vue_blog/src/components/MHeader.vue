@@ -1,10 +1,11 @@
 <template>
   <div id="toolbar">
+    <LoginPage></LoginPage>
     <BtnMenu @click.native="isMenuVisible = !isMenuVisible" :active="isMenuVisible" />
     <transition name="fade">
-      <nav class="nav-bar" v-if="isMenuVisible" @click="scrolling">
+      <nav class="nav-bar" v-if="isMenuVisible">
         <ul @click="isMenuVisible = !isMenuVisible">
-          <li>
+          <li @click="scrolling">
             <AnimateWhenVisible name="fadeUp">
               <a href="#about">
                 About Us
@@ -12,7 +13,7 @@
               </a>
             </AnimateWhenVisible>
           </li>
-          <li>
+          <li @click="scrolling">
             <AnimateWhenVisible name="fadeUp" :duration="1.3">
               <a href="#portfolio">
                 Portfolio
@@ -20,7 +21,7 @@
               </a>
             </AnimateWhenVisible>
           </li>
-          <li>
+          <li @click="scrolling">
             <AnimateWhenVisible name="fadeUp" :duration="1.6">
               <a href="#post">
                 Post
@@ -29,13 +30,15 @@
             </AnimateWhenVisible>
           </li>
           <li @click="doLogin()" flat v-if="!isLogined">
+            
             <AnimateWhenVisible name="fadeUp" :duration="1.6">
               <a>
                 Login
                 <span></span>
               </a>
+                
+
             </AnimateWhenVisible>
-            <LoginPage></LoginPage>
           </li>
           <li @click="doLogout()" flat v-if="isLogined">
             <AnimateWhenVisible name="fadeUp" :duration="1.6">
