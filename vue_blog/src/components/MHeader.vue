@@ -21,7 +21,7 @@
           </li>
           <li>
             <AnimateWhenVisible name="fadeUp" :duration="1.6">
-              <a href="#post">Post<span></span></a>
+              <a href="#portfolio2" >Portfolio<span></span></a>
             </AnimateWhenVisible>
           </li>
         </ul>

@@ -7,23 +7,23 @@ import AdminPage from './views/AdminPage.vue';
 Vue.use(Router);
 
 export default new Router({
-    mode: 'history',
-    base: process.env.BASE_URL,
-    routes: [{
-            path: '/portfolio/write',
-            name: 'portfoliowrite',
-            component: PortfolioWriter,
-        },
-        {
-            path: '/portfolio/view/:id',
-            name: 'portfolioview',
-            component: PortfolioView,
-            props: true,
-        },
-        {
-            path: '/admin',
-            name: 'AdminPage',
-            component: AdminPage,
-        }
-    ],
+  mode: 'history',
+  base: process.env.BASE_URL,
+  routes: [
+    {
+      path: '/portfolio/write',
+      name: 'portfoliowrite',
+      component: PortfolioWriter,
+    },
+    {
+      path: '/portfolio/view/:id',
+      name: 'portfolioview',
+      component: PortfolioView,
+      props: true,
+    },
+    {
+      path: '/admin',
+      name: 'AdminPage',
+      component: AdminPage,
+    }],
 });

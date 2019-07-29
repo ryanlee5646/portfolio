@@ -6,14 +6,12 @@
         <ImgBanner imgSrc="https://source.unsplash.com/random">
           <div style="line-height:1.2em;font-size:1.2em;" slot="text">Portfolio</div>
         </ImgBanner>
-        <router-view></router-view>
         <Portfolios :category="category" :portfolios="portfolios"></Portfolios>
         <router-view></router-view>
       </div>
       <div class="loader wrapper" v-else key="loader">
        <div class="spinner-loader"></div>
       </div>
-      <!-- <router-view></router-view> -->
     </transition>
 
     <!-- 크롬 브라우저가 아닐 시 최적화 메시지 띄워주는 스낵바-->
