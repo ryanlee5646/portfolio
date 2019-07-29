@@ -41,6 +41,17 @@ export default {
   //         created_at: firebase.firestore.FieldValue.serverTimestamp()
   //     })
   // },
+  // Firebase local caching code
+  setPersistence() {
+    firebase.firestore().enablePersistence()
+      .catch((err) => {
+        if (err.code === 'failed-precondition') {
+          console.log('Firebase Enable Persistence Error : Failed-precondition'); // eslint-disable-line no-console
+        } else if (err.code === 'unimplemented') {
+          console.log('Firebase Enable Persistence Error : Unimplemented'); // eslint-disable-line no-console
+        }
+      });
+  },
   getPortfolios() {
     const user = firebase.auth().currentUser;
     console.log('유저!!');
@@ -49,12 +60,15 @@ export default {
     const portfolioCollection = firestore.collection(USERS).doc('ryanlee5646@gmail.com').collection(PORTFOLIOS);
     return portfolioCollection
       .orderBy('created_at', 'desc')
+      // get source option : default (retrieve cache if server can't be reached)
       .get()
       .then(docSnapshots => docSnapshots.docs.map((doc) => {
         const data = doc.data();
         data.created_at = new Date(data.created_at.toDate());
-        data.uid = doc.id; //포트폴리오 uid
+        data.uid = doc.id; // 포트폴리오 uid
         // console.log(data.uid + " 포폴 uid");
+        const source = docSnapshots.metadata.fromCache ? 'local cache' : 'server';
+        console.log(`Data came from ${source}`); // eslint-disable-line no-console
         return data;
       }));
   },

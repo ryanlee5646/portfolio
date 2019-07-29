@@ -30,13 +30,13 @@
             </AnimateWhenVisible>
           </li>
           <li @click="doLogin()" flat v-if="!isLogined">
-            
+
             <AnimateWhenVisible name="fadeUp" :duration="1.6">
               <a>
                 Login
                 <span></span>
               </a>
-                
+
 
             </AnimateWhenVisible>
           </li>
@@ -52,7 +52,7 @@
       </nav>
     </transition>
   </div>
-    
+
 </template>
 
 <script>
