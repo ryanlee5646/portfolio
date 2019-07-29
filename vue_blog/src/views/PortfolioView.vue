@@ -9,7 +9,7 @@
               <!-- {{$store.state.portfolios[i -1].portfolio.title}} <br>
               {{$store.state.portfolios[i -1].portfolio.content}}<br>
               <img :src = "$store.state.portfolios[i -1].portfolio.thumbnail" width="50px;"> -->
-              {{index = i-1}}
+              # {{index = i-1}}
               <div class="flex justify-center items-center h-screen">
                 <div class="max-w-sm rounded overflow-hidden shadow-lg">
                 <!-- <img class="w-full .text-pop-up-top" :src = "$store.state.portfolios[i -1].portfolio.thumbnail" alt="Sunset in the mountains"> -->
@@ -23,10 +23,10 @@
                     <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2">
                        # {{$store.state.portfolios[i -1].portfolio.teams}}
                      </span>
-                  </div>
+                  </div><br>
 
                   <!--  -->
-                  <div href="#" class="card px-6 py-4">
+                  <!-- <div href="#" class="card px-6 py-4">
                   	<div class="card__head">
                   		<div class="card__image"></div>
                   		<div class="card__author">
@@ -48,7 +48,7 @@
                   		<span class="card__link">Read more</span>
                   	</div>
                   	<div class="card__border"></div>
-                  </div>
+                  </div> -->
                 </div>
               </div>
 
@@ -64,13 +64,12 @@
     </v-layout>
 
 
-
     <!-- 댓글 작성 -->
-    <hr>
+    <br><hr>
     <v-layout wrap justify-center>
       <div>
         <!-- <b-button class="button1" v-b-toggle.collapse-a.collapse-b>댓글 보기</b-button> -->
-        <v-btn class="button1" v-b-toggle.collapse-a.collapse-b  @click="getPortfolioReply() " block flat>댓글 보기</v-btn>
+
 
         <v-layout wrap justify-center>
           <div class="reply-write-area">
@@ -84,18 +83,60 @@
             </div>
           </div>
         </v-layout><br>
-        <hr>
+        <!-- <hr> -->
         <div>
 
 <!-- contenteditable -->
-          <h2>All Replys</h2>
-          <p>좋은 의견을 공유합시다^_^</p>
-          <div v-for="(r, index) in this.portfolioReplys">
-            <div class="bubble bubble-bottom-left" >" {{r.portfolioReply.content}} "</div><br>
-              <div class="bubble-r bubble-bottom-right" >"내가 작성한 댓글일 경우 "</div><br>
-          </div>
+          <!-- <h2>All Replys</h2>
+          <p>좋은 의견을 공유합시다^_^</p> -->
+          <!--  -->
 
-          <table>
+          <v-btn class="button1" v-b-toggle.collapse-a.collapse-b  @click="getPortfolioReply() " block flat>댓글 보기</v-btn>
+          <!--  -->
+          <div >
+            <!-- <div class="bubble bubble-bottom-left" >" {{r.portfolioReply.content}} "</div><br> -->
+            <div class="container">
+              <div class="row">
+                <div class="col-md-8">
+                  <h2 class="page-header">Comments</h2>
+                    <section class="comment-list">
+                      <article  v-for="(r, index) in this.portfolioReplys" class="row">
+                        <div class="col-md-2 col-sm-2 hidden-xs">
+                          <figure class="profile" >
+                            <img class="img-responsive" src="http://www.tangoflooring.ca/wp-content/uploads/2015/07/user-avatar-placeholder.png" width="70%;" />
+                            <!-- <figcaption class="text-center">{{r.portfolioReply.email}}</figcaption> -->
+                          </figure>
+                        </div>
+                        <div class="col-md-10 col-sm-10">
+                          <div class="panel panel-default arrow left">
+                            <div class="panel-body">
+                              <header class="text-left">
+                                <div class="comment-user"><i class="fa fa-user"></i> {{r.portfolioReply.email}}</div><hr>
+                                <!-- <time class="comment-date" datetime="16-12-2014 01:05"><i class="fa fa-clock-o"></i> July 29, 2019</time> -->
+                              </header>
+                              <div class="comment-post" v-if= "flag === false" >
+                                <p> {{r.portfolioReply.content}}  </p>
+                                <button v-if="r.portfolioReply.email === nowEmail" class="button" @click="flag = true" >수 정</button>
+                                <button v-if="r.portfolioReply.email === nowEmail" class="button" @click="deleteReply(index)" >삭 제</button>
+                              </div>
+                              <div class="comment-post" v-else >
+                                <p v-model="editReplyContent" v-if="r.portfolioReply.email === nowEmail" @click="editReply(index)"> <input></input>  </p>
+                                  {{editReplyContent}}
+                                <button class="button" >ok</button>
+                              </div>
+
+                            </div>
+                          </div>
+                            <!-- <button class="button"  >수 정</button> -->
+                        </div>
+                      </article>
+                    </section>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- <div class="bubble-r bubble-bottom-right" >"내가 작성한 댓글일 경우 "</div><br> -->
+          <!-- <table>
             <tr>
               <th>Name</th>
               <th>Content</th>
@@ -107,12 +148,12 @@
               <td>{{r.portfolioReply.email}}</td>
               <td>{{r.portfolioReply.content}}</td>
               <td>-</td>
-              <!-- 현재 로그인한 유저와 댓글 작성자가 같을 경우에만 출력 -->
-              <!-- <td v-if="r.portfolioReply.email ===  "><button class="button" >수 정</button></td> -->
+              현재 로그인한 유저와 댓글 작성자가 같을 경우에만 출력
+              <td v-if="r.portfolioReply.email ===  "><button class="button" >수 정</button></td>
               <td><button class="button" >수 정</button></td>
               <td><a  @click="deleteReply(index)">삭 제</a></td>
             </tr>
-          </table>
+          </table> -->
         </div>
       </div>
     </v-layout><br>
@@ -132,8 +173,12 @@ export default {
         email : "",
         content: ""
       },
-      nowUser : "",
-      index : ""
+      nowUser : this.$store.state.user,
+      emailArr : this.$store.state.user.email.split('@'),
+      nowEmail : "",
+      index : "",
+      flag : false,
+      editReplyContent : "",
     }
   },
   props: {
@@ -170,15 +215,17 @@ export default {
     },
     async editReply(index){
       console.log(this.$store.state.portfolioReplys[index].uid + " 선택한 댓글?");
+      this.flag = true;
       // const result = await FirebaseService.deleteReply(index , this.id, this.$store.state.portfolioReplys[index].uid);
-      this.$store.state.portfolioReplys.splice(index, 1);
+      // this.$store.state.portfolioReplys.splice(index, 1);
     }
-    // async getUserInfo(){
-    //   this.nowUser = await FirebaseService.getUserInfo();
-    //   console.log(this.nowUser);
-    // }
   },
   mounted() {
+    console.log(this.nowUser.email + " 접속한 유저 정보");
+
+    this.nowEmail = this.emailArr[0]; //유저의 이메일에서 아이디만 저장
+    console.log(this.nowEmail);
+
     document.querySelectorAll('.card').forEach((elem) => {
     	const head = elem.querySelector('.card__head')
     	const image = elem.querySelector('.card__image')
@@ -210,8 +257,6 @@ export default {
   }
 };
 
-
-
 //
 const height = (elem) => {
 	return elem.getBoundingClientRect().height
@@ -233,6 +278,7 @@ const factor = (elemA, elemB, prop) => {
 </script>
 
 <style>
+/* @import '/style/css/portfolio.css'; */
   .editor{
     display: inline-block;
     width: 100%;
@@ -261,10 +307,10 @@ const factor = (elemA, elemB, prop) => {
     tr:hover {background-color:#f5f5f5;}
 
     .button {
-      width: 140px;
-      height: 45px;
+      width: 60px;
+      height: 40px;
       font-family: 'Roboto', sans-serif;
-      font-size: 11px;
+      font-size: 10px;
       text-transform: uppercase;
       letter-spacing: 2.5px;
       font-weight: 500;
@@ -279,8 +325,8 @@ const factor = (elemA, elemB, prop) => {
       }
 
     .button:hover {
-      background-color: #2EE59D;
-      box-shadow: 0px 15px 20px rgba(46, 229, 157, 0.4);
+      background-color: #84a5d0;
+      box-shadow: 0px 15px 20px #84a5d0;
       color: #fff;
       transform: translateY(-7px);
     }
@@ -545,4 +591,5 @@ const factor = (elemA, elemB, prop) => {
  right: 32px;
  bottom: -24px;
 }
+
 </style>
