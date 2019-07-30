@@ -317,5 +317,19 @@ export default {
             .catch(function(error) {
                 console.log("Error getting documents: ", error);
             });
+    },
+    updateAuth(email, auth) {
+        console.log(email + " " + auth);
+        var userRef = firestore.collection(USERS).doc(email);
+
+        return userRef.update({
+                auth: auth
+            }).then(function() {
+                console.log("Document successfully updated!");
+            })
+            .catch(function(error) {
+                // The document probably doesn't exist.
+                console.error("Error updating document: ", error);
+            });
     }
 }
