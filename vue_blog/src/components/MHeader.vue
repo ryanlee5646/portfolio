@@ -100,7 +100,7 @@ export default {
       alert("정상적으로 로그아웃 되었습니다."); // eslint-disable-line no-alert
     },
     getImageURL(filename) {
-      return require(`../assets/icons/${filename}`);
+      return `img/icons/${filename}`;
     },
     scrolling(event) {
       event.preventDefault();

@@ -9,6 +9,7 @@
         <router-view></router-view>
         <Portfolios :category="category" :portfolios="portfolios"></Portfolios>
         <!-- <router-view></router-view> -->
+        <Chatbot></Chatbot>
       </div>
       <div class="loader wrapper" v-else key="loader">
        <div class="spinner-loader"></div>
@@ -28,6 +29,7 @@ import mSnackbar from './components/MSnackbar.vue';
 import mHeader from './components/MHeader.vue';
 import Portfolios from './components/Portfolios.vue';
 import FirebaseService from '@/services/FirebaseService';
+import Chatbot from './components/Chatbot.vue';
 
 
 // @vue/compontent
@@ -49,7 +51,7 @@ export default {
     window.vueStore = this.$store;
     document.body.classList.add('loading');
     FirebaseService.getPortfolios().then((data) => {
-      this.$store.commit('updatePortfolios',data);
+      this.$store.commit('updatePortfolios', data);
       this.portfolios = data;
       this.isLoaded = true;
       this.$nextTick(() => document.body.classList.remove('loading'));
@@ -73,6 +75,7 @@ export default {
     mSnackbar,
     mHeader,
     Portfolios,
+    Chatbot,
   },
 };
 </script>
