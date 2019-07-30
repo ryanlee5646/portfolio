@@ -2,7 +2,6 @@
 <template>
   <section id="portfolio" class="my-portfolio position">
       <Title :title="category.name" :description="category.description"/>
-      <a href="/portfolio/write" > write </a>
       <div class="section-content">
         <div class="portfolio-table controls">
           <ul class="breadcrumbs">
@@ -105,6 +104,7 @@ export default {
     },
     routePath(uid){
       console.log(uid + " routePath 넘어옴?");
+
       this.$router.push({path: '/portfolio/view/' + uid })
     },
   },

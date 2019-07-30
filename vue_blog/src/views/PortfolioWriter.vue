@@ -7,12 +7,12 @@
     </v-flex>
   </v-layout>
 
-    <v-layout justify-center pt-5>
-      <v-flex xs12 sm5 md4>
-        <v-text-field label="프로젝트 참여 팀원" v-model="portfolio.teams"  >
-        </v-text-field>
-      </v-flex>
-    </v-layout>
+  <v-layout justify-center pt-5>
+    <v-flex xs12 sm5 md4>
+      <v-text-field label="프로젝트 참여 팀원" v-model="portfolio.teams">
+      </v-text-field>
+    </v-flex>
+  </v-layout>
 
   <v-layout justify-center>
     <v-flex xs12 sm8 md6>
@@ -84,20 +84,26 @@ export default {
   data() {
     return {
       portfolio: {
+        userID: "", //this.$store.state.user
         startdate: "",
         enddate: "",
         sdate: "",
         edate: "",
         title: "",
         content: "",
-        teams: ""
-      }
+        teams: "",
+        // viewCount : 0,
+        // portfolioCnt: this.$store.state.user.portfolioCount,
+        // postCnt: this.$store.state.user.postCount,
+      },
+
     }
   },
   methods: {
     async PortfolioWriter() {
-      const result = await FirebaseService.PortfolioWriter(this.portfolio)
-      this.$router.push('/portfolio')
+      // console.log(this.$store.state.user.mail + " 카운트??");
+      const result = await FirebaseService.PortfolioWriter(this.portfolio);
+      this.$router.push('/portfolio');
     }
   },
   components: {
@@ -114,40 +120,45 @@ export default {
   width: 500px !important;
 }
 
-.reply-write-area{
-    width: 700px;
-    padding: 20px;
-    background: #fafbfc;
-    border: 1px solid #e3e7eb;
-    border-radius: 4px;
+.reply-write-area {
+  width: 700px;
+  padding: 20px;
+  background: #fafbfc;
+  border: 1px solid #e3e7eb;
+  border-radius: 4px;
 }
-.textarea{
+
+.textarea {
   border: 1px solid #e3e7eb;
   padding: 16px 14px;
   background: #fff;
-  font-size : 0;
+  font-size: 0;
   border-radius: 4px;
 }
-.bnts{
+
+.bnts {
   /* align-items: right; */
-  margin-left:  80%;
+  margin-left: 80%;
 }
 
-.reply-list-area{
+.reply-list-area {
   margin-top: 40px;
   border-top: 1px solid #e3e7eb;
 }
 
-li, ol, ul{
-  list-style:none;
+li,
+ol,
+ul {
+  list-style: none;
 }
 
-.board-wrap .status .column{
+.board-wrap .status .column {
   height: auto;
   line-height: 20px;
   vertical-align: middle;
 }
-.name{
+
+.name {
   padding-right: 0;
 }
 </style>

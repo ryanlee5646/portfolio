@@ -41,12 +41,14 @@ export default {
   //         created_at: firebase.firestore.FieldValue.serverTimestamp()
   //     })
   // },
+
   getPortfolios() {
-    const user = firebase.auth().currentUser;
-    console.log('유저!!');
-    console.log(user);
+    // const user = firebase.auth().currentUser;
+    // console.log('유저!!');
+    // console.log(user);
+
     // const portfolioCollection = firestore.collection(USERS).doc(user.email).collection(PORTFOLIOS);
-    const portfolioCollection = firestore.collection(USERS).doc('ryanlee5646@gmail.com').collection(PORTFOLIOS);
+    const portfolioCollection = firestore.collection(PORTFOLIOS);
     return portfolioCollection
       .orderBy('created_at', 'desc')
       .get()
@@ -58,12 +60,50 @@ export default {
         return data;
       }));
   },
+  getAllPortfolios() {
+    console.log(firestore.collection(USERS).doc(users).id + "  전체 유저 정보 가져오기");
+    // const portfolioCollection = firestore.collection(USERS).doc(user.email).collection(PORTFOLIOS);
+  },
+  addPortfoliosCount(portfolioID) {
+    console.log(portfolioID + "  addPortfoliosCount@@@@@@");
+    const portfolioCollection = firestore.collection(PORTFOLIOS).doc(portfolioID);
+
+    portfolioCollection.update({
+      viewCount : firebase.firestore.FieldValue.increment(1)
+    });
+    // portfolioCollection.update({
+    //   viewCount :  parseInt(viewCount) + 1
+    // })
+    // .then(function() {
+    //     console.log("Document successfully updated!");
+    // })
+    // .catch(function(error) {
+    //     console.error("Error updating document: ", error);
+    // });
+
+    // portfolioCollection.get()
+    //   .then(doc => {
+    //     if (!doc.exists) {
+    //       console.log('No such document!');
+    //     } else {
+    //       console.log('Document data:', doc.data());
+    //       console.log(doc.data().portfolio.viewCount);
+    //       doc.data().portfolio.viewCount ++;
+    //     }
+    //   })
+    //   .catch(err => {
+    //     console.log('Error getting document', err);
+    //   });
+
+  },
   // 회원가입 -> 데이터베이스( 위: 용성, 아래: 규진)
   addUser(email, name, auth, photoURL) {
     //alert("[addUser Info] : " + email + " " + name)
+    var temp = email.split('@');
     return firestore.collection(USERS).doc(email).set({
       email,
       name,
+      userID,
       auth,
       photoURL,
       created_at: firebase.firestore.FieldValue.serverTimestamp()
@@ -84,6 +124,8 @@ export default {
       name: signup.name,
       pw: signup.password,
       pwconfirmed: signup.passwordConfirmed,
+      // portfolioCount : 0,
+      // postCount : 0,
       created_at: firebase.firestore.FieldValue.serverTimestamp(),
     });
   },
@@ -160,23 +202,24 @@ export default {
   PortfolioReply(portfolioReply, portfolioUID) {
     // portfolioUID - 현재 선택한 포트폴리오의 uid - p8WgVvAYp7C546Ev4frP
     let user = JSON.parse(localStorage.getItem("user") || "{}");
-    const portfolioCollection = firestore.collection(USERS).doc(user.email);
+    const portfolioCollection = firestore.collection(PORTFOLIOS);
     var userEmail = firebase.auth().currentUser.email;
     var email = userEmail.split('@');
 
     // console.log( email[0] + " "+ portfolioReply + " !!!!");
     portfolioReply.email = email[0]; //유저의 이메일에서 아이디만 저장
     // console.log(portfolioCollection + " @@@@@@@@@@@@@@@@@@@@@");
-    return firestore.collection(USERS).doc(`${user.email}`).collection(PORTFOLIOS).doc(portfolioUID).collection(PORTFOLIO_REPLYS).add({
+    return portfolioCollection.doc(portfolioUID).collection(PORTFOLIO_REPLYS).add({
       portfolioReply,
       created_at: firebase.firestore.FieldValue.serverTimestamp()
     })
   },
   getPortfolioReply(portfolioUID) {
     let user = firebase.auth().currentUser
-    // let user = JSON.parse(localStorage.getItem("user") || "{}");
+    // let user = JSON.parse(localStorage.getItem("user") || "{}");\
+    const portfolioCollection = firestore.collection(PORTFOLIOS);
     console.log("댓글 가져오기!!");
-    const replyCollection = firestore.collection(USERS).doc(user.email).collection(PORTFOLIOS).doc(portfolioUID).collection(PORTFOLIO_REPLYS);
+    const replyCollection = portfolioCollection.doc(portfolioUID).collection(PORTFOLIO_REPLYS);
     // console.log(replyCollection.content + " 댓글 옴??@?@?@?@?@?@?@?");
 
     return replyCollection
@@ -193,38 +236,45 @@ export default {
       })
   },
   // 댓글 삭제
-  deleteReply(index, portfolioUID, replyUID){
+  deleteReply(index, portfolioUID, replyUID) {
     console.log("deleteReply!!");
     let user = firebase.auth().currentUser
-    const replyCollection = firestore.collection(USERS).doc(user.email).collection(PORTFOLIOS).doc(portfolioUID).collection(PORTFOLIO_REPLYS);
+    const replyCollection = firestore.collection(PORTFOLIOS).doc(portfolioUID).collection(PORTFOLIO_REPLYS);
     // console.log(index + "인덱스 " + replyCollection);
     // console.log(JSON.stringify(replyCollection[0]));
-    firestore.collection(USERS).doc(user.email).collection(PORTFOLIOS).doc(portfolioUID)
-      .collection(PORTFOLIO_REPLYS).doc(replyUID).delete().then(function(){
+    firestore.collection(PORTFOLIOS).doc(portfolioUID).collection(PORTFOLIO_REPLYS).doc(replyUID)
+      .delete().then(function() {
         console.log("Document successfully deleted!");
-      }).catch(function (error) {
-          console.error(error);
+      }).catch(function(error) {
+        console.error(error);
       })
 
-// );
-   // firestore.collection(USERS).doc(user.email).collection(PORTFOLIOS).doc(portfolioUID).collection(PORTFOLIO_REPLYS).doc(replyUID).Delete();
+    // );
 
-    // replyCollection
-    //   .get()
-    //   .then((docSnapshots) => {
-    //      docSnapshots.docs.map((doc) => {
-    //       let data = doc.data();
-    //       console.log(data.portfolioReply);
-    //     })
-    //   })
-
-    // replyCollection.splice(0, 1);
-    // replyCollection.splice(index, 1);
+  },
+  editReply(index, portfolioUID, replyUID, editReplyContent, email) {
+    console.log("editReply!!");
+    let user = firebase.auth().currentUser;
+    // const replyCollection = firestore.collection(USERS).doc(user.email).collection(PORTFOLIOS).doc(portfolioUID).collection(PORTFOLIO_REPLYS);
+    //.portfolioReply.content
+    console.log(firestore.collection(PORTFOLIOS).doc(portfolioUID).collection(PORTFOLIO_REPLYS).doc(replyUID) + " @@@@");
+    // .update({
+    //   "content" : editReplyContent
+    // });
+    // portfolioReply
+    firestore.collection(PORTFOLIOS).doc(portfolioUID).collection(PORTFOLIO_REPLYS).doc(replyUID)
+      .update({
+        "portfolioReply": {
+          "content": editReplyContent,
+          "email": email
+        }
+      });
   },
 
   PortfolioWriter(portfolio) {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
-    return firestore.collection(USERS).doc(`${user.email}`).collection(PORTFOLIOS).add({
+    console.log(JSON.stringify(user) + " ????????????????");
+    return firestore.collection(PORTFOLIOS).add({
       portfolio,
       created_at: firebase.firestore.FieldValue.serverTimestamp(),
     });
@@ -285,7 +335,9 @@ export default {
     return firestore.collection(USERS).doc(user.email).set({
       gitlabID: id,
       gitlabToken: token,
-    }, { merge: true });
+    }, {
+      merge: true
+    });
   },
   getUserInfo() {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -305,9 +357,9 @@ export default {
   },
   getAllUserInfo() {
     return firestore.collection(USERS).get()
-      .then(function (querySnapshot) {
+      .then(function(querySnapshot) {
         var users = [];
-        querySnapshot.forEach(function (doc) {
+        querySnapshot.forEach(function(doc) {
           // doc.data() is never undefined for query doc snapshots
           console.log(doc.id, " => ", doc.data());
           users.push(doc.data());

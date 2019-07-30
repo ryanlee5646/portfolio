@@ -15,7 +15,7 @@
       </div>
       <!-- <router-view></router-view> -->
     </transition>
-
+    <writePage></writePage>
     <!-- 크롬 브라우저가 아닐 시 최적화 메시지 띄워주는 스낵바-->
     <mSnackbar :snackbar="snackbar"></mSnackbar>
   </v-app>
@@ -28,6 +28,7 @@ import mSnackbar from './components/MSnackbar.vue';
 import mHeader from './components/MHeader.vue';
 import Portfolios from './components/Portfolios.vue';
 import FirebaseService from '@/services/FirebaseService';
+import writePage from './components/WritePage.vue'
 
 
 // @vue/compontent
@@ -54,6 +55,8 @@ export default {
       this.isLoaded = true;
       this.$nextTick(() => document.body.classList.remove('loading'));
     });
+
+    FirebaseService.getAllPortfolios();
     //
     // FirebaseService.getPortfolioReply().then((data) => {
     //   this.$store.commit('updatePortfolios',data);
@@ -73,6 +76,7 @@ export default {
     mSnackbar,
     mHeader,
     Portfolios,
+    writePage,
   },
 };
 </script>

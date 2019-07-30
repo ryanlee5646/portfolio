@@ -14,8 +14,9 @@
                 <div class="max-w-sm rounded overflow-hidden shadow-lg">
                 <!-- <img class="w-full .text-pop-up-top" :src = "$store.state.portfolios[i -1].portfolio.thumbnail" alt="Sunset in the mountains"> -->
                   <div class="px-6 py-4">
-                    <h2 class="font-bold text-xl mb-2"><b>" {{$store.state.portfolios[i -1].portfolio.title}} "</b></h2><hr>
-                    <p class="text-gray-700 text-base" v-html="compiledMarkdown">
+                    <h2 class="font-bold text-xl mb-2"><b>" {{$store.state.portfolios[i -1].portfolio.title}} "</b>  <span>조회수 : {{$store.state.portfolios[i -1].viewCount}}</span> </h2><hr>
+
+                    <p id = "markdownP" class="text-gray-700 text-base" v-html="compiledMarkdown">
                       {{$store.state.portfolios[i -1].portfolio.content}}
                     </p>
                   </div>
@@ -24,7 +25,8 @@
                        # {{$store.state.portfolios[i -1].portfolio.teams}}
                      </span>
                   </div><br>
-
+                  <button v-if=" $store.state.portfolios[i -1].portfolio.email === nowEmail" class="button" @click="editClick(index)"  >수 정</button>
+                  <button v-if=" $store.state.portfolios[i -1].portfolio.email === nowEmail" class="button" @click="deleteReply(index)" >삭 제</button>
                   <!--  -->
                   <!-- <div href="#" class="card px-6 py-4">
                   	<div class="card__head">
@@ -51,8 +53,6 @@
                   </div> -->
                 </div>
               </div>
-
-
           </div>
         </div>
       </v-flex>
@@ -69,9 +69,8 @@
     <v-layout wrap justify-center>
       <div>
         <!-- <b-button class="button1" v-b-toggle.collapse-a.collapse-b>댓글 보기</b-button> -->
-
-
         <v-layout wrap justify-center>
+          <v-flex xs8 class="notranslate text-xs-center">
           <div class="reply-write-area">
             <div class="rw-inner">
               <div class="textarea">
@@ -82,59 +81,58 @@
               </div>
             </div>
           </div>
+        </v-flex>
         </v-layout><br>
-        <!-- <hr> -->
         <div>
 
 <!-- contenteditable -->
-          <!-- <h2>All Replys</h2>
-          <p>좋은 의견을 공유합시다^_^</p> -->
-          <!--  -->
-
-          <v-btn class="button1" v-b-toggle.collapse-a.collapse-b  @click="getPortfolioReply() " block flat>댓글 보기</v-btn>
-          <!--  -->
-          <div >
-            <!-- <div class="bubble bubble-bottom-left" >" {{r.portfolioReply.content}} "</div><br> -->
-            <div class="container">
-              <div class="row">
-                <div class="col-md-8">
-                  <h2 class="page-header">Comments</h2>
-                    <section class="comment-list">
-                      <article  v-for="(r, index) in this.portfolioReplys" class="row">
-                        <div class="col-md-2 col-sm-2 hidden-xs">
-                          <figure class="profile" >
-                            <img class="img-responsive" src="http://www.tangoflooring.ca/wp-content/uploads/2015/07/user-avatar-placeholder.png" width="70%;" />
-                            <!-- <figcaption class="text-center">{{r.portfolioReply.email}}</figcaption> -->
-                          </figure>
-                        </div>
-                        <div class="col-md-10 col-sm-10">
-                          <div class="panel panel-default arrow left">
-                            <div class="panel-body">
-                              <header class="text-left">
-                                <div class="comment-user"><i class="fa fa-user"></i> {{r.portfolioReply.email}}</div><hr>
-                                <!-- <time class="comment-date" datetime="16-12-2014 01:05"><i class="fa fa-clock-o"></i> July 29, 2019</time> -->
-                              </header>
-                              <div class="comment-post" v-if= "flag === false" >
-                                <p> {{r.portfolioReply.content}}  </p>
-                                <button v-if="r.portfolioReply.email === nowEmail" class="button" @click="flag = true" >수 정</button>
-                                <button v-if="r.portfolioReply.email === nowEmail" class="button" @click="deleteReply(index)" >삭 제</button>
-                              </div>
-                              <div class="comment-post" v-else >
-                                <p v-model="editReplyContent" v-if="r.portfolioReply.email === nowEmail" @click="editReply(index)"> <input></input>  </p>
-                                  {{editReplyContent}}
-                                <button class="button" >ok</button>
-                              </div>
-
+          <!-- <v-btn class="button1" v-b-toggle.collapse-a.collapse-b  @click="getPortfolioReply() " block flat>댓글 보기</v-btn> -->
+          <!-- <div > -->
+            <!-- <div class="bubble bubble-bottom-left" >" dddd "</div><br> -->
+            <v-layout justify-center>
+              <v-flex xs8 class="notranslate text-xs-center">
+                <!-- <div class="container"> -->
+                  <div class="row">
+                    <div class="col-md-8">
+                      <h2 class="page-header">Comments</h2>
+                        <section class="comment-list">
+                          <article  v-for="(r, index) in this.portfolioReplys" class="row">
+                            <div class="col-md-2 col-sm-2 hidden-xs">
+                              <figure class="profile" >
+                                <img class="img-responsive" src="http://www.tangoflooring.ca/wp-content/uploads/2015/07/user-avatar-placeholder.png" width="70%;" />
+                                <!-- <figcaption class="text-center">{{r.portfolioReply.email}}</figcaption> -->
+                              </figure>
                             </div>
-                          </div>
-                            <!-- <button class="button"  >수 정</button> -->
-                        </div>
-                      </article>
-                    </section>
-                </div>
-              </div>
-            </div>
-          </div>
+                            <div class="col-md-10 col-sm-10">
+                              <div class="panel panel-default arrow left">
+                                <div class="panel-body">
+                                  <header class="text-left">
+                                    <div class="comment-user"><i class="fa fa-user"></i> {{r.portfolioReply.email}}</div><hr>
+                                    <!-- <time class="comment-date" datetime="16-12-2014 01:05"><i class="fa fa-clock-o"></i> July 29, 2019</time> -->
+                                  </header>
+                                  <div class="comment-post" v-if= "flag === false" >
+                                    <p> {{r.portfolioReply.content}}  </p>
+                                    <!-- @click="flag = true"  -->
+                                    <button v-if="r.portfolioReply.email === nowEmail" class="button" @click="editClick(index)"  >수 정</button>
+                                    <button v-if="r.portfolioReply.email === nowEmail" class="button" @click="deleteReply(index)" >삭 제</button>
+                                  </div>
+                                  <div class="comment-post" v-else-if="r.portfolioReply.email === nowEmail" >
+                                    <p v-if="editIdx === index">
+                                        <!-- {{editReplyContent}} -->
+                                        <input type="text" v-model="editReplyContent"   :placeholder = "r.portfolioReply.content"   ></input> </p>
+                                    <button class="button" @click="editReply(index)" >O K</button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </article>
+                        </section>
+                    </div>
+                  </div>
+                <!-- </div> -->
+              </v-flex>
+            </v-layout>
+          <!-- </div> -->
           <!-- <div class="bubble-r bubble-bottom-right" >"내가 작성한 댓글일 경우 "</div><br> -->
           <!-- <table>
             <tr>
@@ -179,34 +177,42 @@ export default {
       index : "",
       flag : false,
       editReplyContent : "",
+      editIdx : "",
     }
   },
   props: {
     id: { type: String, default: '-1' },
   },
   computed: {
-    getPortfolios(obj) {
-      console.log(this.id  + " this.id =");
-      console.log(obj.$store.state.portfolios[0].uid + " ??");
-
-      return (this.id === '-1') ? [] : this.$store.state.portfolios[0].portfolio;
-    },
+    // getPortfolios(obj) {
+    //   console.log(this.id  + " this.id =");
+    //   console.log(obj.$store.state.portfolios[0].uid + " ??");
+    //
+    //   return (this.id === '-1') ? [] : this.$store.state.portfolios[0].portfolio;
+    // },
     compiledMarkdown() {
       return marked(this.$store.state.portfolios[this.index].portfolio.content, { sanitize: true });
     },
+  },
+  created () {
+    console.log(this.id + "created??");
+    FirebaseService.addPortfoliosCount(this.id);
+    // async addPortfoliosCount(){
+    //   const result = await FirebaseService.addPortfoliosCount(this.id)
+    // }
   },
   methods: {
     async PortfolioReply(){
       console.log("PortfolioReply in?");
       const result = await FirebaseService.PortfolioReply(this.portfolioReply , this.id)
-      this.$router.push('/')
+      this.getPortfolioReply();
+      // this.$router.push('/')
     },
     async getPortfolioReply() {
 			this.portfolioReplys = await FirebaseService.getPortfolioReply(this.id);
       this.$store.commit('updatePortfolioReplys', this.portfolioReplys );
-      // this.$store.commit('updatePortfolioReplys', this.portfolioReplys);
       // console.log(this.portfolioReplys + " 댓글 왔닝");
-      // console.log(this.$store.state.user + " ??????");
+      // this.getPortfolioReply();
     },
     async deleteReply(index){
       console.log(this.$store.state.portfolioReplys[index].uid + " 선택한 댓글?");
@@ -216,8 +222,14 @@ export default {
     async editReply(index){
       console.log(this.$store.state.portfolioReplys[index].uid + " 선택한 댓글?");
       this.flag = true;
-      // const result = await FirebaseService.deleteReply(index , this.id, this.$store.state.portfolioReplys[index].uid);
+      const result = await FirebaseService.editReply(index , this.id, this.$store.state.portfolioReplys[index].uid, this.editReplyContent, this.nowEmail );
       // this.$store.state.portfolioReplys.splice(index, 1);
+      this.flag = false;
+      this.getPortfolioReply();
+    },
+    editClick(index){
+      this.flag = true;
+      this.editIdx = index;
     }
   },
   mounted() {
@@ -226,6 +238,7 @@ export default {
     this.nowEmail = this.emailArr[0]; //유저의 이메일에서 아이디만 저장
     console.log(this.nowEmail);
 
+    this.getPortfolioReply();
     document.querySelectorAll('.card').forEach((elem) => {
     	const head = elem.querySelector('.card__head')
     	const image = elem.querySelector('.card__image')
@@ -254,6 +267,7 @@ export default {
     	}
     })
     // console.log(this.getPortfolios);
+
   }
 };
 
@@ -293,7 +307,10 @@ const factor = (elemA, elemB, prop) => {
     height: 300px;
   }
 
-  table {
+  #markdownP img{
+    width: 75%;
+  }
+  /* table {
     border-collapse: collapse;
     width: 100%;
     }
@@ -304,7 +321,7 @@ const factor = (elemA, elemB, prop) => {
     border-bottom: 1px solid #ddd;
     }
 
-    tr:hover {background-color:#f5f5f5;}
+    tr:hover {background-color:#f5f5f5;} */
 
     .button {
       width: 60px;
@@ -538,7 +555,7 @@ const factor = (elemA, elemB, prop) => {
   opacity: .8;
 }
 /*  chat*/
-
+/*
 .bubble {
  position: relative;
  font-family: sans-serif;
@@ -590,6 +607,6 @@ const factor = (elemA, elemB, prop) => {
  border-bottom: 20px solid transparent;
  right: 32px;
  bottom: -24px;
-}
+} */
 
 </style>
