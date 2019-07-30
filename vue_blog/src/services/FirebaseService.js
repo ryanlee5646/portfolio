@@ -59,15 +59,22 @@ export default {
       }));
   },
   // 회원가입 -> 데이터베이스( 위: 용성, 아래: 규진)
-  addUser(email, name, auth, photoURL) {
-    //alert("[addUser Info] : " + email + " " + name)
+  addUser(email, name, grade, photoURL, gitlabId, gitlabToken) {
+    console.log(email);
+    console.log(name);
+    console.log(grade);
+    console.log(photoURL);
+    console.log(gitlabId);
+    console.log(gitlabToken);
     return firestore.collection(USERS).doc(email).set({
       email,
       name,
-      auth,
+      grade,
       photoURL,
+      gitlabId,
+      gitlabToken,
       created_at: firebase.firestore.FieldValue.serverTimestamp()
-    })
+    });
   },
   // 회원가입
   signUp(signup) {
@@ -78,12 +85,13 @@ export default {
       alert(`회원가입 오류 발생 !!                                                   [Error] ${errorCode} ${errorMessage}`);
     });
 
-    return firestore.collection(USERS).doc(signup.email).set({
+    firestore.collection(USERS).doc(signup.email).set({
       email: signup.email,
-      github: signup.github,
       name: signup.name,
       pw: signup.password,
       pwconfirmed: signup.passwordConfirmed,
+      gitlabId: signup.gitlabId,
+      gitlabToken: signup.gitlabToken,
       created_at: firebase.firestore.FieldValue.serverTimestamp(),
     });
   },
@@ -103,20 +111,24 @@ export default {
     });
   },
 
+  gitlabAdd(gitlab){
+    alert("gitlab")
+
+  },
+
   isRegistered(email) {
+    alert("bbb")
     const usersCollection = firestore.collection(USERS);
     return usersCollection
-      .where('email', '==', email)
       .get()
-      .then(docSnapshots => docSnapshots.docs.map((doc) => {
-        if (doc.exists) {
-          alert('[isRegistered] 존재하는 ID 입니다.');
-          return true;
-        }
-        alert('[isRegistered] 존재 하지않는 ID 입니다.');
-        return false;
-      })).catch((error) => {
-        console.log('[isRegistered] Error getting document:', error);
+      .then(function (querySnapshot) {
+        querySnapshot.forEach(function (doc) {
+          // doc.data() is never undefined for query doc snapshots
+          if (doc.data().email == email) {
+            return false;
+          }
+        });
+        return true;
       });
   },
   loginWithGoogle() {
@@ -209,13 +221,15 @@ export default {
     const timeId = [y, '0', M, d, h, m, s, logIn].join('');
     const Email = firebase.auth().currentUser.email;
 
-    firestore.collection(USERS).doc(Email).collection('logHistory').doc(timeId)
-      .set({
-        log: firebase.firestore.FieldValue.serverTimestamp(),
-      })
-      .catch((error) => {
-        console.log(`로그인 기록에 실패했습니다. ${error}`); // eslint-disable-line no-console
-      });
+    if (firestore.collection(USERS).doc(Email)) {
+      firestore.collection(USERS).doc(Email).collection('logHistory').doc(timeId)
+        .set({
+          log: firebase.firestore.FieldValue.serverTimestamp(),
+        })
+        .catch((error) => {
+          console.log(`로그인 기록에 실패했습니다. ${error}`); // eslint-disable-line no-console
+        });
+    }
   },
 
   FirebaseLogoutLog() {
@@ -236,14 +250,15 @@ export default {
     //     }).catch(error => {
     //         console.log("로그인 기록에 실패했습니다")
     // })
-
-    firestore.collection('users').doc(Email).collection('logHistory').doc(timeId)
-      .set({
-        log: firebase.firestore.FieldValue.serverTimestamp(),
-      })
-      .catch((error) => {
-        console.log('로그인 기록에 실패했습니다');
-      });
+    if (firestore.collection(USERS).doc(Email)) {
+      firestore.collection(USERS).doc(Email).collection('logHistory').doc(timeId)
+        .set({
+          log: firebase.firestore.FieldValue.serverTimestamp(),
+        })
+        .catch((error) => {
+          console.log('로그인 기록에 실패했습니다');
+        });
+    }
   },
   // 유저 Gitlab Id, token 등록
   editUser(id, token) {
