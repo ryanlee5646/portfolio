@@ -55,7 +55,7 @@
               <div class="textarea">
                 <textarea v-model="portfolioReply.content" class="form-control noresize" placeholder="댓글을 입력하세요." maxlength="3000"></textarea>
               </div>
-              <div class="bnts ">
+              <div class="bnts">
                   <v-btn @click="PortfolioReply() " block flat>Add</v-btn>
               </div>
             </div>

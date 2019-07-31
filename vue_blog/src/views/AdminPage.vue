@@ -4,8 +4,8 @@
             <v-flex xs12>
               <Title :title="category.name" :description="category.description"/>
             </v-flex>
-            <v-layout style="margin-bottom: 30px; margin-top: 30px;">
-              <v-flex xs4>
+            <v-layout style="margin-bottom: 30px; margin-top: 30px;" wrap>
+              <v-flex xs12 sm12 lg4>
                 <v-card max-width="400" class="mx-auto">
                     <v-layout py-4 pl-4>
                         <v-flex shrink>
@@ -35,7 +35,7 @@
                     </v-layout>
                 </v-card>
             </v-flex>
-            <v-flex xs4>
+            <v-flex xs12 sm12 lg4>
                 <v-card max-width="400" class="mx-auto">
                     <v-layout py-4 pl-4>
                         <v-flex shrink>
@@ -65,7 +65,7 @@
                     </v-layout>
                 </v-card>
             </v-flex>
-            <v-flex xs4>
+            <v-flex xs12 sm12 lg4>
                 <v-card max-width="400" class="mx-auto">
                     <v-layout py-4 pl-4>
                         <v-flex shrink>
@@ -100,11 +100,11 @@
             <!-- draggable -->
                 <v-container class="drag-container" v-drag-and-drop:options="options">
                     <h1>User Authentication</h1>
-                    <v-flex class="drag-list">
+                    <v-flex class="drag-list" hidden-sm-and-down>
                         <v-card class="drag-column" v-for="group in groups" :key="group.id">
                             <v-flex class="drag-column-header">
                                 {{ group.name }}
-                                <feather-icon type="more-vertical"></feather-icon>
+                                <hr/>
                             </v-flex>
                             <vue-draggable-group
                                 v-model="group.items"
@@ -113,16 +113,17 @@
                                 @change="onGroupsChange"
                             >
                             <v-flex class="drag-inner-list" :data-id="group.id">
-                              <v-card class=" drag-item" v-for="item in group.items" :key="item.id" :data-id="item.id">
-                                <v-layout py-4 pl-4>
-                                  <v-flex shrink>
-                                    <v-img height="30" width="30" src="https://image.flaticon.com/icons/svg/1992/1992576.svg"></v-img>
+                              <v-card class="drag-item" v-for="item in group.items" :key="item.id" :data-id="item.id">
+                                <v-layout py-4 pl-1>
+                                  <v-flex shrink xs3>
+                                    <v-img height="70px" width="70px" src="https://pondokindahmall.co.id/assets/img/default.png"></v-img>
                                   </v-flex>
-                                  <v-flex text-center>
+                                  <v-flex text-center xs8>
                                     <v-container grid-list-lg pa-0>
                                       <v-layout column>
                                         <v-flex class="drag-item-text">
-                                          {{item.name}}
+                                          <h1><b>{{item.name}}</b></h1> 
+                                          {{item.email}}
                                         </v-flex>
                                       </v-layout>
                                     </v-container>
@@ -134,6 +135,7 @@
                         </v-card>
                     </v-flex>
                 </v-container>
+
                 <v-dialog v-model="dialog" persistent max-width="290">
                   <v-card>
                     <v-card-title class="headline" style="color:red;">Cuation</v-card-title>
@@ -144,6 +146,8 @@
                     </v-card-actions>
                   </v-card>
                 </v-dialog>
+                
+                <UserTable></UserTable>
         <!-- <v-flex v-for="user in users" :key="user">
             <h2> <img :src="getPhotoURL(user)" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;"> {{user.email}} {{user.name}} {{user.auth}}</h2>
              <select v-model="user.auth">
@@ -158,7 +162,8 @@
 </template>
 <script>
 import FirebaseService from '@/services/FirebaseService'
-import Title from '../components/Title.vue';
+import Title from '../components/Title.vue'
+import UserTable from '../components/UserTable.vue'
 
 export default{
     name: 'ManagePage',
@@ -211,9 +216,6 @@ export default{
           FirebaseService.updateAuth(email, auth);
         },
         onDragstart(event){
-          console.log("event")
-          console.log(event)
-
           // manager의 user 수가 한명일 때
           if(event.owner.dataset.id == 1 && event.owner.childElementCount == 1){
              this.dialog = true;
@@ -223,7 +225,8 @@ export default{
         }
     },
     components: {
-    Title,
+      Title,
+      UserTable
     },
     methods:{
         async getAllUserInfo(users, groups){
@@ -396,10 +399,10 @@ ul {
 }
 
 .drag-column-header {
-  display: flex;
   align-items: center;
   justify-content: space-between;
   font-size: 24px;
+  font-weight: bold;
   padding: 10px;
   user-select: none;
 }
@@ -410,8 +413,9 @@ ul {
 }
 
 .drag-item {
+  // 카드 크기
   margin: 10px;
-  height: 50px;
+  height: 100px;
   background: rgba(black, 0.1);
   transition: $ease-out;
 
@@ -422,9 +426,9 @@ ul {
   }
 
   .drag-item-text {
-    font-size: 2rem;
-    padding-left: 2rem;
-    padding-top: 2rem;
+    font-size: 1.5rem;
+    padding-left: 1.5rem;
+    padding-top: 1.5rem;
   }
 }
 
@@ -442,7 +446,7 @@ ul {
 }
 
 .item-dropzone-area {
-  height: 6rem;
+  height: 10rem;
   background: #888;
   opacity: 0.8;
   animation-duration: 0.5s;
