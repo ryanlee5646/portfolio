@@ -59,13 +59,14 @@ export default {
       }));
   },
   // 회원가입 -> 데이터베이스( 위: 용성, 아래: 규진)
-  addUser(email, name, grade, photoURL, gitlabId, gitlabToken) {
+  addUser(email, name, grade, photoURL, gitlabId, gitlabToken, gitlab) {
     console.log(email);
     console.log(name);
     console.log(grade);
     console.log(photoURL);
     console.log(gitlabId);
     console.log(gitlabToken);
+    console.log(gitlab);
     return firestore.collection(USERS).doc(email).set({
       email,
       name,
@@ -73,6 +74,7 @@ export default {
       photoURL,
       gitlabId,
       gitlabToken,
+      gitlab,
       created_at: firebase.firestore.FieldValue.serverTimestamp()
     });
   },
@@ -95,6 +97,36 @@ export default {
       created_at: firebase.firestore.FieldValue.serverTimestamp(),
     });
   },
+  addGitlabInfo(gitlab){
+    const user = firebase.auth().currentUser;
+    const gitlabRef = firestore.collection("users").doc(user.email);
+    return gitlabRef.update({
+      gitlabId : gitlab.gitlabId,
+      gitlabToken : gitlab.gitlabToken,
+      gitlab : true
+      }).then((result) => {
+      console.log("atfer update",result)
+    })
+  },
+
+  // async checkGitlabInfo(){
+  //   // Gitlab 정보가 있는지 체크
+  //   const user = firebase.auth().currentUser;
+  //   const gitlabRef = firestore.collection("users").doc(user.email);
+  //   let gitlabInfo = await gitlabRef.get()
+        
+  //   if (gitlabInfo.exists) {
+  //     const data = gitlabInfo.data();
+  //     console.log("data",data)
+  //     console.log(data.gitlabId, data.gitlabToken,"gitlab")
+  //     if ((data.gitlabId === "" || data.gitlabToken === "") && data.gitlab === false){   // 나중에 조건에 gilab true false 추가
+  //       this.gitlabQuestion = true;
+  //     }
+  //   } else {
+  //     // doc.data() will be undefined in this case
+  //     console.log("No such document!");
+  //   }
+  // },
   // 로그인
   signIn(login) {
     return firebase.auth().signInWithEmailAndPassword(login.email, login.password).then((result) => {
@@ -111,24 +143,20 @@ export default {
     });
   },
 
-  gitlabAdd(gitlab){
-    alert("gitlab")
-
-  },
 
   isRegistered(email) {
-    alert("bbb")
     const usersCollection = firestore.collection(USERS);
     return usersCollection
       .get()
       .then(function (querySnapshot) {
-        querySnapshot.forEach(function (doc) {
+        return querySnapshot.docs.every(function (doc) {
           // doc.data() is never undefined for query doc snapshots
-          if (doc.data().email == email) {
+          if (doc.id === email) {
+            alert(doc.id+ "/"+ email)
             return false;
           }
-        });
-        return true;
+          return true;
+        })
       });
   },
   loginWithGoogle() {

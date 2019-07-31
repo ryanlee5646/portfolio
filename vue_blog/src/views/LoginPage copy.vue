@@ -150,26 +150,26 @@
       <v-divider></v-divider>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="primary" text @click="closeDialog()">
+        <v-btn color="primary" text @click="gitlabInfo = true">
           I accept
         </v-btn>
-        <v-btn color="primary" text @click="noGitlabInfo()">
+        <v-btn color="primary" text @click="gitlabQuestion = false">
           No accept
         </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
   <!-- Gitlab 정보 입력 창 -->
-  <v-dialog v-model="gitlabInfo" max-width="500px">
+  <v-dialog max-width="500px">
       <v-card style="z-index: 100;">
-        <v-container fluid >
-          <v-form>
+        <v-container fluid v-if="gitlabInfo">
+          <v-form v-model="valid">
             <v-layout justify-center ma-2>
               <v-flex xs12 sm8>
                 <v-text-field
                   v-model="gitlab.gitlabId"
                   :rules="EmailRules"
-                  label="Gitlab ID"
+                  label="이메일"
                   class="dohyeon-font"
                   required
                 ></v-text-field>
@@ -181,7 +181,7 @@
                   v-model="gitlab.gitlabToken"
                   :rules="PasswordRules"
                   :counter="10"
-                  label="Gitlab Token"
+                  label="비밀번호"
                   class="dohyeon-font"
                   type="password"
                   required
@@ -191,7 +191,10 @@
           </v-form>
           <v-layout justify-center ma-2>
             <v-flex xs12 sm4>
-              <v-btn @click="addGitlabInfo()" block flat class="dohyeon-font subheading">등록</v-btn>
+              <v-btn @click="signIn()" block flat class="dohyeon-font subheading">등록</v-btn>
+            </v-flex>
+            <v-flex xs12 sm4>
+              <v-btn @click="isLoginStage(false)" class="dohyeon-font subheading" block flat>취소</v-btn>
             </v-flex>
           </v-layout>
         </v-container>
@@ -267,6 +270,7 @@ export default {
       localStorage.setItem("user", JSON.stringify(result.user));
       localStorage.setItem("accessToken", result.credential.accessToken);
       // database 에 추가되어있지 않다면 유저 등록
+      console.log(await FirebaseService.isRegistered(result.user.email), "인증!!!!")
       if (await FirebaseService.isRegistered(result.user.email)) {
         alert("ccc");
         await FirebaseService.addUser(
@@ -286,17 +290,28 @@ export default {
       // Gitlab 정보가 있는지 체크
       const user = firebase.auth().currentUser;
       const gitlabRef = firestore.collection("users").doc(user.email);
-      let gitlabInfo = await gitlabRef.get()
-          
-      if (gitlabInfo.exists) {
-        const data = gitlabInfo.data();
-        if ((data.gitlabId === "" || data.gitlabToken === "") && data.gitlab === false){   // 나중에 조건에 gilab true false 추가
-          this.gitlabQuestion = true;
-        }
-      } else {
-        // doc.data() will be undefined in this case
-        console.log("No such document!");
-      }
+      await gitlabRef.get().then(function(gitlabInfo) {
+          if (gitlabInfo.exists) {
+            const data = gitlabInfo.data();
+            console.log("data",data)
+            console.log(data.gitlabId, data.gitlabToken,"gitlab")
+            if (data.gitlabId === "" || data.gitlabToken === ""){   // 나중에 조건에 gilab true false 추가
+              gitlabRef.update({
+                gitlabId : prompt('Gitlab ID 를 입력해주세요.'),
+                gitlabToken : prompt('Gitlab Token을 입력해주세요.'),
+                gitlab : true
+                }).then((result) => {
+                console.log("atfer update",result)
+              })
+            }
+          } else {
+            // doc.data() will be undefined in this case
+            console.log("No such document!");
+          }
+        })
+        .catch(function(error) {
+          console.log("Error getting document:", error);
+        });
 
       this.$store.commit("loginDialog", false);
       this.$router.push("/");
@@ -319,64 +334,55 @@ export default {
           "visitor",
           result.user.photoURL,
           "",
-          "",
-          false
+          ""
         );
         FirebaseService.FirebaseLoginLog();
       } else {
         alert("ddd");
         FirebaseService.FirebaseLoginLog();
       }
+
+      FirebaseService.FirebaseLoginLog();
       
       // Gitlab 정보가 있는지 체크
       const user = firebase.auth().currentUser;
       const gitlabRef = firestore.collection("users").doc(user.email);
-      let gitlabInfo = await gitlabRef.get()
-          
-      if (gitlabInfo.exists) {
-        const data = gitlabInfo.data();
-        console.log("data",data)
-        console.log(data.gitlabId, data.gitlabToken,"gitlab")
-        if ((data.gitlabId === "" || data.gitlabToken === "") && data.gitlab === false){   // 나중에 조건에 gilab true false 추가
-          this.gitlabQuestion = true;
-        }
-      } else {
-        // doc.data() will be undefined in this case
-        console.log("No such document!");
-      }
+      await gitlabRef.get().then(function(gitlabInfo) {
+          if (gitlabInfo.exists) {
+            const data = gitlabInfo.data()
+            console.log("data",data)
+            console.log(data.gitlabId, data.gitlabToken,"gitlab")
+            if (data.gitlabId === "" || data.gitlabToken === ""){
+              alert("eeee")
+              // gitlabId = prompt('Gitlab ID 를 입력해주세요.');
+              // gitlabToken = prompt('Gitlab Token을 입력해주세요.');
+              gitlabRef.update({
+                gitlabId : prompt('Gitlab ID 를 입력해주세요.'),
+                gitlabToken : prompt('Gitlab Token을 입력해주세요.')
+                }).then((result) => {
+                console.log("atfer update",result)
+              })
+            }
+          } else {
+            // doc.data() will be undefined in this case
+            console.log("No such document!");
+          }
+        })
+        .catch(function(error) {
+          console.log("Error getting document:", error);
+        });
 
       this.$store.commit("loginDialog", false);
       this.$router.push("/");
     },
-    
-    closeDialog() {
-      this.gitlabQuestion = false
-      this.gitlabInfo = true
+    // gitlab 입력 유무 질문 모달 
+    isGitlabQuestion(flag){
+      this.gitlabQuestion = flag;
     },
-    // Gitlab 정보 추가 거절 했을 경우 처리
-    async noGitlabInfo() { 
-      try {
-        await FirebaseService.addGitlabInfo({
-        gitlabId: "",
-        gitlabToken: ""
-      });
-        this.gitlabQuestion = false
-        this.gitlabInfo = false
-      } catch (err) {
-        console.log(err)
-      }
+    // gitlab 정보 입력
+    isGitlabInfo(flag){
+      this.gitlabInfo = flag;
     },
-    // Gitlab 정보 추가
-    async addGitlabInfo(){
-      try {
-        await FirebaseService.addGitlabInfo(this.gitlab);
-        this.gitlabQuestion = false
-        this.gitlabInfo = false
-      } catch (err) {
-        console.log(err)
-      }
-    },
-    
      
     isLoginStage(flag) {
       this.isLogin = flag;
