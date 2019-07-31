@@ -1,17 +1,26 @@
 <template>
   <div>
-    <transition name="fadeUp">
+    <transition name="fadeRight">
       <div class="chatbot-dialog" v-show="dialogShow">
         <div class="container">
-          <div class="chat-output" id="chat-output">
-            <div class="user-message">
-              <div class="message">Hi! I'm a bot. What's up?</div>
-            </div>
+          <div class="chatbot-dialog-head">
+            <v-icon @click="showDialog(false)">keyboard_arrow_right</v-icon>
+          </div>
+
+          <div class="chat-output scrollbar" id="chat-output">
+            <Message v-for="(dialog, idx) in dialogs" :key="idx"
+              :speaker="dialog.speaker"
+              :text="dialog.text"
+            ></Message>
           </div>
 
           <div class="chat-input">
             <form action="#0" id="user-input-form">
-              <input type="text" id="user-input" class="user-input" placeholder="Talk to the bot.">
+              <v-text-field
+                v-model="input"
+                label="궁금하신 사항을 물어보세요"
+                append-icon="send"
+                ></v-text-field>
             </form>
           </div>
         </div>
@@ -65,12 +74,25 @@
 
 
 <script>
+import Message from './Message.vue';
+import $ from 'jquery';
+
 export default {
   data() {
     return {
       fab: false,
       dialogShow: false,
+      input: '',
+      dialogs: [
+        {
+          speaker: 'bot',
+          text: '안녕하세요. 무엇을 도와드릴까요?',
+        },
+      ],
     };
+  },
+  components: {
+    Message,
   },
   methods: {
     showDialog(flag) {
@@ -78,41 +100,38 @@ export default {
     },
   },
   mounted() {
-    const outputArea = document.getElementById('chat-output');
     const userInput = document.getElementById('user-input-form');
+    const outputArea = document.getElementById('chat-output');
     userInput.addEventListener('submit', (event) => {
       event.preventDefault();
 
-      const message = document.getElementById('user-input').value;
-
-      outputArea.innerHTML += `
-        <div class='bot-message'>
-          <div class='message'>
-            ${message}
-          </div>
-        </div>
-        `;
+      this.dialogs.push({
+        speaker: 'user',
+        text: this.input,
+      });
 
       setTimeout(() => {
-        outputArea.innerHTML += `
-          <div class='user-message'>
-            <div class='message'>
-              I'm like 20 lines of JavaScript i can't actually talk to you.
-            </div>
-          </div>
-        `;
+        this.dialogs.push({
+          speaker: 'bot',
+          text: '저 사실 로봇이라 대화를 못해요',
+        });
+        setTimeout(() => {
+          outputArea.scrollTop = outputArea.scrollHeight;
+        }, 150);
       }, 250);
 
-      document.getElementById('user-input').value = '';
+      this.input = '';
     });
   },
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+
 .container {
   box-sizing: border-box;
-  font-size: 115%;
+  // font-size: %;
+  padding: 20px 10px 10px 10px;
   display: flex;
   flex-direction: column;
   margin: 0 auto;
@@ -121,44 +140,23 @@ export default {
 
 .chat-output {
   flex: 1;
-  padding: 20px;
+  padding: 10px;
   display: flex;
   background: white;
+  overflow-y: auto;
   flex-direction: column;
   > div {
     margin: 0 0 20px 0;
   }
-  .user-message {
-    .message {
-      background: #0FB0DF;
-      color: white;
-    }
-  }
-  .bot-message {
-    text-align: right;
-    .message {
-      background: #eee;
-    }
-  }
-  .message {
-    display: inline-block;
-    padding: 12px 20px;
-    border-radius: 10px;
-  }
 }
 .chat-input {
-  padding: 20px;
-  background: #eee;
-  border: 1px solid #ccc;
+  padding: 5px 10px 5px 10px;
   border-bottom: 0;
   align-self: flex-end;
   width: 100%;
   .user-input {
     width: 100%;
     font-size: 2rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    padding: 8px;
   }
 }
 
@@ -174,6 +172,29 @@ export default {
   right: 80px;
   width: 350px;
   height: 450px;
+  border-radius: 15px;
+  border: 1px solid white;
   background-color: white;
+}
+
+.chatbot-dialog-head{
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0px;
+  margin: 5px 5px 10px 5px;
+}
+.scrollbar {
+  &::-webkit-scrollbar {
+    width: 3px;
+    background: none;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #f8f7fb;
+    opacity: .4;
+  }
+  &::-webkit-scrollbar-track {
+    background: none;
+  }
 }
 </style>

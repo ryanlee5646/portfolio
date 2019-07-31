@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <transition name="fade" tag="div" class="wrapper">
+    <transition name="fade" tag="div">
       <div class="wrapper" v-if="isLoaded" key="app">
         <mHeader></mHeader>
         <ImgBanner imgSrc="https://source.unsplash.com/random">
@@ -11,8 +11,8 @@
         <!-- <router-view></router-view> -->
         <Chatbot></Chatbot>
       </div>
-      <div class="loader wrapper" v-else key="loader">
-       <div class="spinner-loader"></div>
+      <div class="loader wrapper" style="overflow:hidden;" v-else key="loader">
+        <div class="spinner-loader"></div>
       </div>
       <!-- <router-view></router-view> -->
     </transition>
@@ -106,7 +106,6 @@ export default {
   }
   .spinner-loader {
     animation: spinner-loader 1500ms infinite linear;
-
     border-radius: 0.5em;
     box-shadow: $spinner-loader-color 1.5em 0 0 0,
       $spinner-loader-color 1.1em 1.1em 0 0,
