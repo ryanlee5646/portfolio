@@ -52,6 +52,8 @@ export default {
       this.isLoaded = true;
       this.$nextTick(() => document.body.classList.remove('loading'));
     });
+    // 조회수 
+    FirebaseService.addViews();
   },
   mounted() {
     const isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);

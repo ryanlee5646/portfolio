@@ -83,7 +83,7 @@
                                             :class="{scaleBig: scaleClass}"
                                             ref="number1"
                                             from="0"
-                                            :to="2958"
+                                            :to="NumberOfViews"
                                             duration="4"
                                             easing="Power4.easeOut"
                                             @complete="completed"
@@ -173,6 +173,7 @@ export default{
             dialog: false,
             NumberOfPortfolios : 0,
             NumberOfPosts : 0,
+            NumberOfViews : 0,
             scaleClass: false,
             groups: [
         {
@@ -199,7 +200,6 @@ export default{
           var auth = event.droptarget.previousSibling.innerText.toLowerCase();
           
           this.groups.forEach(function(group){
-
             if(group.id == event.droptarget.dataset.id){
               group.items.forEach(function(item){
                   if(item.id == event.items[0].dataset.id){
@@ -267,6 +267,7 @@ export default{
         async getDocumentsNumber(){
             this.NumberOfPortfolios = await FirebaseService.getPortfolioNumber();
             this.NumberOfPosts = await FirebaseService.getPostNumber();
+            this.NumberOfViews = await FirebaseService.getViews();
             this.playAnimation();
         },
         async getPostNumber(){

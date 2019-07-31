@@ -3,6 +3,7 @@ import 'firebase/firestore';
 import 'firebase/auth';
 
 const POSTS = 'posts';
+const VIEWS = 'views';
 const PORTFOLIOS = 'portfolios';
 const USERS = 'users';
 const PORTFOLIO_REPLYS = 'portfolio_replys'
@@ -284,17 +285,10 @@ export default {
             });
     },
     getPortfolioNumber() {
-        return firestore.collection(USERS)
+        return firestore.collection(PORTFOLIOS)
             .get()
             .then(function(querySnapshot) {
-                var totalCount = 0;
-                querySnapshot.forEach(function(doc) {
-                    // doc.data() is never undefined for query doc snapshots
-                    if (doc.data().portfolioCount != undefined) {
-                        totalCount += doc.data().portfolioCount;
-                    }
-                });
-                return totalCount;
+                return querySnapshot.size;
             })
             .catch(function(error) {
                 console.log("Error getting documents: ", error);
@@ -330,6 +324,50 @@ export default {
             .catch(function(error) {
                 // The document probably doesn't exist.
                 console.error("Error updating document: ", error);
+            });
+    },
+    addViews() {
+        let d = new Date();
+        d = d.getFullYear() + "-" + d.getMonth() + "-" + d.getDate();
+        console.log(d);
+        const usersCollection = firestore.collection(VIEWS);
+        return usersCollection.doc(d)
+            .get()
+            .then(function(doc) {
+                var views = 0;
+                if (doc.exists) {
+                    console.log("Document data:1", doc.data());
+                    views = doc.data().views + 1;
+                    usersCollection.doc(d).set({
+                        views
+                    });
+
+                } else {
+                    console.log("No such document!");
+                    usersCollection.doc(d).set({
+                        views
+                    });
+                }
+            }).catch(e => {
+                console.log("Firebase Error")
+            });
+    },
+    getViews() {
+        let d = new Date();
+        d = d.getFullYear() + "-" + d.getMonth() + "-" + d.getDate();
+        const usersCollection = firestore.collection(VIEWS);
+        return usersCollection.doc(d)
+            .get()
+            .then(function(doc) {
+                if (doc.exists) {
+                    console.log("Document data:2", doc.data());
+                    return doc.data().views;
+
+                } else {
+                    console.log("No such document!");
+                }
+            }).catch(e => {
+                console.log("Firebase Error")
             });
     }
 }
