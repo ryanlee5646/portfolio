@@ -148,7 +148,7 @@
               <div class="textarea">
                 <textarea v-model="portfolioReply.content" class="form-control noresize" placeholder="댓글을 입력하세요." maxlength="3000"></textarea>
               </div>
-              <div class="bnts ">
+              <div class="bnts">
                   <v-btn @click="PortfolioReply() " block flat>Add</v-btn>
               </div>
             </div>
@@ -347,7 +347,7 @@ export default {
       this.flag2 = false;
       this.portfolios = await FirebaseService.getPortfolios();
       this.$store.commit('updatePortfolios', this.portfolios );
-      this.$router.replace('/portfolio/view/' + this.id);
+      this.$router.push('/portfolio/view/' + this.id);
     }
   },
   mounted() {

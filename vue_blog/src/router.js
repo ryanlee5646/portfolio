@@ -33,10 +33,9 @@ export default new Router({
             component: Reply,
         },
         {
-    			path: '/post/write',
-    			name: 'postwrite',
-    			component: PostoWriter
-    		}
-
+            path: '/post/write',
+            name: 'postwrite',
+            component: PostoWriter,
+        },
     ],
 });
