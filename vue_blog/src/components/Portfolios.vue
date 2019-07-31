@@ -86,6 +86,9 @@ export default {
       })());
       Page.init();
     });
+
+    console.log("app mounted");
+    this.$store.watch(() => this.$store.state.portfolios, portfolios => { console.log(""); this.portfolios = portfolios; })
   },
   methods: {
     // 더보기 클릭했을 때 실행되는 함수
@@ -104,7 +107,6 @@ export default {
     },
     routePath(uid){
       console.log(uid + " routePath 넘어옴?");
-
       this.$router.push({path: '/portfolio/view/' + uid })
     },
   },

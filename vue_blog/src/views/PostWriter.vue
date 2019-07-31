@@ -6,72 +6,6 @@
         </v-text-field>
       </v-flex>
     </v-layout>
-    <!-- <v-layout justify-center>
-      <v-flex xs12 sm8 md6>
-        <v-textarea
-              solo
-              name="input-7-4"
-              label="프로젝트 요약"
-              v-model="portfolio.summary"
-            ></v-textarea>
-      </v-flex>
-    </v-layout>
-    <v-layout justify-center>
-      <v-flex xs12 sm8 md6>
-        <v-layout wrap justify-space-between>
-          <v-flex xs12 sm5>
-            <v-menu
-              v-model="portfolio.startdate"
-              :close-on-content-click="false"
-              :nudge-right="40"
-              lazy
-              transition="scale-transition"
-              offset-y
-              full-width
-              min-width="290px"
-            >
-              <template v-slot:activator="{ on }">
-                <v-text-field
-                  v-model="portfolio.sdate"
-                  label="프로젝트 시작일"
-                  prepend-icon="event"
-                  readonly
-                  v-on="on"
-                ></v-text-field>
-              </template>
-              <v-date-picker v-model="portfolio.sdate" @input="startdate = false"></v-date-picker>
-            </v-menu>
-          </v-flex>
-          <v-flex xs12 sm5>
-            <v-menu
-              v-model="portfolio.enddate"
-              :close-on-content-click="false"
-              :nudge-right="40"
-              lazy
-              transition="scale-transition"
-              offset-y
-              full-width
-              min-width="290px"
-            >
-              <template v-slot:activator="{ on }">
-                <v-text-field
-                  v-model="portfolio.edate"
-                  label="프로젝트 종료일"
-                  prepend-icon="event"
-                  readonly
-                  v-on="on"
-                ></v-text-field>
-              </template>
-              <v-date-picker v-model="portfolio.edate" @input="enddate = false"></v-date-picker>
-            </v-menu>
-          </v-flex>
-        </v-layout>
-      </v-flex>
-    </v-layout> -->
-<!--
-
- -->
-
     <v-layout justify-center>
       <v-flex xs12 sm8 md6>
         <markdown-editor v-model="portfolio.content" ref="markdownEditor"></markdown-editor>
@@ -82,9 +16,33 @@
         <v-btn @click="PortfolioWriter()" block flat>작성하기</v-btn>
       </v-flex>
       <v-flex xs12 sm3 md2>
-        <v-btn to="/portfolio" block flat>뒤로</v-btn>
+        <v-btn to="/portfolio" block flat>뒤로</v-btn><br>
       </v-flex>
     </v-layout>
+    <!-- <div class="X">
+      <h1 style="text-align: center;">recaptcha Google </h1>
+       <form action="//goo.gl/FJmwrg">
+
+         <label for="x1"> Name:</label>
+        <input type="text" id="x1"/>
+        <label for="x2"> Last Name:</label>
+        <input type="text" id="x2"/>
+        <label for="x3"> Email:</label>
+        <input type="email" id="x3"/>
+        <label for="x4"> Message:</label>
+        <textarea id="x4" rows="4"></textarea>
+
+      <div class="g-recaptcha" data-sitekey="6Lc-cA4UAAAAAOlLBnjwQ9SKqQ8eJLlUP-evJawo"></div>
+
+        <input type="submit" id="x5" value="send"/>
+
+       </form>
+      </div>
+
+      <link href="//goo.gl/2C5Kb0" rel="stylesheet">
+      <link href="//goo.gl/40qUwS" rel="stylesheet">-->
+
+
   </div>
 </template>
 
@@ -124,4 +82,59 @@
 
 <style>
   @import '~simplemde/dist/simplemde.min.css';
+
+  /* body{
+  background:#4d4766;
+  font-family: 'Baloo Bhaina', cursive;
+}
+.X{
+  max-width: 400px;
+  margin: 2% auto;
+  background: #fff;
+  padding: 2%;
+  box-shadow: 0 0 20px rgba(46, 59, 125, 0.23);
+  border-radius: 5px;
+}
+label, input, textarea{
+  font-size: 20px;
+  box-sizing: border-box;
+}
+input, textarea{
+  margin: 0 0 20px 0;
+  padding: 15px;
+  width: 100%;
+  border: none;
+  font-weight: 300;
+  letter-spacing: 2px;
+  box-shadow: 0 2px 2px 0 rgba(0,0,0,0.16),0 0 0 1px rgba(0,0,0,0.08);
+  font-family: 'Roboto', sans-serif;
+  display: flex;
+}
+input:hover,textarea:focus{
+  outline: none;
+  box-shadow:0 2px 4px rgba(0,0,0,0.4);
+}
+textarea:focus, input:focus{
+  color: #2440a7;
+  border: 1px solid #4f8df5;
+}
+input[type=submit]{
+  width: 100%;
+  margin: auto;
+  height: 75px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Baloo Bhaina', cursive;
+  padding: 8px 20px;
+  font-size: 34px;
+}
+
+.g-recaptcha{
+  margin: 4% auto;
+  width: 100%;
+}
+textarea{
+  max-width: 100%;
+} */
 </style>

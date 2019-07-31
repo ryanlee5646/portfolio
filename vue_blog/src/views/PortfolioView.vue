@@ -1,62 +1,134 @@
 <template>
   <v-container justify-center py-5>
-    <v-layout justify-center>
+    <v-layout   justify-center>
       <v-flex xs8 class="notranslate text-xs-center">
-        <!--  -->
-        <div v-for="i in $store.state.portfolios.length" >
-          <div v-if="$store.state.portfolios[i -1].uid === id">
-              <!-- {{id}}  acrKqb3TuKTJz9h4Dnkp -->
-              <!-- {{$store.state.portfolios[i -1].portfolio.title}} <br>
-              {{$store.state.portfolios[i -1].portfolio.content}}<br>
-              <img :src = "$store.state.portfolios[i -1].portfolio.thumbnail" width="50px;"> -->
-              # {{index = i-1}}
-              <div class="flex justify-center items-center h-screen">
-                <div class="max-w-sm rounded overflow-hidden shadow-lg">
-                <!-- <img class="w-full .text-pop-up-top" :src = "$store.state.portfolios[i -1].portfolio.thumbnail" alt="Sunset in the mountains"> -->
-                  <div class="px-6 py-4">
-                    <h2 class="font-bold text-xl mb-2"><b>" {{$store.state.portfolios[i -1].portfolio.title}} "</b>  <span>조회수 : {{$store.state.portfolios[i -1].viewCount}}</span> </h2><hr>
-
-                    <p id = "markdownP" class="text-gray-700 text-base" v-html="compiledMarkdown">
-                      {{$store.state.portfolios[i -1].portfolio.content}}
-                    </p>
+          <div v-for="i in $store.state.portfolios.length" >
+            <div v-if="$store.state.portfolios[i -1].uid === id">
+                <!-- {{id}}  acrKqb3TuKTJz9h4Dnkp -->
+                <!-- {{$store.state.portfolios[i -1].portfolio.title}} <br>
+                {{$store.state.portfolios[i -1].portfolio.content}}<br>
+                <img :src = "$store.state.portfolios[i -1].portfolio.thumbnail" width="50px;"> -->
+                <div v-if= "flag2 === false">
+                # {{index = i-1}}
+                {{portfolioIdx = i-1}}
+                <div class="flex justify-center items-center h-screen">
+                  <div class="max-w-sm rounded overflow-hidden shadow-lg">
+                  <!-- <img class="w-full .text-pop-up-top" :src = "$store.state.portfolios[i -1].portfolio.thumbnail" alt="Sunset in the mountains"> -->
+                    <div class="px-6 py-4">
+                      <h2 class="font-bold text-xl mb-2"><b>" {{$store.state.portfolios[i -1].portfolio.title}} "</b>  <span>조회수 : {{$store.state.portfolios[i -1].viewCount}}</span> </h2><hr>
+                          {{$store.state.portfolios[i -1].portfolio.sdate}} ~ {{$store.state.portfolios[i -1].portfolio.edate}}
+                          <hr>
+                      <p id = "markdownP" class="text-gray-700 text-base" v-html="compiledMarkdown">
+                        {{$store.state.portfolios[i -1].portfolio.content}}
+                      </p>
+                    </div>
+                    <div class="px-6 py-4">
+                      <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2">
+                         # {{$store.state.portfolios[i -1].portfolio.teams}}
+                       </span>
+                    </div><br>
+                      <button class="button" @click="deletePortfolio(i)" >Delete</button>
+                      <button class="button" @click="editPortfolioClick(i)" >Edit</button>
+                    <!-- <div href="#" class="card px-6 py-4">
+                    	<div class="card__head">
+                    		<div class="card__image"></div>
+                    		<div class="card__author">
+                    			<div class="author">
+                    				<img src="https://s.gravatar.com/avatar/7ff9e93ff25e002bc49f4d69c0c3eac7?s=80" alt="Author of Tobias Reich" class="author__image">
+                    				<div class="author__content">
+                    					<p class="author__header">Developer</p>
+                    					<p class="author__subheader"># {{$store.state.portfolios[i -1].portfolio.teams}}</p>
+                    				</div>
+                    			</div>
+                    		</div>
+                    	</div>
+                    	<div class="card__body">
+                    		<h2 class="card__headline"><b>" {{$store.state.portfolios[i -1].portfolio.title}} "</b></h2>
+                    		<p class="card__text" v-html="compiledMarkdown">
+                          {{$store.state.portfolios[i -1].portfolio.content}} </p>
+                    	</div>
+                    	<div class="card__foot">
+                    		<span class="card__link">Read more</span>
+                    	</div>
+                    	<div class="card__border"></div>
+                    </div> -->
                   </div>
-                  <div class="px-6 py-4">
-                    <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2">
-                       # {{$store.state.portfolios[i -1].portfolio.teams}}
-                     </span>
-                  </div><br>
-                  <button v-if=" $store.state.portfolios[i -1].portfolio.email === nowEmail" class="button" @click="editClick(index)"  >수 정</button>
-                  <button v-if=" $store.state.portfolios[i -1].portfolio.email === nowEmail" class="button" @click="deleteReply(index)" >삭 제</button>
-                  <!--  -->
-                  <!-- <div href="#" class="card px-6 py-4">
-                  	<div class="card__head">
-                  		<div class="card__image"></div>
-                  		<div class="card__author">
-                  			<div class="author">
-                  				<img src="https://s.gravatar.com/avatar/7ff9e93ff25e002bc49f4d69c0c3eac7?s=80" alt="Author of Tobias Reich" class="author__image">
-                  				<div class="author__content">
-                  					<p class="author__header">Developer</p>
-                  					<p class="author__subheader"># {{$store.state.portfolios[i -1].portfolio.teams}}</p>
-                  				</div>
-                  			</div>
-                  		</div>
-                  	</div>
-                  	<div class="card__body">
-                  		<h2 class="card__headline"><b>" {{$store.state.portfolios[i -1].portfolio.title}} "</b></h2>
-                  		<p class="card__text" v-html="compiledMarkdown">
-                        {{$store.state.portfolios[i -1].portfolio.content}} </p>
-                  	</div>
-                  	<div class="card__foot">
-                  		<span class="card__link">Read more</span>
-                  	</div>
-                  	<div class="card__border"></div>
-                  </div> -->
                 </div>
               </div>
-          </div>
+
+              <!-- 수정 폼 -->
+                <div v-else>
+                  <v-layout justify-center pt-5>
+                    <v-flex xs12 sm5 md4>
+                      <v-text-field label="제목" v-model="portfolioTemp.title"></v-text-field>
+                    </v-flex>
+                  </v-layout>
+                  <v-layout justify-center pt-5>
+                    <v-flex xs12 sm5 md4>
+                      <v-text-field label="프로젝트 참여 팀원" v-model="portfolioTemp.teams"></v-text-field>
+                    </v-flex>
+                  </v-layout>
+
+                  <v-layout justify-center>
+                    <v-flex xs12 sm8 md6>
+                      <v-layout wrap justify-space-between>
+                        <v-flex xs12 sm5>
+                          <v-menu v-model="portfolioTemp.startdate" :close-on-content-click="false" :nudge-right="40" lazy transition="scale-transition" offset-y full-width min-width="290px">
+                            <template v-slot:activator="{ on }">
+                              <v-text-field v-model="portfolioTemp.sdate" label="프로젝트 시작일" prepend-icon="event" readonly v-on="on"></v-text-field>
+                            </template>
+                            <v-date-picker v-model="portfolioTemp.sdate" @input="startdate = false"></v-date-picker>
+                          </v-menu>
+                        </v-flex>
+                        <v-flex xs12 sm5>
+                          <v-menu v-model="portfolioTemp.enddate" :close-on-content-click="false" :nudge-right="40" lazy transition="scale-transition" offset-y full-width min-width="290px">
+                            <template v-slot:activator="{ on }">
+                              <v-text-field v-model="portfolioTemp.edate" label="프로젝트 종료일" prepend-icon="event" readonly v-on="on"></v-text-field>
+                            </template>
+                            <v-date-picker v-model="portfolioTemp.edate" @input="enddate = false"></v-date-picker>
+                          </v-menu>
+                        </v-flex>
+                      </v-layout>
+                    </v-flex>
+                  </v-layout>
+
+                  <v-layout justify-center>
+                    <v-flex xs12 sm8 md6>
+                      <markdown-editor v-model="portfolioTemp.content" ref="markdownEditor"></markdown-editor>
+                    </v-flex>
+                  </v-layout>
+                  <v-layout justify-center>
+                    <v-flex xs12 sm8 md6>
+                      <v-text-field solo name="input-7-4" label="썸네일 URL" v-model="portfolioTemp.thumbnail"></v-text-field>
+                    </v-flex>
+                  </v-layout>
+                  <v-layout justify-center>
+                    <v-flex xs12 sm8 md6>
+                      <ImageComponent></ImageComponent>
+                    </v-flex>
+                  </v-layout><br>
+
+                  <!-- <v-layout wrap justify-center>
+                    <div v-if="this.$store.state.ImageLink == '' ">이 곳에 생성되는 url을 복사하여 사용해주세요 :-)</div>
+                    <div v-else style="color : #43b848de;">
+                      <b><span v-html="this.$store.state.ImageLink"></span></b><br>
+                    </div><br><br>
+                  </v-layout><br> -->
+                  <v-layout wrap justify-center>
+                    <v-flex xs12 sm3 md2 mr-2>
+                    </v-flex>
+                    <v-flex xs12 sm3 md2>
+                      <button class="button" @click="editPortfolio()" >Edit</button>
+                      <v-btn to="/portfolio" block flat>뒤로</v-btn>
+                    </v-flex>
+                  </v-layout>
+              </div>
+            </div>
         </div>
       </v-flex>
     </v-layout>
+
+
     <v-layout justify-center>
       <v-flex xs8 class="notranslate text-xs-center">
         <!-- <div class="editor" v-html="compiledMarkdown"></div> -->
@@ -161,6 +233,9 @@
 <script>
 import marked from 'marked';
 import FirebaseService from '@/services/FirebaseService'
+import markdownEditor from 'vue-simplemde/src/markdown-editor';
+import ImageComponent from '../components/ImageComponent.vue';
+// import portfoliowrite from '../views/PortfolioWriter.vue';
 
 export default {
   data(){
@@ -175,10 +250,29 @@ export default {
       emailArr : this.$store.state.user.email.split('@'),
       nowEmail : "",
       index : "",
+      portfolioIdx : 0,
       flag : false,
+      flag2 : false,
       editReplyContent : "",
       editIdx : "",
+
+      portfolioTemp: {
+        userID: "", //this.$store.state.user
+        startdate: "",
+        enddate: "",
+        sdate:  "",
+        edate: "",
+        title: "",
+        content:  "",
+        teams:  "",
+        thumbnail :  "",
+      },
     }
+  },
+  components: {
+    markdownEditor,
+    ImageComponent
+    // portfoliowrite
   },
   props: {
     id: { type: String, default: '-1' },
@@ -197,9 +291,6 @@ export default {
   created () {
     console.log(this.id + "created??");
     FirebaseService.addPortfoliosCount(this.id);
-    // async addPortfoliosCount(){
-    //   const result = await FirebaseService.addPortfoliosCount(this.id)
-    // }
   },
   methods: {
     async PortfolioReply(){
@@ -230,11 +321,37 @@ export default {
     editClick(index){
       this.flag = true;
       this.editIdx = index;
+    },
+    editPortfolioClick(idx){
+      this.flag2 = true;
+      // console.log(idx + " 수정 클릭");
+      this.portfolioIdx = idx - 1;
+      this.portfolioTemp.userID = this.nowEmail;
+      this.portfolioTemp.startdate = this.$store.state.portfolios[this.portfolioIdx].portfolio.startdate;
+      this.portfolioTemp.enddate = this.$store.state.portfolios[this.portfolioIdx].portfolio.enddate;
+      this.portfolioTemp.sdate = this.$store.state.portfolios[this.portfolioIdx].portfolio.sdate;
+      this.portfolioTemp.edate = this.$store.state.portfolios[this.portfolioIdx].portfolio.edate;
+      this.portfolioTemp.title = this.$store.state.portfolios[this.portfolioIdx].portfolio.title;
+      this.portfolioTemp.content = this.$store.state.portfolios[this.portfolioIdx].portfolio.content;
+      this.portfolioTemp.teams = this.$store.state.portfolios[this.portfolioIdx].portfolio.teams;
+      this.portfolioTemp.thumbnail = this.$store.state.portfolios[this.portfolioIdx].portfolio.thumbnail;
+    },
+    async deletePortfolio(){
+      const result = await FirebaseService.deletePortfolio(this.id);
+      this.portfolios = await FirebaseService.getPortfolios();
+      this.$store.commit('updatePortfolios', this.portfolios );
+      this.$router.replace('/');
+    },
+    async editPortfolio(){
+      const result = await FirebaseService.editPortfolio(this.id, this.portfolioTemp);
+      this.flag2 = false;
+      this.portfolios = await FirebaseService.getPortfolios();
+      this.$store.commit('updatePortfolios', this.portfolios );
+      this.$router.replace('/portfolio/view/' + this.id);
     }
   },
   mounted() {
     console.log(this.nowUser.email + " 접속한 유저 정보");
-
     this.nowEmail = this.emailArr[0]; //유저의 이메일에서 아이디만 저장
     console.log(this.nowEmail);
 
@@ -258,7 +375,6 @@ export default {
     		author.style.transform = `translateY(${ authorDistance }px)`
 
     	}
-
     	elem.onmouseleave = () => {
     		elem.classList.remove('hover')
     		image.style.transform = `none`
@@ -266,27 +382,24 @@ export default {
     		author.style.transform = `none`
     	}
     })
-    // console.log(this.getPortfolios);
-
   }
 };
+  //
+  const height = (elem) => {
+  	return elem.getBoundingClientRect().height
+  }
 
-//
-const height = (elem) => {
-	return elem.getBoundingClientRect().height
-}
+  const distance = (elemA, elemB, prop) => {
+  	const sizeA = elemA.getBoundingClientRect()[prop]
+  	const sizeB = elemB.getBoundingClientRect()[prop]
+  	return sizeB - sizeA
+  }
 
-const distance = (elemA, elemB, prop) => {
-	const sizeA = elemA.getBoundingClientRect()[prop]
-	const sizeB = elemB.getBoundingClientRect()[prop]
-	return sizeB - sizeA
-}
-
-const factor = (elemA, elemB, prop) => {
-	const sizeA = elemA.getBoundingClientRect()[prop]
-	const sizeB = elemB.getBoundingClientRect()[prop]
-	return sizeB / sizeA
-}
+  const factor = (elemA, elemB, prop) => {
+  	const sizeA = elemA.getBoundingClientRect()[prop]
+  	const sizeB = elemB.getBoundingClientRect()[prop]
+  	return sizeB / sizeA
+  }
 
 
 </script>

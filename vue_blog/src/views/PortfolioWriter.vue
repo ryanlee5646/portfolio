@@ -83,6 +83,7 @@ export default {
   name: 'portfoliowrite',
   data() {
     return {
+      portfolios : [],
       portfolio: {
         userID: "", //this.$store.state.user
         startdate: "",
@@ -103,7 +104,9 @@ export default {
     async PortfolioWriter() {
       // console.log(this.$store.state.user.mail + " 카운트??");
       const result = await FirebaseService.PortfolioWriter(this.portfolio);
-      this.$router.push('/portfolio');
+      this.portfolios = await FirebaseService.getPortfolios();
+      this.$store.commit('updatePortfolios', this.portfolios );
+      this.$router.push('/');
     }
   },
   components: {

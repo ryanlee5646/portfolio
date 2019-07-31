@@ -170,7 +170,9 @@ export default {
       const {
         user
       } = result;
-      console.log(user);
+      // var temp = user.email.split('@');
+      // user.userID = temp[0];
+      console.log(user.userID + " loginWithGoogle");
       return result;
     }).catch((error) => {
       console.error('[Google Login Error]', error);
@@ -248,9 +250,7 @@ export default {
       }).catch(function(error) {
         console.error(error);
       })
-
     // );
-
   },
   editReply(index, portfolioUID, replyUID, editReplyContent, email) {
     console.log("editReply!!");
@@ -273,12 +273,48 @@ export default {
 
   PortfolioWriter(portfolio) {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
-    console.log(JSON.stringify(user) + " ????????????????");
+    //console.log(JSON.stringify(user) + " ????????????????");
     return firestore.collection(PORTFOLIOS).add({
       portfolio,
       created_at: firebase.firestore.FieldValue.serverTimestamp(),
     });
   },
+  deletePortfolio(portfolioUID){
+    console.log("deletePortfolio!!");
+    const portfolioCollection = firestore.collection(PORTFOLIOS).doc(portfolioUID)
+    .delete().then(function() {
+      console.log("Document successfully deleted!");
+    }).catch(function(error) {
+      console.error(error);
+    });
+  },
+
+  editPortfolio(portfolioUID, portfolio) {
+    console.log("editPortfolio!!");
+    let user = firebase.auth().currentUser;
+    console.log(firestore.collection(PORTFOLIOS).doc(portfolioUID) + " @@@@");
+    // .update({
+    //   "content" : editReplyContent
+    // });
+    console.log(portfolio);
+    firestore.collection(PORTFOLIOS).doc(portfolioUID)
+      .update({
+        "portfolio": {
+          "content": portfolio.content,
+          "edate": portfolio.edate,
+          "sdate" : portfolio.sdate,
+          "teams" : portfolio.teams,
+          "thumbnail" :portfolio.thumbnail ,
+          "title" : portfolio.title,
+          "userID" : portfolio.userID,
+          "startdate" : portfolio.startdate,
+          "enddate" : portfolio.enddate,
+          "startdate" : portfolio.startdate,
+
+        }
+      });
+  },
+
   FirebaseLoginLog() {
     const nowTime = new Date();
     const logIn = '_login';

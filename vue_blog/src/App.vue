@@ -77,7 +77,7 @@ export default {
     mHeader,
     Portfolios,
     writePage,
-  },
+  }
 };
 </script>
 
