@@ -97,14 +97,14 @@ export default {
       created_at: firebase.firestore.FieldValue.serverTimestamp(),
     });
   },
-  addGitlabInfo(gitlab){
+  addGitlabInfo(gitlab) {
     const user = firebase.auth().currentUser;
     const gitlabRef = firestore.collection("users").doc(user.email);
     return gitlabRef.update({
-      gitlabId : gitlab.gitlabId,
-      gitlabToken : gitlab.gitlabToken,
-      gitlab : true
-      }).then((result) => {
+      gitlabId: gitlab.gitlabId,
+      gitlabToken: gitlab.gitlabToken,
+      gitlab: true,
+    }).then((result) => {
       console.log("atfer update",result)
     })
   },
@@ -149,15 +149,15 @@ export default {
     return usersCollection
       .get()
       .then(function (querySnapshot) {
-        return querySnapshot.docs.every(function (doc) {
-          // doc.data() is never undefined for query doc snapshots
-          if (doc.id === email) {
-            alert(doc.id+ "/"+ email)
-            return false;
-          }
-          return true;
-        })
-      });
+      return querySnapshot.docs.every(function (doc) {
+        // doc.data() is never undefined for query doc snapshots
+        if (doc.id === email) {
+          alert(doc.id+ "/"+ email)
+          return false;
+        }
+        return true;
+      })
+    });
   },
   loginWithGoogle() {
     const provider = new firebase.auth.GoogleAuthProvider();
