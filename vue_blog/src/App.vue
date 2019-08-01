@@ -20,6 +20,8 @@
 </template>
 
 <script>
+import $ from 'jquery';
+import axios from 'axios';
 import store from './store';
 import ImgBanner from './components/ImgBanner.vue';
 import mSnackbar from './components/MSnackbar.vue';
@@ -27,7 +29,6 @@ import mHeader from './components/MHeader.vue';
 import FirebaseService from '@/services/FirebaseService';
 import Chatbot from './components/Chatbot.vue';
 import writePage from './components/WritePage.vue'
-import $ from 'jquery';
 
 
 // @vue/compontent
@@ -41,6 +42,10 @@ export default {
     };
   },
   created() {
+    axios.get('/api')
+      .then((response) => {
+        console.log('response ', response);
+      });
     window.vueStore = this.$store;
     document.body.classList.add('loading');
     FirebaseService.getPortfolios().then((data) => {
