@@ -111,7 +111,7 @@ export default {
       this.$store.commit("loginDialog", true);
     },
     doLogout() {
-      FirebaseService.FirebaseLogoutLog();
+      // FirebaseService.FirebaseLogoutLog();
       FirebaseService.logout(this);
       alert("정상적으로 로그아웃 되었습니다."); // eslint-disable-line no-alert
     },
