@@ -48,6 +48,7 @@
         dark
         small
         color="green"
+        @click="routePage('/post/write')"
       >
         <v-icon>edit</v-icon>
       </v-btn>
@@ -56,6 +57,7 @@
         dark
         small
         color="indigo"
+        @click="routePage('/portfolio/write')"
       >
         <v-icon>add</v-icon>
       </v-btn>
@@ -75,7 +77,6 @@
 
 <script>
 import Message from './Message.vue';
-import $ from 'jquery';
 
 export default {
   data() {
@@ -97,6 +98,9 @@ export default {
   methods: {
     showDialog(flag) {
       this.dialogShow = flag;
+    },
+    routePage(target) {
+      this.$router.push({ path: target });
     },
   },
   mounted() {

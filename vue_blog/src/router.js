@@ -5,6 +5,7 @@ import PortfolioView from './views/PortfolioView.vue';
 import AdminPage from './views/AdminPage.vue';
 import Reply from './views/Reply.vue';
 import PostWriter from './views/PostWriter.vue';
+import MainPage from './views/MainPage.vue';
 
 Vue.use(Router);
 
@@ -12,6 +13,11 @@ export default new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [{
+    path: '/',
+    name: 'mainPage',
+    component: MainPage,
+  },
+  {
     path: '/portfolio/write',
     name: 'portfoliowrite',
     component: PortfolioWriter,
