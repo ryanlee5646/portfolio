@@ -2,7 +2,6 @@
 <template>
   <section id="portfolio" class="my-portfolio position">
       <Title :title="category.name" :description="category.description"/>
-      <a href="/portfolio/write" > write </a>
       <div class="section-content">
         <div class="portfolio-table controls">
           <ul class="breadcrumbs">
@@ -87,6 +86,9 @@ export default {
       })());
       Page.init();
     });
+
+    console.log("app mounted");
+    this.$store.watch(() => this.$store.state.portfolios, portfolios => { console.log(""); this.portfolios = portfolios; })
   },
   methods: {
     // 더보기 클릭했을 때 실행되는 함수

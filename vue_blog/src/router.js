@@ -4,6 +4,7 @@ import PortfolioWriter from './views/PortfolioWriter.vue';
 import PortfolioView from './views/PortfolioView.vue';
 import AdminPage from './views/AdminPage.vue';
 import Reply from './views/Reply.vue';
+import PostWriter from './views/PostWriter.vue';
 
 Vue.use(Router);
 
@@ -30,6 +31,11 @@ export default new Router({
     path: '/reply',
     name: 'Reply',
     component: Reply,
+  },
+  {
+    path: '/post/write',
+    name: 'postwrite',
+    component: PostWriter,
   },
   ],
 });
