@@ -1,21 +1,19 @@
 <template>
   <v-app>
-    <transition name="fade" tag="div" class="wrapper">
+    <transition name="fade" tag="div">
       <div class="wrapper" v-if="isLoaded" key="app">
         <mHeader></mHeader>
         <ImgBanner imgSrc="https://source.unsplash.com/random">
           <div style="line-height:1.2em;font-size:1.2em;" slot="text">Portfolio</div>
         </ImgBanner>
         <router-view></router-view>
-        <Portfolios :category="category" :portfolios="portfolios"></Portfolios>
-        <!-- <router-view></router-view> -->
+        <Chatbot></Chatbot>
       </div>
-      <div class="loader wrapper" v-else key="loader">
-       <div class="spinner-loader"></div>
+      <div class="loader wrapper" style="overflow:hidden;" v-else key="loader">
+        <div class="spinner-loader"></div>
       </div>
-      <!-- <router-view></router-view> -->
     </transition>
-    <writePage></writePage>
+    <!-- <writePage></writePage> -->
     <!-- 크롬 브라우저가 아닐 시 최적화 메시지 띄워주는 스낵바-->
     <mSnackbar :snackbar="snackbar"></mSnackbar>
   </v-app>
@@ -26,9 +24,10 @@ import store from './store';
 import ImgBanner from './components/ImgBanner.vue';
 import mSnackbar from './components/MSnackbar.vue';
 import mHeader from './components/MHeader.vue';
-import Portfolios from './components/Portfolios.vue';
 import FirebaseService from '@/services/FirebaseService';
+import Chatbot from './components/Chatbot.vue';
 import writePage from './components/WritePage.vue'
+import $ from 'jquery';
 
 
 // @vue/compontent
@@ -39,31 +38,18 @@ export default {
     return {
       isLoaded: false,
       snackbar: false,
-      portfolios: [],
-      category: {
-        name: 'Portfolio',
-        description: 'I can show you the portfolios',
-      },
     };
   },
   created() {
     window.vueStore = this.$store;
     document.body.classList.add('loading');
     FirebaseService.getPortfolios().then((data) => {
-      this.$store.commit('updatePortfolios',data);
-      this.portfolios = data;
+      this.$store.commit('updatePortfolios', data);
       this.isLoaded = true;
       this.$nextTick(() => document.body.classList.remove('loading'));
     });
-
-    FirebaseService.getAllPortfolios();
-    //
-    // FirebaseService.getPortfolioReply().then((data) => {
-    //   this.$store.commit('updatePortfolios',data);
-    //   this.portfolios = data;
-    //   this.isLoaded = true;
-    //   this.$nextTick(() => document.body.classList.remove('loading'));
-    // });
+    // 조회수
+    FirebaseService.addViews();
   },
   mounted() {
     const isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
@@ -75,9 +61,9 @@ export default {
     ImgBanner,
     mSnackbar,
     mHeader,
-    Portfolios,
-    writePage,
-  }
+    Chatbot,
+    // writePage,
+  },
 };
 </script>
 
@@ -107,7 +93,6 @@ export default {
   }
   .spinner-loader {
     animation: spinner-loader 1500ms infinite linear;
-
     border-radius: 0.5em;
     box-shadow: $spinner-loader-color 1.5em 0 0 0,
       $spinner-loader-color 1.1em 1.1em 0 0,

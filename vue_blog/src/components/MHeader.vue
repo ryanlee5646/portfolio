@@ -7,6 +7,14 @@
         <ul @click="isMenuVisible = !isMenuVisible">
           <li @click="scrolling">
             <AnimateWhenVisible name="fadeUp">
+              <a @click="siteMove('/')">
+                Home
+                <span></span>
+              </a>
+            </AnimateWhenVisible>
+          </li>
+          <li @click="scrolling">
+            <AnimateWhenVisible name="fadeUp" :duration="1.3">
               <a href="#about">
                 About Us
                 <span></span>
@@ -15,6 +23,14 @@
           </li>
           <li @click="scrolling">
             <AnimateWhenVisible name="fadeUp" :duration="1.3">
+              <a @click="siteMove('/admin')">
+                Admin
+                <span></span>
+              </a>
+            </AnimateWhenVisible>
+          </li>
+          <li @click="scrolling">
+            <AnimateWhenVisible name="fadeUp" :duration="1.6">
               <a href="#portfolio">
                 Portfolio
                 <span></span>
@@ -30,18 +46,18 @@
             </AnimateWhenVisible>
           </li>
           <li @click="doLogin()" flat v-if="!isLogined">
-            
-            <AnimateWhenVisible name="fadeUp" :duration="1.6">
+
+            <AnimateWhenVisible name="fadeUp" :duration="1.9">
               <a>
                 Login
                 <span></span>
               </a>
-                
+
 
             </AnimateWhenVisible>
           </li>
           <li @click="doLogout()" flat v-if="isLogined">
-            <AnimateWhenVisible name="fadeUp" :duration="1.6">
+            <AnimateWhenVisible name="fadeUp" :duration="1.9">
               <a href="#post">
                 Logout
                 <span></span>
@@ -52,7 +68,7 @@
       </nav>
     </transition>
   </div>
-    
+
 </template>
 
 <script>
@@ -88,19 +104,19 @@ export default {
     this.$store.state.accessToken = localStorage.getItem("accessToken");
   },
   methods: {
-    siteMove() {
-      this.$router.push({ path: "/" });
+    siteMove(target) {
+      this.$router.push({ path: target });
     },
     doLogin() {
       this.$store.commit("loginDialog", true);
     },
     doLogout() {
-      FirebaseService.FirebaseLogoutLog();
+      // FirebaseService.FirebaseLogoutLog();
       FirebaseService.logout(this);
       alert("정상적으로 로그아웃 되었습니다."); // eslint-disable-line no-alert
     },
     getImageURL(filename) {
-      return require(`../assets/icons/${filename}`);
+      return `img/icons/${filename}`;
     },
     scrolling(event) {
       event.preventDefault();

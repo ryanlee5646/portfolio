@@ -22,10 +22,15 @@
     "register-service-worker": "^1.6.2",
     "v-markdown-editor": "^1.0.8",
     "vue": "^2.6.10",
+<<<<<<< HEAD
     "vue-datepicker-ui": "^0.1.2",
+=======
+    "vue-draggable": "^2.0.2",
+>>>>>>> f8a710b9b1cfa241c2f5e1d451ca187f35d167ac
     "vue-filepond": "^5.1.1",
     "vue-gitlab-api": "^0.1.8",
     "vue-light-timeline": "^1.0.3",
+    "vue-number-animation": "^1.0.5",
     "vue-resource": "^1.5.1",
     "vue-router": "^3.0.1",
     "vue-simplemde": "^0.5.2",

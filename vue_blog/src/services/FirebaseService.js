@@ -3,6 +3,7 @@ import 'firebase/firestore';
 import 'firebase/auth';
 
 const POSTS = 'posts';
+const VIEWS = 'views';
 const PORTFOLIOS = 'portfolios';
 const USERS = 'users';
 const PORTFOLIO_REPLYS = 'portfolio_replys'
@@ -20,7 +21,6 @@ firebase.initializeApp(config);
 const firestore = firebase.firestore();
 
 export default {
-
   // getPosts() {
   //     const postsCollection = firestore.collection(POSTS)
   //     return postsCollection
@@ -41,7 +41,16 @@ export default {
   //         created_at: firebase.firestore.FieldValue.serverTimestamp()
   //     })
   // },
-
+  setPersistence() {
+    firebase.firestore().enablePersistence()
+      .catch((err) => {
+        if (err.code === 'failed-precondition') {
+          console.log('Firebase Enable Persistence Error : Failed-precondition'); // eslint-disable-line no-console
+        } else if (err.code === 'unimplemented') {
+          console.log('Firebase Enable Persistence Error : Unimplemented'); // eslint-disable-line no-console
+        }
+      });
+  },
   getPortfolios() {
     // const user = firebase.auth().currentUser;
     // console.log('유저!!');
@@ -50,64 +59,72 @@ export default {
     // const portfolioCollection = firestore.collection(USERS).doc(user.email).collection(PORTFOLIOS);
     const portfolioCollection = firestore.collection(PORTFOLIOS);
     return portfolioCollection
-      .orderBy('created_at', 'desc')
-      .get()
-      .then(docSnapshots => docSnapshots.docs.map((doc) => {
-        const data = doc.data();
-        data.created_at = new Date(data.created_at.toDate());
-        data.uid = doc.id; //포트폴리오 uid
-        // console.log(data.uid + " 포폴 uid");
-        return data;
-      }));
-  },
-  getAllPortfolios() {
-    console.log(firestore.collection(USERS).doc(users).id + "  전체 유저 정보 가져오기");
-    // const portfolioCollection = firestore.collection(USERS).doc(user.email).collection(PORTFOLIOS);
-  },
-  addPortfoliosCount(portfolioID) {
-    console.log(portfolioID + "  addPortfoliosCount@@@@@@");
-    const portfolioCollection = firestore.collection(PORTFOLIOS).doc(portfolioID);
+        .orderBy('created_at', 'desc')
+        .get()
+        .then(docSnapshots => docSnapshots.docs.map((doc) => {
+            const data = doc.data();
+            data.created_at = new Date(data.created_at.toDate());
+            data.uid = doc.id; //포트폴리오 uid
+            // console.log(data.uid + " 포폴 uid");
+            return data;
+        }));
+},
 
-    portfolioCollection.update({
-      viewCount : firebase.firestore.FieldValue.increment(1)
-    });
-    // portfolioCollection.update({
-    //   viewCount :  parseInt(viewCount) + 1
-    // })
-    // .then(function() {
-    //     console.log("Document successfully updated!");
-    // })
-    // .catch(function(error) {
-    //     console.error("Error updating document: ", error);
-    // });
+getAllPortfolios() {
+  console.log(firestore.collection(USERS).doc(users).id + "  전체 유저 정보 가져오기");
+  // const portfolioCollection = firestore.collection(USERS).doc(user.email).collection(PORTFOLIOS);
+},
+addPortfoliosCount(portfolioID) {
+  console.log(portfolioID + "  addPortfoliosCount@@@@@@");
+  const portfolioCollection = firestore.collection(PORTFOLIOS).doc(portfolioID);
 
-    // portfolioCollection.get()
-    //   .then(doc => {
-    //     if (!doc.exists) {
-    //       console.log('No such document!');
-    //     } else {
-    //       console.log('Document data:', doc.data());
-    //       console.log(doc.data().portfolio.viewCount);
-    //       doc.data().portfolio.viewCount ++;
-    //     }
-    //   })
-    //   .catch(err => {
-    //     console.log('Error getting document', err);
-    //   });
+  portfolioCollection.update({
+      viewCount: firebase.firestore.FieldValue.increment(1)
+  });
+  // portfolioCollection.update({
+  //   viewCount :  parseInt(viewCount) + 1
+  // })
+  // .then(function() {
+  //     console.log("Document successfully updated!");
+  // })
+  // .catch(function(error) {
+  //     console.error("Error updating document: ", error);
+  // });
 
-  },
+  // portfolioCollection.get()
+  //   .then(doc => {
+  //     if (!doc.exists) {
+  //       console.log('No such document!');
+  //     } else {
+  //       console.log('Document data:', doc.data());
+  //       console.log(doc.data().portfolio.viewCount);
+  //       doc.data().portfolio.viewCount ++;
+  //     }
+  //   })
+  //   .catch(err => {
+  //     console.log('Error getting document', err);
+  //   });
+
+},
   // 회원가입 -> 데이터베이스( 위: 용성, 아래: 규진)
-  addUser(email, name, auth, photoURL) {
-    //alert("[addUser Info] : " + email + " " + name)
-    var temp = email.split('@');
+  addUser(email, name, grade, photoURL, gitlabId, gitlabToken, gitlab) {
+    console.log(email);
+    console.log(name);
+    console.log(grade);
+    console.log(photoURL);
+    console.log(gitlabId);
+    console.log(gitlabToken);
+    console.log(gitlab);
     return firestore.collection(USERS).doc(email).set({
       email,
       name,
-      userID,
-      auth,
+      grade,
       photoURL,
+      gitlabId,
+      gitlabToken,
+      gitlab,
       created_at: firebase.firestore.FieldValue.serverTimestamp()
-    })
+    });
   },
   // 회원가입
   signUp(signup) {
@@ -118,17 +135,46 @@ export default {
       alert(`회원가입 오류 발생 !!                                                   [Error] ${errorCode} ${errorMessage}`);
     });
 
-    return firestore.collection(USERS).doc(signup.email).set({
+    firestore.collection(USERS).doc(signup.email).set({
       email: signup.email,
-      github: signup.github,
       name: signup.name,
       pw: signup.password,
       pwconfirmed: signup.passwordConfirmed,
-      // portfolioCount : 0,
-      // postCount : 0,
+      gitlabId: signup.gitlabId,
+      gitlabToken: signup.gitlabToken,
       created_at: firebase.firestore.FieldValue.serverTimestamp(),
     });
   },
+  addGitlabInfo(gitlab) {
+    const user = firebase.auth().currentUser;
+    const gitlabRef = firestore.collection("users").doc(user.email);
+    return gitlabRef.update({
+      gitlabId: gitlab.gitlabId,
+      gitlabToken: gitlab.gitlabToken,
+      gitlab: true,
+    }).then((result) => {
+      console.log("atfer update", result);
+    })
+  },
+
+  // async checkGitlabInfo(){
+  //   // Gitlab 정보가 있는지 체크
+  //   const user = firebase.auth().currentUser;
+  //   const gitlabRef = firestore.collection("users").doc(user.email);
+  //   let gitlabInfo = await gitlabRef.get()
+
+  //   if (gitlabInfo.exists) {
+  //     const data = gitlabInfo.data();
+  //     console.log("data",data)
+  //     console.log(data.gitlabId, data.gitlabToken,"gitlab")
+  //     if ((data.gitlabId === "" || data.gitlabToken === "") && data.gitlab === false){   // 나중에 조건에 gilab true false 추가
+  //       this.gitlabQuestion = true;
+  //     }
+  //   } else {
+  //     // doc.data() will be undefined in this case
+  //     console.log("No such document!");
+  //   }
+  // },
   // 로그인
   signIn(login) {
     return firebase.auth().signInWithEmailAndPassword(login.email, login.password).then((result) => {
@@ -145,20 +191,20 @@ export default {
     });
   },
 
+
   isRegistered(email) {
     const usersCollection = firestore.collection(USERS);
     return usersCollection
-      .where('email', '==', email)
       .get()
-      .then(docSnapshots => docSnapshots.docs.map((doc) => {
-        if (doc.exists) {
-          alert('[isRegistered] 존재하는 ID 입니다.');
+      .then(function (querySnapshot) {
+        return querySnapshot.docs.every(function (doc) {
+          // doc.data() is never undefined for query doc snapshots
+          if (doc.id === email) {
+            alert(doc.id + "/" + email)
+            return false;
+          }
           return true;
-        }
-        alert('[isRegistered] 존재 하지않는 ID 입니다.');
-        return false;
-      })).catch((error) => {
-        console.log('[isRegistered] Error getting document:', error);
+        })
       });
   },
   loginWithGoogle() {
@@ -170,9 +216,7 @@ export default {
       const {
         user
       } = result;
-      // var temp = user.email.split('@');
-      // user.userID = temp[0];
-      console.log(user.userID + " loginWithGoogle");
+      console.log(user);
       return result;
     }).catch((error) => {
       console.error('[Google Login Error]', error);
@@ -200,6 +244,7 @@ export default {
       console.error('[Facebook Login Error]', error);
     });
   },
+
   // 포트폴리오 댓글 작성
   PortfolioReply(portfolioReply, portfolioUID) {
     // portfolioUID - 현재 선택한 포트폴리오의 uid - p8WgVvAYp7C546Ev4frP
@@ -245,9 +290,9 @@ export default {
     // console.log(index + "인덱스 " + replyCollection);
     // console.log(JSON.stringify(replyCollection[0]));
     firestore.collection(PORTFOLIOS).doc(portfolioUID).collection(PORTFOLIO_REPLYS).doc(replyUID)
-      .delete().then(function() {
+      .delete().then(function () {
         console.log("Document successfully deleted!");
-      }).catch(function(error) {
+      }).catch(function (error) {
         console.error(error);
       })
     // );
@@ -279,14 +324,14 @@ export default {
       created_at: firebase.firestore.FieldValue.serverTimestamp(),
     });
   },
-  deletePortfolio(portfolioUID){
+  deletePortfolio(portfolioUID) {
     console.log("deletePortfolio!!");
     const portfolioCollection = firestore.collection(PORTFOLIOS).doc(portfolioUID)
-    .delete().then(function() {
-      console.log("Document successfully deleted!");
-    }).catch(function(error) {
-      console.error(error);
-    });
+      .delete().then(function () {
+        console.log("Document successfully deleted!");
+      }).catch(function (error) {
+        console.error(error);
+      });
   },
 
   editPortfolio(portfolioUID, portfolio) {
@@ -299,17 +344,17 @@ export default {
     console.log(portfolio);
     firestore.collection(PORTFOLIOS).doc(portfolioUID)
       .update({
-        "portfolio": {
+       "portfolio": {
           "content": portfolio.content,
           "edate": portfolio.edate,
-          "sdate" : portfolio.sdate,
-          "teams" : portfolio.teams,
-          "thumbnail" :portfolio.thumbnail ,
-          "title" : portfolio.title,
-          "userID" : portfolio.userID,
-          "startdate" : portfolio.startdate,
-          "enddate" : portfolio.enddate,
-          "startdate" : portfolio.startdate,
+          "sdate": portfolio.sdate,
+          "teams": portfolio.teams,
+          "thumbnail": portfolio.thumbnail,
+          "title": portfolio.title,
+          "userID": portfolio.userID,
+          "startdate": portfolio.startdate,
+          "enddate": portfolio.enddate,
+          "startdate": portfolio.startdate,
 
         }
       });
@@ -371,9 +416,7 @@ export default {
     return firestore.collection(USERS).doc(user.email).set({
       gitlabID: id,
       gitlabToken: token,
-    }, {
-      merge: true
-    });
+    }, { merge: true });
   },
   getUserInfo() {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -393,14 +436,100 @@ export default {
   },
   getAllUserInfo() {
     return firestore.collection(USERS).get()
-      .then(function(querySnapshot) {
+      .then(function (querySnapshot) {
         var users = [];
-        querySnapshot.forEach(function(doc) {
+        querySnapshot.forEach(function (doc) {
           // doc.data() is never undefined for query doc snapshots
-          console.log(doc.id, " => ", doc.data());
+          //console.log(doc.id, " => ", doc.data());
           users.push(doc.data());
         });
         return users;
       });
+  },
+  getPortfolioNumber() {
+    return firestore.collection(PORTFOLIOS)
+      .get()
+      .then(function (querySnapshot) {
+        return querySnapshot.size;
+      })
+      .catch(function (error) {
+        console.log("Error getting documents: ", error);
+      });
+  },
+  getPostNumber() {
+    return firestore.collection(USERS)
+      .get()
+      .then(function (querySnapshot) {
+        var totalCount = 0;
+        querySnapshot.forEach(function (doc) {
+          // doc.data() is never undefined for query doc snapshots
+          //console.log(doc.id, " => ", doc.data());
+          if (doc.data().portfolioCount != undefined) {
+            totalCount += doc.data().postCount;
+          }
+        });
+        return totalCount;
+      })
+      .catch(function (error) {
+        console.log("Error getting documents: ", error);
+      });
+  },
+  updateAuth(email, auth) {
+    console.log(email + " " + auth);
+    var userRef = firestore.collection(USERS).doc(email);
+
+    return userRef.update({
+      auth: auth
+    }).then(function () {
+      console.log("Document successfully updated!");
+    })
+      .catch(function (error) {
+        // The document probably doesn't exist.
+        console.error("Error updating document: ", error);
+      });
+  },
+  addViews() {
+    let d = new Date();
+    d = d.getFullYear() + "-" + d.getMonth() + "-" + d.getDate();
+    console.log(d);
+    const usersCollection = firestore.collection(VIEWS);
+    return usersCollection.doc(d)
+      .get()
+      .then(function (doc) {
+        var views = 0;
+        if (doc.exists) {
+          console.log("Document data:1", doc.data());
+          views = doc.data().views + 1;
+          usersCollection.doc(d).set({
+            views
+          });
+
+        } else {
+          console.log("No such document!");
+          usersCollection.doc(d).set({
+            views
+          });
+        }
+      }).catch(e => {
+        console.log("Firebase Error")
+      });
+  },
+  getViews() {
+    let d = new Date();
+    d = d.getFullYear() + "-" + d.getMonth() + "-" + d.getDate();
+    const usersCollection = firestore.collection(VIEWS);
+    return usersCollection.doc(d)
+      .get()
+      .then(function (doc) {
+        if (doc.exists) {
+          console.log("Document data:2", doc.data());
+          return doc.data().views;
+
+        } else {
+          console.log("No such document!");
+        }
+      }).catch(e => {
+        console.log("Firebase Error")
+      });
   }
-};
+}
