@@ -2,7 +2,7 @@
   <v-container justify-center py-5>
     <v-layout   justify-center>
       <v-flex xs8 class="notranslate text-xs-center">
-          <div v-for="i in $store.state.portfolios.length" >
+          <div v-for="i in $store.state.portfolios.length" :key="i">
             <div v-if="$store.state.portfolios[i -1].uid === id">
                 <!-- {{id}}  acrKqb3TuKTJz9h4Dnkp -->
                 <!-- {{$store.state.portfolios[i -1].portfolio.title}} <br>
@@ -168,7 +168,7 @@
                     <div class="col-md-8">
                       <h2 class="page-header">Comments</h2>
                         <section class="comment-list">
-                          <article  v-for="(r, index) in this.portfolioReplys" class="row">
+                          <article  v-for="(r, index) in this.portfolioReplys" class="row" :key="index">
                             <div class="col-md-2 col-sm-2 hidden-xs">
                               <figure class="profile" >
                                 <img class="img-responsive" src="http://www.tangoflooring.ca/wp-content/uploads/2015/07/user-avatar-placeholder.png" width="70%;" />
@@ -290,7 +290,7 @@ export default {
   },
   created () {
     console.log(this.id + "created??");
-    FirebaseService.addPortfoliosCount(this.id);
+    FirebaseService.addPortfoliosViews(this.id);
   },
   methods: {
     async PortfolioReply(){
@@ -307,13 +307,13 @@ export default {
     },
     async deleteReply(index){
       console.log(this.$store.state.portfolioReplys[index].uid + " 선택한 댓글?");
-      const result = await FirebaseService.deleteReply(index , this.id, this.$store.state.portfolioReplys[index].uid);
+      const result = await FirebaseService.deleteReply(this.id, this.$store.state.portfolioReplys[index].uid);
       this.$store.state.portfolioReplys.splice(index, 1);
     },
     async editReply(index){
       console.log(this.$store.state.portfolioReplys[index].uid + " 선택한 댓글?");
       this.flag = true;
-      const result = await FirebaseService.editReply(index , this.id, this.$store.state.portfolioReplys[index].uid, this.editReplyContent, this.nowEmail );
+      const result = await FirebaseService.editReply(this.id, this.$store.state.portfolioReplys[index].uid, this.editReplyContent, this.nowEmail );
       // this.$store.state.portfolioReplys.splice(index, 1);
       this.flag = false;
       this.getPortfolioReply();
