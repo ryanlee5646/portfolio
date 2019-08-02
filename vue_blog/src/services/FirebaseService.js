@@ -388,6 +388,55 @@ export default {
     },
 
     /* Views */
+    getUserPortfolioNumber(nickName) {
+        console.log('[info] start getUserPortfolioNumber func()');
+        return firestore.collection(PORTFOLIOS).where('portfolio.userID', '==', nickName).get()
+            .then(function(querySnapshot) { // eslint-disable-line
+                return querySnapshot.size;
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.log(`[error] fail getUserPortfolioNumber : [CODE ${errorCode}] Error : ${errorMessage}`);
+            });
+    },
+    getUSerPostNumber(nickName) {
+        console.log('[info] start getUSerPostNumber func()');
+        return firestore.collection(POSTS).where('post.userID', '==', nickName).get()
+            .then(function(querySnapshot) { // eslint-disable-line
+                return querySnapshot.size;
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.log(`[error] fail getUSerPostNumber : [CODE ${errorCode}] Error : ${errorMessage}`);
+            });
+    },
+    getUSerReplyNumber(nickName) {
+        console.log('[info] start getUSerReplyNumber func()'); // .where('post.userID', '==', nickName)
+        const portfolioCollection = firestore.collection(PORTFOLIOS);
+        return portfolioCollection.get()
+            .then(function(querySnapshot) { // eslint-disable-line
+                return querySnapshot.forEach(function(doc) { // eslint-disable-line
+                    const email = doc.data().email; // eslint-disable-line
+                    portfolioCollection.doc(email).collection(PORTFOLIO_REPLYS).where('portfolioReply.email', '==', nickName)
+                        .get()
+                        .then(function(querySnapshot) { // eslint-disable-line
+                            return querySnapshot.size;
+                        })
+                        .catch((error) => {
+                            const errorCode = error.code;
+                            const errorMessage = error.message;
+                            console.log(`[error] fail getUSerPostNumber : [CODE ${errorCode}] Error : ${errorMessage}`);
+                        });
+                });
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.log(`[error] fail getUSerReplyNumber : [CODE ${errorCode}] Error : ${errorMessage}`);
+            });
+    },
     getPortfolioNumber() {
         console.log('[info] start getPortfolioNumber func()');
         return firestore.collection(PORTFOLIOS).get()

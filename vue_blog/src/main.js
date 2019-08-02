@@ -50,9 +50,6 @@ new Vue({
                 // User is signed in.
                 const data = await FirebaseService.getPortfolios();
                 store.commit('updatePortfolios', data);
-            } else {
-                // No user is signed in.
-                store.commit('updatePortfolios', []);
             }
         });
     },

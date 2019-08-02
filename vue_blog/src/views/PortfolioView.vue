@@ -320,9 +320,6 @@ export default {
     }
   },
   mounted() {
-    console.log(this.nowUser.email + " 접속한 유저 정보");
-    this.nowEmail = this.emailArr[0]; //유저의 이메일에서 아이디만 저장
-    console.log(this.nowEmail);
 
     this.getPortfolioReply();
     document.querySelectorAll('.card').forEach((elem) => {
