@@ -2,21 +2,21 @@
   <div>
     <v-layout justify-center pt-5>
       <v-flex xs12 sm5 md4>
-        <v-text-field label="제목" v-model="portfolio.title">
+        <v-text-field label="제목" v-model="post.title">
         </v-text-field>
       </v-flex>
     </v-layout>
     <v-layout justify-center>
       <v-flex xs12 sm8 md6>
-        <markdown-editor v-model="portfolio.content" ref="markdownEditor"></markdown-editor>
+        <markdown-editor v-model="post.content" ref="markdownEditor"></markdown-editor>
       </v-flex>
     </v-layout>
     <v-layout wrap justify-center>
       <v-flex xs12 sm3 md2 mr-2>
-        <v-btn @click="PortfolioWriter()" block flat>작성하기</v-btn>
+        <v-btn @click="PostWriter()" block flat>작성하기</v-btn>
       </v-flex>
       <v-flex xs12 sm3 md2>
-        <v-btn to="/portfolio" block flat>뒤로</v-btn><br>
+        <v-btn to="/" block flat>뒤로</v-btn><br>
       </v-flex>
     </v-layout>
     <!-- <div class="X">
@@ -56,21 +56,18 @@
     name : 'portfoliowrite',
     data(){
       return{
-        portfolio:{
-          startdate: "",
-          enddate : "",
-          sdate: "",
-          edate: "",
+        post:{
+          userID : this.$store.state.user.nickName,
           title : "",
           content: "",
-          summary: ""
         }
       }
     },
     methods:{
-      async PortfolioWriter() {
-        const result = await FirebaseService.PortfolioWriter(this.portfolio)
-        this.$router.push('/portfolio')
+      async PostWriter() {
+        console.log(this.$store.state.user.nickName + " 작성 유저 닉네임");
+        const result = await FirebaseService.PostWriter(this.post)
+        this.$router.push('/post')
       }
     },
     components: {
@@ -81,7 +78,7 @@
 </script>
 
 <style>
-  @import '~simplemde/dist/simplemde.min.css';
+  /* @import '~simplemde/dist/simplemde.min.css'; */
 
   /* body{
   background:#4d4766;

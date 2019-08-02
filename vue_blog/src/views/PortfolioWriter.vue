@@ -97,7 +97,6 @@ export default {
         // portfolioCnt: this.$store.state.user.portfolioCount,
         // postCnt: this.$store.state.user.postCount,
       },
-
     }
   },
   methods: {
@@ -149,9 +148,7 @@ export default {
   border-top: 1px solid #e3e7eb;
 }
 
-li,
-ol,
-ul {
+li,ol,ul {
   list-style: none;
 }
 

@@ -12,6 +12,8 @@ export default new Vuex.Store({
     ImageURL: '',
     portfolios: [],
     portfolioReplys : [],
+    posts: [],
+    postReplys : [],
     nowUser : '',
   },
   mutations: {
@@ -44,6 +46,10 @@ export default new Vuex.Store({
     },
     addNowUser(state, data){
       state.nowUser = data;
-    }
+    },
+    updatePosts(state, data) {
+      state.posts = data;
+    },
+
   },
 });
