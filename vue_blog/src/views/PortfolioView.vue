@@ -180,8 +180,6 @@ export default {
         teams: "",
         thumbnail: "",
       },
-
-
     }
   },
   components: {
@@ -207,12 +205,12 @@ export default {
     FirebaseService.addPortfoliosCount(this.id);
   },
   methods: {
-    async PortfolioReply() {
-      console.log("PortfolioReply in?");
-      const result = await FirebaseService.PortfolioReply(this.portfolioReply, this.id)
-      this.getPortfolioReply();
-      // this.$router.push('/')
-    },
+    async PortfolioReply(){
+       console.log("PortfolioReply in?");
+       const result = await FirebaseService.PortfolioReply(this.portfolioReply , this.id)
+       this.getPortfolioReply();
+       // this.$router.push('/')
+     },
     async getPortfolioReply() {
       this.portfolioReplys = await FirebaseService.getPortfolioReply(this.id);
       this.$store.commit('updatePortfolioReplys', this.portfolioReplys);
@@ -221,13 +219,13 @@ export default {
     },
     async deleteReply(index) {
       console.log(this.$store.state.portfolioReplys[index].uid + " 선택한 댓글?");
-      const result = await FirebaseService.deleteReply(index, this.id, this.$store.state.portfolioReplys[index].uid);
+      const result = await FirebaseService.deleteReply(this.id, this.$store.state.portfolioReplys[index].uid);
       this.$store.state.portfolioReplys.splice(index, 1);
     },
     async editReply(index) {
       console.log(this.$store.state.portfolioReplys[index].uid + " 선택한 댓글?");
       this.flag = true;
-      const result = await FirebaseService.editReply(index, this.id, this.$store.state.portfolioReplys[index].uid, this.editReplyContent, this.nowEmail);
+      const result = await FirebaseService.editReply(this.id, this.$store.state.portfolioReplys[index].uid, this.editReplyContent, this.nowEmail);
       // this.$store.state.portfolioReplys.splice(index, 1);
       this.flag = false;
       this.getPortfolioReply();

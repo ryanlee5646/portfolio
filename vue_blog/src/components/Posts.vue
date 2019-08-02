@@ -3,31 +3,35 @@
   <section id="post" class="my-portfolio position">
       <Title :title="category.name" :description="category.description"/>
       <div class="section-content">
-        <div class="portfolio-table controls">
-          <ul class="breadcrumbs">
-            <li class="filter" :class="{ active: isFiltered('all') }"
-             @click="filter('all')">All work</li>
-            <li class="filter" :class="{ active: isFiltered('blog') }"
-             @click="filter('blog')">Blogs</li>
-            <li class="filter" :class="{ active: isFiltered('shop') }"
-             @click="filter('shop')">Internet Shop</li>
-            <li class="filter" :class="{ active: isFiltered('landing') }"
-             @click="filter('landing')">Landing Page</li>
-          </ul>
-        </div>
+            <!-- <div class="portfolio-link">
+              <a @click="routePath(p.uid)" class="popup_content"  target="_blank">See</a>
+            </div> -->
 
-        <transition-group name="filter" tag="div" class="row justify-content-center">
-          <div class="col-md-4 col-lg-auto portfolio-item" v-for="(post, index) in filteredPosts"
-           :key="post.created_at" :uid="post.uid" :idx="index">
-            <img :src="post.portfolio.thumbnail" alt="Alt" style="width : 100%; height: 100%;"/>
+            <!-- <p>Move the mouse over the table rows to see the effect.</p> -->
+
+            <table >
+              <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+              </tr>
+              <tr v-for="(p, index) in this.posts">
+                <td>{{p.post.title}}</td>
+                <td>{{p.post.userID}}</td>
+              </tr>
+
+            </table>
+
+        <!-- <transition-group name="filter" tag="div" class="row justify-content-center"> -->
+
+          <!-- <div class="col-md-4 col-lg-auto portfolio-item" v-for="(p, index) in filteredPosts"
+           :key="p.created_at" :uid="p.uid" :idx="index">
+           {{p.post.content}}
+           dfadfdhodksskdhk
             <div class="portfolio-link">
-              <!-- <a>{{post.uid}}</a> -->
-              <!-- <a>{{index}}</a> -->
-              <a @click="routePath(post.uid)" class="popup_content"  target="_blank">See</a>
-              <!-- <a href="/portfolio/view/acrKqb3TuKTJz9h4Dnkp"  class="popup_content" target="_blank">Detail</a> -->
+              <a @click="routePath(p.uid)" class="popup_content"  target="_blank">See</a>
             </div>
-          </div>
-        </transition-group>
+          </div> -->
+        <!-- </transition-group> -->
       </div>
     </section>
 </template>
@@ -48,7 +52,7 @@ export default {
     limits: { type: Number, default: 8 },
     loadMore: { type: Boolean, default: false },
     column: { type: Number, default: 1 },
-    portfolios: { type: Array },
+    posts: { type: Array },
     category: { type: Object },
   },
   components: {
@@ -88,7 +92,7 @@ export default {
     });
 
     console.log("app mounted");
-    this.$store.watch(() => this.$store.state.portfolios, portfolios => { console.log(""); this.portfolios = portfolios; })
+    this.$store.watch(() => this.$store.state.posts, posts => { console.log("posts change"); this.posts = posts; })
   },
   methods: {
     // 더보기 클릭했을 때 실행되는 함수
@@ -107,13 +111,14 @@ export default {
     },
     routePath(uid){
       console.log(uid + " routePath 넘어옴?");
-      this.$router.push({path: '/portfolio/view/' + uid })
+      // this.$router.push({path: '/portfolio/view/' + uid })
     },
   },
   computed: {
     filteredPosts() {
       if (this.currentFilter === 'all') {
-        return this.portfolios;
+        console.log("in???");
+        return this.posts;
       }
       return this.posts.filter(post => post.tags && post.tags.includes(this.currentFilter));
     },
@@ -126,18 +131,17 @@ export default {
   $bg-post: map-get($colors, dark) !default;
   $btn: map-get($colors, secondary) !default;
 
-  .filter-enter-active, .filter-leave-active, .filter-move {
-    transition: all 1s;
-  }
-  .filter-enter, .filter-leave-to {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-
-  .filter-leave-active {
-    position: absolute;
-  }
-
+  // .filter-enter-active, .filter-leave-active, .filter-move {
+  //   transition: all 1s;
+  // }
+  // .filter-enter, .filter-leave-to {
+  //   opacity: 0;
+  //   transform: translateY(30px);
+  // }
+  //
+  // .filter-leave-active {
+  //   position: absolute;
+  // }
 
   .my-portfolio {
     background-color: lighten($bg-post, 84.6%);
@@ -167,19 +171,23 @@ export default {
     }
   }
 
-  .portfolio-table {
-    margin-bottom: 50px;
-  }
+  // .portfolio-table {
+  //   margin-bottom: 50px;
+  // }
 
   .portfolio-item {
     width: 300px;
     max-height: 250px;
     overflow: hidden;
     margin-bottom: 20px;
+    //
+    // img {
+    //   width: 100%;
+    // }
+  }
 
-    img {
-      width: 100%;
-    }
+  .section-content{
+    // width: 100%;
   }
 
   .portfolio-link {
@@ -204,7 +212,7 @@ export default {
       border: 1px solid $btn;
       padding: 10px 35px;
       font-weight: 600;
-      font-size: 2rem;
+      font-size: 3rem;
       display: inline-block;
       transition: all 0.5s sceal-out;
 
@@ -213,4 +221,20 @@ export default {
       }
     }
   }
+
+  // table
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  th, td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    font-size: 2vw;
+  }
+
+  tr:hover {background-color:#f5f5f5;}
+
 </style>

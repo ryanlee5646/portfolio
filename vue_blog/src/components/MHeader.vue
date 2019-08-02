@@ -110,10 +110,15 @@ export default {
     doLogin() {
       this.$store.commit("loginDialog", true);
     },
-    doLogout() {
-      // FirebaseService.FirebaseLogoutLog();
-      FirebaseService.logout(this);
-      alert("정상적으로 로그아웃 되었습니다."); // eslint-disable-line no-alert
+    async doLogout() {
+      let flag = await FirebaseService.signOut();
+      if(flag === true){
+          this.$store.commit('logout');
+          alert("정상적으로 로그아웃 되었습니다."); // eslint-disable-line no-alert
+        }
+        else{
+          alert("[오류] 비정상적인 로그아웃 입니다."); // eslint-disable-line no-alert
+        }
     },
     getImageURL(filename) {
       return `img/icons/${filename}`;

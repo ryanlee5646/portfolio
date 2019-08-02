@@ -6,8 +6,8 @@ const POSTS = 'posts';
 const VIEWS = 'views';
 const PORTFOLIOS = 'portfolios';
 const USERS = 'users';
-const PORTFOLIO_REPLYS = 'portfolio_replys'
-
+const PORTFOLIO_REPLYS = 'portfolio_replys';
+const LOGHISTORY = 'logHistory';
 // Setup Firebase
 const config = {
   apiKey: 'AIzaSyBaK-tJRZvUUOHQYSTidhKMf16c5FCF_nE',
@@ -21,6 +21,7 @@ firebase.initializeApp(config);
 const firestore = firebase.firestore();
 
 export default {
+  /* POST */
   // getPosts() {
   //     const postsCollection = firestore.collection(POSTS)
   //     return postsCollection
@@ -41,326 +42,356 @@ export default {
   //         created_at: firebase.firestore.FieldValue.serverTimestamp()
   //     })
   // },
-  setPersistence() {
-    firebase.firestore().enablePersistence()
-      .catch((err) => {
-        if (err.code === 'failed-precondition') {
-          console.log('Firebase Enable Persistence Error : Failed-precondition'); // eslint-disable-line no-console
-        } else if (err.code === 'unimplemented') {
-          console.log('Firebase Enable Persistence Error : Unimplemented'); // eslint-disable-line no-console
-        }
-      });
-  },
-  getPortfolios() {
-    // const user = firebase.auth().currentUser;
-    // console.log('유저!!');
-    // console.log(user);
 
-    // const portfolioCollection = firestore.collection(USERS).doc(user.email).collection(PORTFOLIOS);
-    const portfolioCollection = firestore.collection(PORTFOLIOS);
-    return portfolioCollection
-        .orderBy('created_at', 'desc')
-        .get()
-        .then(docSnapshots => docSnapshots.docs.map((doc) => {
-            const data = doc.data();
-            data.created_at = new Date(data.created_at.toDate());
-            data.uid = doc.id; //포트폴리오 uid
-            // console.log(data.uid + " 포폴 uid");
-            return data;
-        }));
-},
-
-getAllPortfolios() {
-  console.log(firestore.collection(USERS).doc(users).id + "  전체 유저 정보 가져오기");
-  // const portfolioCollection = firestore.collection(USERS).doc(user.email).collection(PORTFOLIOS);
-},
-addPortfoliosCount(portfolioID) {
-  console.log(portfolioID + "  addPortfoliosCount@@@@@@");
-  const portfolioCollection = firestore.collection(PORTFOLIOS).doc(portfolioID);
-
-  portfolioCollection.update({
-      viewCount: firebase.firestore.FieldValue.increment(1)
-  });
-  // portfolioCollection.update({
-  //   viewCount :  parseInt(viewCount) + 1
-  // })
-  // .then(function() {
-  //     console.log("Document successfully updated!");
-  // })
-  // .catch(function(error) {
-  //     console.error("Error updating document: ", error);
-  // });
-
-  // portfolioCollection.get()
-  //   .then(doc => {
-  //     if (!doc.exists) {
-  //       console.log('No such document!');
-  //     } else {
-  //       console.log('Document data:', doc.data());
-  //       console.log(doc.data().portfolio.viewCount);
-  //       doc.data().portfolio.viewCount ++;
-  //     }
-  //   })
-  //   .catch(err => {
-  //     console.log('Error getting document', err);
-  //   });
-
-},
-  // 회원가입 -> 데이터베이스( 위: 용성, 아래: 규진)
-  addUser(email, name, grade, photoURL, gitlabId, gitlabToken, gitlab) {
-    console.log(email);
-    console.log(name);
-    console.log(grade);
-    console.log(photoURL);
-    console.log(gitlabId);
-    console.log(gitlabToken);
-    console.log(gitlab);
+  /* User */
+  addUser(email, name, auth, photoURL, gitlabID, gitlabToken, gitlabAllow) {
+    console.log('[info] start addUser func()');
+    const nickName = email.split('@')[0];
     return firestore.collection(USERS).doc(email).set({
       email,
+      nickName,
       name,
-      grade,
+      auth,
       photoURL,
-      gitlabId,
+      gitlabID,
       gitlabToken,
-      gitlab,
-      created_at: firebase.firestore.FieldValue.serverTimestamp()
+      gitlabAllow,
+      created_at: firebase.firestore.FieldValue.serverTimestamp(),
     });
   },
-  // 회원가입
+  getUserInfo() {
+    console.log('[info] start getUserInfo func()');
+    let user = firebase.auth().currentUser;
+    if (user === null) {
+      user = JSON.parse(localStorage.getItem('user') || '{}');
+    }
+
+    return firestore.collection(USERS).doc(user.email)
+      .get()
+      .then((doc) => {
+        let data = null;
+        if (doc.exists) {
+          data = doc.data();
+        } else {
+          console.log('[error] doc does not exist.');
+        }
+        return data;
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(`[error] fail FirebaseLogoutLog : [CODE ${errorCode}] Error : ${errorMessage}`);
+      });
+  },
+  getAllUserInfo() {
+    return firestore.collection(USERS).get()
+      .then(function(querySnapshot) { // eslint-disable-line
+        let users = []; // eslint-disable-line
+        querySnapshot.forEach(function(doc) { // eslint-disable-line
+          users.push(doc.data());
+        });
+        return users;
+      });
+  },
+
+  /* login & logout */
   signUp(signup) {
-    firebase.auth().createUserWithEmailAndPassword(signup.email, signup.password).catch((error) => {
-      // Handle Errors here.
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      alert(`회원가입 오류 발생 !!                                                   [Error] ${errorCode} ${errorMessage}`);
-    });
+    console.log('[info] start signUp func()');
+    const nickName = signup.email.split('@')[0];
+
+    firebase.auth().createUserWithEmailAndPassword(signup.email, signup.password)
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(`[error] signUp func() : [CODE ${errorCode}] Error : ${errorMessage}`);
+      });
 
     firestore.collection(USERS).doc(signup.email).set({
       email: signup.email,
+      nickName,
       name: signup.name,
-      pw: signup.password,
-      pwconfirmed: signup.passwordConfirmed,
-      gitlabId: signup.gitlabId,
+      auth: 'visitor',
+      photoURL: 'https://pondokindahmall.co.id/assets/img/default.png',
+      gitlabID: signup.gitlabID,
       gitlabToken: signup.gitlabToken,
+      gitlabAllow: false,
       created_at: firebase.firestore.FieldValue.serverTimestamp(),
     });
   },
-  addGitlabInfo(gitlab) {
-    const user = firebase.auth().currentUser;
-    const gitlabRef = firestore.collection("users").doc(user.email);
-    return gitlabRef.update({
-      gitlabId: gitlab.gitlabId,
-      gitlabToken: gitlab.gitlabToken,
-      gitlab: true,
-    }).then((result) => {
-      console.log("atfer update", result);
-    })
-  },
-
-  // async checkGitlabInfo(){
-  //   // Gitlab 정보가 있는지 체크
-  //   const user = firebase.auth().currentUser;
-  //   const gitlabRef = firestore.collection("users").doc(user.email);
-  //   let gitlabInfo = await gitlabRef.get()
-
-  //   if (gitlabInfo.exists) {
-  //     const data = gitlabInfo.data();
-  //     console.log("data",data)
-  //     console.log(data.gitlabId, data.gitlabToken,"gitlab")
-  //     if ((data.gitlabId === "" || data.gitlabToken === "") && data.gitlab === false){   // 나중에 조건에 gilab true false 추가
-  //       this.gitlabQuestion = true;
-  //     }
-  //   } else {
-  //     // doc.data() will be undefined in this case
-  //     console.log("No such document!");
-  //   }
-  // },
-  // 로그인
   signIn(login) {
-    return firebase.auth().signInWithEmailAndPassword(login.email, login.password).then((result) => {
-      // let accessToken = result.credential.accessToken
-      const {
-        user
-      } = result;
-      alert('[로그인 성공]');
-      return result;
+    return firebase.auth().signInWithEmailAndPassword(login.email, login.password)
+      .then((result) => {
+        console.log('[info] success singIn');
+        return result;
+      }).catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        if (errorCode === 'auth/wrong-password') {
+          alert('[오류] 비밀번호가 올바르지 않습니다.'); // eslint-disable-line no-alert
+        } else {
+          console.log(`[error] fail singIn : [CODE ${errorCode}] Error : ${errorMessage}`);
+        }
+      });
+  },
+  signOut() {
+    let user = firebase.auth().currentUser;
+    if (user === null) {
+      user = JSON.parse(localStorage.getItem('user') || '{}');
+    }
+    return firebase.auth().signOut().then(() => {
+      console.log('[info] success signOut');
+      this.FirebaseLogoutLog(user.email);
+      return true;
     }).catch((error) => {
       const errorCode = error.code;
       const errorMessage = error.message;
-      alert(`존재하지 않는 아이디와 패스워드 입니다. ^^                               [Error] ${errorCode} ${errorMessage}`);
+      console.log(`[error] fail signOut : [CODE ${errorCode}] Error : ${errorMessage}`);
     });
   },
-
-
+  loginWithGoogle() {
+    console.log('[info] start loginWithGoogle func()');
+    const provider = new firebase.auth.GoogleAuthProvider();
+    return firebase.auth().signInWithPopup(provider)
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(`[error] fail loginWithGoogle : [CODE ${errorCode}] Error : ${errorMessage}`);
+      });
+  },
+  loginWithFacebook() {
+    console.log('[info] start loginWithFacebook func()');
+    const provider = new firebase.auth.FacebookAuthProvider();
+    return firebase.auth().signInWithPopup(provider)
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(`[error] fail loginWithFacebook : [CODE ${errorCode}] Error : ${errorMessage}`);
+      });
+  },
+  addGitlabInfo(gitlab) {
+    console.log('[info] start addGitlabInfo func()');
+    let user = firebase.auth().currentUser;
+    if (user === null) {
+      user = JSON.parse(localStorage.getItem('user') || '{}');
+    }
+    firestore.collection(USERS).doc(user.email).update({
+      gitlabID: gitlab.gitlabID,
+      gitlabToken: gitlab.gitlabToken,
+      gitlabAllow: true,
+    }).catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(`[error] fail addGitlabInfo : [CODE ${errorCode}] Error : ${errorMessage}`);
+    });
+  },
   isRegistered(email) {
-    const usersCollection = firestore.collection(USERS);
-    return usersCollection
-      .get()
-      .then(function (querySnapshot) {
-        return querySnapshot.docs.every(function (doc) {
-          // doc.data() is never undefined for query doc snapshots
+    console.log('[info] start isRegistered func()');
+    return firestore.collection(USERS).get()
+      .then(function(querySnapshot) { // eslint-disable-line
+        return querySnapshot.docs.every(function(doc) { // eslint-disable-line
           if (doc.id === email) {
-            alert(doc.id + "/" + email)
             return false;
           }
           return true;
-        })
+        });
       });
   },
-  loginWithGoogle() {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    return firebase.auth().signInWithPopup(provider).then((result) => {
-      const {
-        accessToken
-      } = result.credential;
-      const {
-        user
-      } = result;
-      console.log(user);
-      return result;
-    }).catch((error) => {
-      console.error('[Google Login Error]', error);
-    });
-  },
-  logout(obj) {
-    new firebase.auth().signOut().then(() => {
-      obj.$store.commit('logout');
-    }).catch((error) => {
-      alert(error);
-    });
-  },
-  loginWithFacebook() {
-    const provider = new firebase.auth.FacebookAuthProvider();
-    return firebase.auth().signInWithPopup(provider).then((result) => {
-      const {
-        accessToken
-      } = result.credential;
-      const {
-        user
-      } = result; // facebook 로그인한 유저 정보
-      console.log(user.email);
-      return result;
-    }).catch((error) => {
-      console.error('[Facebook Login Error]', error);
-    });
-  },
 
-  // 포트폴리오 댓글 작성
+  /* Reply
+    Create : PortfolioReply();
+    Update : editReply();
+    Read : getPortfolioReply();
+    Delete : deleteReply();
+  */
+
   PortfolioReply(portfolioReply, portfolioUID) {
-    // portfolioUID - 현재 선택한 포트폴리오의 uid - p8WgVvAYp7C546Ev4frP
-    let user = JSON.parse(localStorage.getItem("user") || "{}");
+    console.log('[info] start PortfolioReply func()');
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
     const portfolioCollection = firestore.collection(PORTFOLIOS);
-    var userEmail = firebase.auth().currentUser.email;
-    var email = userEmail.split('@');
-
-    // console.log( email[0] + " "+ portfolioReply + " !!!!");
-    portfolioReply.email = email[0]; //유저의 이메일에서 아이디만 저장
-    // console.log(portfolioCollection + " @@@@@@@@@@@@@@@@@@@@@");
+    portfolioReply.email = user.nickName; // eslint-disable-line
     return portfolioCollection.doc(portfolioUID).collection(PORTFOLIO_REPLYS).add({
       portfolioReply,
-      created_at: firebase.firestore.FieldValue.serverTimestamp()
-    })
+      created_at: firebase.firestore.FieldValue.serverTimestamp(),
+    }).catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(`[error] PortfolioReply func() : [CODE ${errorCode}] Error : ${errorMessage}`);
+    });
   },
   getPortfolioReply(portfolioUID) {
-    let user = firebase.auth().currentUser
-    // let user = JSON.parse(localStorage.getItem("user") || "{}");\
+    console.log('[info] start getPortfolioReply func()');
     const portfolioCollection = firestore.collection(PORTFOLIOS);
-    console.log("댓글 가져오기!!");
     const replyCollection = portfolioCollection.doc(portfolioUID).collection(PORTFOLIO_REPLYS);
-    // console.log(replyCollection.content + " 댓글 옴??@?@?@?@?@?@?@?");
 
     return replyCollection
       .get()
-      .then((docSnapshots) => {
+      .then((docSnapshots) => { // eslint-disable-line
         return docSnapshots.docs.map((doc) => {
-          let data = doc.data();
+          let data = doc.data(); // eslint-disable-line
           data.created_at = new Date(data.created_at.toDate());
           data.uid = doc.id;
-          // this.$store.commit('updatePortfolioReplys', data);
-          // console.log(data.uid + " 여긴가여");
           return data;
-        })
-      })
-  },
-  // 댓글 삭제
-  deleteReply(index, portfolioUID, replyUID) {
-    console.log("deleteReply!!");
-    let user = firebase.auth().currentUser
-    const replyCollection = firestore.collection(PORTFOLIOS).doc(portfolioUID).collection(PORTFOLIO_REPLYS);
-    // console.log(index + "인덱스 " + replyCollection);
-    // console.log(JSON.stringify(replyCollection[0]));
-    firestore.collection(PORTFOLIOS).doc(portfolioUID).collection(PORTFOLIO_REPLYS).doc(replyUID)
-      .delete().then(function () {
-        console.log("Document successfully deleted!");
-      }).catch(function (error) {
-        console.error(error);
-      })
-    // );
-  },
-  editReply(index, portfolioUID, replyUID, editReplyContent, email) {
-    console.log("editReply!!");
-    let user = firebase.auth().currentUser;
-    // const replyCollection = firestore.collection(USERS).doc(user.email).collection(PORTFOLIOS).doc(portfolioUID).collection(PORTFOLIO_REPLYS);
-    //.portfolioReply.content
-    console.log(firestore.collection(PORTFOLIOS).doc(portfolioUID).collection(PORTFOLIO_REPLYS).doc(replyUID) + " @@@@");
-    // .update({
-    //   "content" : editReplyContent
-    // });
-    // portfolioReply
-    firestore.collection(PORTFOLIOS).doc(portfolioUID).collection(PORTFOLIO_REPLYS).doc(replyUID)
-      .update({
-        "portfolioReply": {
-          "content": editReplyContent,
-          "email": email
-        }
+        });
+      }).catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(`[error] getPortfolioReply func() : [CODE ${errorCode}] Error : ${errorMessage}`);
       });
   },
+  deleteReply(portfolioUID, replyUID) {
+    console.log('[info] start deleteReply func()');
+    const portfolioCollection = firestore.collection(PORTFOLIOS);
+    const replyCollection = portfolioCollection.doc(portfolioUID).collection(PORTFOLIO_REPLYS);
+    replyCollection.doc(replyUID)
+      .delete()
+      .then(() => {
+        console.log('[info] Reply successfully deleted.');
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(`[error] deleteReply func() : [CODE ${errorCode}] Error : ${errorMessage}`);
+      });
+  },
+  editReply(portfolioUID, replyUID, editReplyContent, email) {
+    console.log('[info] start editReply func()');
+    const portfolioRef = firestore.collection(PORTFOLIOS).doc(portfolioUID);
+    const replyCollection = portfolioRef.collection(PORTFOLIO_REPLYS);
+    replyCollection.doc(replyUID).update({
+      portfolioReply: {
+        content: editReplyContent,
+        email,
+      },
+    }).catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(`[error] editReply func() : [CODE ${errorCode}] Error : ${errorMessage}`);
+    });
+  },
+
+  /* Portfolio
+    Create : PortfolioWriter();
+    Update : editPortfolio();
+    Read : getPortfolios();
+    Delete : deletePortfolio();
+  */
 
   PortfolioWriter(portfolio) {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    //console.log(JSON.stringify(user) + " ????????????????");
+    console.log('[info] start PortfolioWriter func()');
     return firestore.collection(PORTFOLIOS).add({
       portfolio,
       created_at: firebase.firestore.FieldValue.serverTimestamp(),
+    }).catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(`[error] PortfolioWriter func() : [CODE ${errorCode}] Error : ${errorMessage}`);
     });
   },
   deletePortfolio(portfolioUID) {
-    console.log("deletePortfolio!!");
-    const portfolioCollection = firestore.collection(PORTFOLIOS).doc(portfolioUID)
-      .delete().then(function () {
-        console.log("Document successfully deleted!");
-      }).catch(function (error) {
-        console.error(error);
+    console.log('[info] start deletePortfolio func()');
+    const portfolioCollection = firestore.collection(PORTFOLIOS).doc(portfolioUID);
+    portfolioCollection.delete()
+      .then(() => {
+        console.log('[info] Document successfully deleted.');
+      }).catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(`[error] PortfolioWriter func() : [CODE ${errorCode}] Error : ${errorMessage}`);
       });
   },
-
   editPortfolio(portfolioUID, portfolio) {
-    console.log("editPortfolio!!");
-    let user = firebase.auth().currentUser;
-    console.log(firestore.collection(PORTFOLIOS).doc(portfolioUID) + " @@@@");
-    // .update({
-    //   "content" : editReplyContent
-    // });
-    console.log(portfolio);
+    console.log('[info] start editPortfolio func()');
     firestore.collection(PORTFOLIOS).doc(portfolioUID)
       .update({
-       "portfolio": {
-          "content": portfolio.content,
-          "edate": portfolio.edate,
-          "sdate": portfolio.sdate,
-          "teams": portfolio.teams,
-          "thumbnail": portfolio.thumbnail,
-          "title": portfolio.title,
-          "userID": portfolio.userID,
-          "startdate": portfolio.startdate,
-          "enddate": portfolio.enddate,
-          "startdate": portfolio.startdate,
+        portfolio,
+      }).catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(`[error] editPortfolio func() : [CODE ${errorCode}] Error : ${errorMessage}`);
+      });
+  },
+  getPortfolios() {
+    console.log('[info] start getPortfolios func()');
+    const portfolioCollection = firestore.collection(PORTFOLIOS);
+    return portfolioCollection
+      .orderBy('created_at', 'desc')
+      .get()
+      .then(docSnapshots => docSnapshots.docs.map((doc) => {
+        const data = doc.data();
+        data.created_at = new Date(data.created_at.toDate());
+        data.uid = doc.id; // Portfolio uid
+        return data;
+      })).catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(`[error] getPortfolios func() : [CODE ${errorCode}] Error : ${errorMessage}`);
+      });
+  },
+  addPortfoliosViews(portfolioID) {
+    console.log('[info] start addPortfoliosViews func()');
+    const portfolioCollection = firestore.collection(PORTFOLIOS).doc(portfolioID);
 
-        }
+    portfolioCollection.update({
+      views: firebase.firestore.FieldValue.increment(1),
+    }).catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(`[error] addPortfoliosViews func() : [CODE ${errorCode}] Error : ${errorMessage}`);
+    });
+  },
+
+  /* Post
+    Create : PostWriter();
+    Update : editPost();
+    Read : getPosts();
+    Delete : deletePost();
+  */
+  PostWriter(post) {
+    console.log('[info] start PostoWriter func()');
+    console.log(post);
+    return firestore.collection(POSTS).add({
+      post,
+      created_at: firebase.firestore.FieldValue.serverTimestamp(),
+    }).catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(`[error] PostoWriter func() : [CODE ${errorCode}] Error : ${errorMessage}`);
+    });
+  },
+
+  editPost() {
+    console.log('[info] start editPost func()');
+  },
+
+  getPosts() {
+    console.log('[info] start getPosts func()');
+    const postsCollection = firestore.collection(POSTS);
+    console.log(postsCollection);
+
+    return postsCollection
+      .orderBy('created_at', 'desc')
+      .get()
+      .then((docSnapshots) => {
+        return docSnapshots.docs.map((doc) => {
+          let data = doc.data()
+          data.created_at = new Date(data.created_at.toDate())
+          return data
+        })
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(`[error] getPosts func() : [CODE ${errorCode}] Error : ${errorMessage}`);
       });
   },
 
+  deletePost() {
+    console.log('[info] start deletePost func()');
+  },
+
+  /* Log */
   FirebaseLoginLog() {
+    console.log('[info] start FirebaseLoginLog func()');
     const nowTime = new Date();
     const logIn = '_login';
     const y = nowTime.getFullYear();
@@ -369,19 +400,21 @@ addPortfoliosCount(portfolioID) {
     const h = nowTime.getHours();
     const m = nowTime.getMinutes();
     const s = nowTime.getSeconds();
-    const timeId = [y, '0', M, d, h, m, s, logIn].join('');
+    const timeID = [y, '0', M, d, h, m, s, logIn].join('');
     const Email = firebase.auth().currentUser.email;
 
-    firestore.collection(USERS).doc(Email).collection('logHistory').doc(timeId)
+    firestore.collection(USERS).doc(Email).collection(LOGHISTORY).doc(timeID)
       .set({
         log: firebase.firestore.FieldValue.serverTimestamp(),
       })
       .catch((error) => {
-        console.log(`로그인 기록에 실패했습니다. ${error}`); // eslint-disable-line no-console
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(`[error] fail FirebaseLoginLog : [CODE ${errorCode}] Error : ${errorMessage}`);
       });
   },
-
-  FirebaseLogoutLog() {
+  FirebaseLogoutLog(email) {
+    console.log('[info] start FirebaseLogoutLog func()');
     const nowTime = new Date();
     const logOut = '_logout';
     const y = nowTime.getFullYear();
@@ -390,146 +423,103 @@ addPortfoliosCount(portfolioID) {
     const h = nowTime.getHours();
     const m = nowTime.getMinutes();
     const s = nowTime.getSeconds();
-    const timeId = [y, '0', M, d, h, m, s, logOut].join('');
-    const Email = firebase.auth().currentUser.email;
+    const timeID = [y, '0', M, d, h, m, s, logOut].join('');
 
-
-    // firestore.collection('users').doc(`${this.$store.state.user.email}`).collection('logHistory').doc(timeId).set({
-    //     log: firebase.firestore.FieldValue.serverTimestamp()
-    //     }).catch(error => {
-    //         console.log("로그인 기록에 실패했습니다")
-    // })
-
-    firestore.collection('users').doc(Email).collection('logHistory').doc(timeId)
+    firestore.collection(USERS).doc(email).collection(LOGHISTORY).doc(timeID)
       .set({
         log: firebase.firestore.FieldValue.serverTimestamp(),
       })
       .catch((error) => {
-        console.log('로그인 기록에 실패했습니다');
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(`[error] fail FirebaseLogoutLog : [CODE ${errorCode}] Error : ${errorMessage}`);
       });
   },
-  // 유저 Gitlab Id, token 등록
-  editUser(id, token) {
-    console.log(`${id} ${token} EDIT`);
-    const user = firebase.auth().currentUser;
 
-    return firestore.collection(USERS).doc(user.email).set({
-      gitlabID: id,
-      gitlabToken: token,
-    }, { merge: true });
-  },
-  getUserInfo() {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    return firestore.collection(USERS)
-      .doc(user.email)
-      .get()
-      .then((doc) => {
-        if (doc.exists) {
-          console.log(`[getGitLabID]${JSON.stringify(doc.data())}`);
-          return doc.data();
-        }
-        console.log('[getGitLabID Error] document not exists. ');
-      })
-      .catch((e) => {
-        console.log(`[getGitLabID Error] firebase error. ${e}`);
-      });
-  },
-  getAllUserInfo() {
-    return firestore.collection(USERS).get()
-      .then(function (querySnapshot) {
-        var users = [];
-        querySnapshot.forEach(function (doc) {
-          // doc.data() is never undefined for query doc snapshots
-          //console.log(doc.id, " => ", doc.data());
-          users.push(doc.data());
-        });
-        return users;
-      });
-  },
+  /* Views */
   getPortfolioNumber() {
-    return firestore.collection(PORTFOLIOS)
-      .get()
-      .then(function (querySnapshot) {
+    console.log('[info] start getPortfolioNumber func()');
+    return firestore.collection(PORTFOLIOS).get()
+      .then(function(querySnapshot) { // eslint-disable-line
         return querySnapshot.size;
       })
-      .catch(function (error) {
-        console.log("Error getting documents: ", error);
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(`[error] fail getPortfolioNumber : [CODE ${errorCode}] Error : ${errorMessage}`);
       });
   },
   getPostNumber() {
-    return firestore.collection(USERS)
+    console.log('[info] start getPostNumber func()');
+    return firestore.collection(POSTS)
       .get()
-      .then(function (querySnapshot) {
-        var totalCount = 0;
-        querySnapshot.forEach(function (doc) {
-          // doc.data() is never undefined for query doc snapshots
-          //console.log(doc.id, " => ", doc.data());
-          if (doc.data().portfolioCount != undefined) {
-            totalCount += doc.data().postCount;
-          }
-        });
-        return totalCount;
+      .then(function(querySnapshot) { // eslint-disable-line
+        return querySnapshot.size;
       })
-      .catch(function (error) {
-        console.log("Error getting documents: ", error);
-      });
-  },
-  updateAuth(email, auth) {
-    console.log(email + " " + auth);
-    var userRef = firestore.collection(USERS).doc(email);
-
-    return userRef.update({
-      auth: auth
-    }).then(function () {
-      console.log("Document successfully updated!");
-    })
-      .catch(function (error) {
-        // The document probably doesn't exist.
-        console.error("Error updating document: ", error);
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(`[error] fail getPostNumber : [CODE ${errorCode}] Error : ${errorMessage}`);
       });
   },
   addViews() {
+    console.log('[info] start addViews func()');
     let d = new Date();
-    d = d.getFullYear() + "-" + d.getMonth() + "-" + d.getDate();
-    console.log(d);
+    d = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
     const usersCollection = firestore.collection(VIEWS);
-    return usersCollection.doc(d)
-      .get()
-      .then(function (doc) {
-        var views = 0;
+    return usersCollection.doc(d).get()
+      .then((doc) => {
+        let views = 0;
         if (doc.exists) {
-          console.log("Document data:1", doc.data());
           views = doc.data().views + 1;
           usersCollection.doc(d).set({
-            views
+            views,
           });
-
         } else {
-          console.log("No such document!");
+          console.log('[error] No such document.');
           usersCollection.doc(d).set({
-            views
+            views,
           });
         }
-      }).catch(e => {
-        console.log("Firebase Error")
+      }).catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(`[error] fail addViews : [CODE ${errorCode}] Error : ${errorMessage}`);
       });
   },
   getViews() {
+    console.log('[info] start getViews func()');
     let d = new Date();
-    d = d.getFullYear() + "-" + d.getMonth() + "-" + d.getDate();
+    d = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
     const usersCollection = firestore.collection(VIEWS);
     return usersCollection.doc(d)
       .get()
-      .then(function (doc) {
+      .then((doc) => {
+        let views = -1;
         if (doc.exists) {
-          console.log("Document data:2", doc.data());
-          return doc.data().views;
-
+          views = doc.data().views; // eslint-disable-line
         } else {
-          console.log("No such document!");
+          console.log('[error] No such document.');
         }
-      }).catch(e => {
-        console.log("Firebase Error")
+        return views;
+      }).catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(`[error] fail getViews : [CODE ${errorCode}] Error : ${errorMessage}`);
       });
-  }
-}
+  },
+  updateAuth(email, auth) {
+    console.log('[info] start updateAuth func()');
+    const userRef = firestore.collection(USERS).doc(email);
+
+    return userRef.update({
+        auth
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(`[error] fail updateAuth : [CODE ${errorCode}] Error : ${errorMessage}`);
+      });
+  },
+
+}; // eslint-disable-line

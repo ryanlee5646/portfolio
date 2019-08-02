@@ -106,7 +106,7 @@
           <v-layout justify-center ma-2>
             <v-flex xs12 sm8>
               <v-text-field
-                v-model="signup.gitlabId"
+                v-model="signup.gitlabID"
                 :rules="EmailRules"
                 label="Gitlab ID"
                 class="dohyeon-font"
@@ -153,7 +153,7 @@
         <v-btn text @click="closeDialog()">
           네
         </v-btn>
-        <v-btn text @click="noGitlabInfo()">
+        <v-btn text @click="addGitlabInfo()">
           아니오
         </v-btn>
       </v-card-actions>
@@ -167,7 +167,7 @@
             <v-layout justify-center ma-2>
               <v-flex xs12 sm8>
                 <v-text-field
-                  v-model="gitlab.gitlabId"
+                  v-model="gitlab.gitlabID"
                   :rules="EmailRules"
                   label="Gitlab ID"
                   class="dohyeon-font"
@@ -229,11 +229,11 @@ export default {
         email: "",
         password: "",
         passwordConfirmed: "",
-        gitlabId: "",
+        gitlabID: "",
         gitlabToken: ""
       },
       gitlab: {
-        gitlabId: "",
+        gitlabID: "",
         gitlabToken: ""
       },
       NameRules: [v => !!v || "이름이 필요합니다"],
@@ -262,13 +262,12 @@ export default {
       const result = await FirebaseService.loginWithGoogle();
       this.$store.state.accessToken = result.credential.accessToken;
       this.$store.state.user = result.user;
-      alert("aaa", this.$store.state.user.email);
 
       localStorage.setItem("user", JSON.stringify(result.user));
       localStorage.setItem("accessToken", result.credential.accessToken);
+
       // database 에 추가되어있지 않다면 유저 등록
       if (await FirebaseService.isRegistered(result.user.email)) {
-        alert("ccc");
         await FirebaseService.addUser(
           result.user.email,
           result.user.displayName,
@@ -278,29 +277,26 @@ export default {
           "",
           false
         );
-        FirebaseService.FirebaseLoginLog();
-      } else {
-        alert("ddd");
-        FirebaseService.FirebaseLoginLog();
       }
-      // Gitlab 정보가 있는지 체크
-      const user = firebase.auth().currentUser;
-      const gitlabRef = firestore.collection("users").doc(user.email);
-      let gitlabInfo = await gitlabRef.get()
-          
-      if (gitlabInfo.exists) {
-        const data = gitlabInfo.data();
-        if ((data.gitlabId === "" || data.gitlabToken === "") && data.gitlab === false){   // 나중에 조건에 gilab true false 추가
+      FirebaseService.FirebaseLoginLog();
+      
+      // Check GitlabInfo
+      const data = await FirebaseService.getUserInfo();
+      if(data !== null){
+        if ((data.gitlabID === "" || data.gitlabToken === "") && data.gitlabAllow === false){ 
           this.gitlabQuestion = true;
         }
-      } else {
-        // doc.data() will be undefined in this case
-        console.log("No such document!");
+      }
+
+      const user = await FirebaseService.getUserInfo();
+        if(user !== null){
+          this.$store.state.user = user;
+          localStorage.setItem("user", JSON.stringify(user));
       }
 
       this.$store.commit("loginDialog", false);
       this.$router.push("/");
-      localStorage.setItem("portfolios", this.$store.state.portfolios);
+      // localStorage.setItem("portfolios", this.$store.state.portfolios);
     },
     async loginWithFacebook() {
       const result = await FirebaseService.loginWithFacebook();
@@ -312,8 +308,7 @@ export default {
 
       // database 에 추가되어있지 않다면 유저 등록
       if (await FirebaseService.isRegistered(result.user.email)) {
-        alert("ccc");
-        FirebaseService.addUser(
+        await FirebaseService.addUser(
           result.user.email,
           result.user.displayName,
           "visitor",
@@ -322,62 +317,43 @@ export default {
           "",
           false
         );
-        FirebaseService.FirebaseLoginLog();
-      } else {
-        alert("ddd");
-        FirebaseService.FirebaseLoginLog();
       }
       
-      // Gitlab 정보가 있는지 체크
-      const user = firebase.auth().currentUser;
-      const gitlabRef = firestore.collection("users").doc(user.email);
-      let gitlabInfo = await gitlabRef.get()
-          
-      if (gitlabInfo.exists) {
-        const data = gitlabInfo.data();
-        console.log("data",data)
-        console.log(data.gitlabId, data.gitlabToken,"gitlab")
-        if ((data.gitlabId === "" || data.gitlabToken === "") && data.gitlab === false){   // 나중에 조건에 gilab true false 추가
+      FirebaseService.FirebaseLoginLog();
+      
+      // Check GitlabInfo
+      const data = await FirebaseService.getUserInfo();
+      
+      if(data !== null){
+        if ((data.gitlabID === "" || data.gitlabToken === "") && data.gitlabAllow === false){ 
           this.gitlabQuestion = true;
         }
-      } else {
-        // doc.data() will be undefined in this case
-        console.log("No such document!");
       }
-
       this.$store.commit("loginDialog", false);
       this.$router.push("/");
     },
-    
+    async addGitlabInfo(){
+      try {
+        await FirebaseService.addGitlabInfo(this.gitlab);
+
+        this.gitlabQuestion = false
+        this.gitlabInfo = false
+        this.gitlab.gitlabID = ""
+        this.gitlab.gitlabToken = ""
+
+        const user = await FirebaseService.getUserInfo();
+          if(user !== null){
+            this.$store.state.user = user;
+            localStorage.setItem("user", JSON.stringify(user));
+          }
+      } catch (error) {
+        console.log(`[error] addGitlabInfo func() : ${error}`)
+      }
+    },
     closeDialog() {
       this.gitlabQuestion = false
       this.gitlabInfo = true
     },
-    // Gitlab 정보 추가 거절 했을 경우 처리
-    async noGitlabInfo() { 
-      try {
-        await FirebaseService.addGitlabInfo({
-        gitlabId: "",
-        gitlabToken: ""
-      });
-        this.gitlabQuestion = false
-        this.gitlabInfo = false
-      } catch (err) {
-        console.log(err)
-      }
-    },
-    // Gitlab 정보 추가
-    async addGitlabInfo(){
-      try {
-        await FirebaseService.addGitlabInfo(this.gitlab);
-        this.gitlabQuestion = false
-        this.gitlabInfo = false
-      } catch (err) {
-        console.log(err)
-      }
-    },
-    
-     
     isLoginStage(flag) {
       this.isLogin = flag;
     },
@@ -392,14 +368,18 @@ export default {
     async signIn() {
       const result = await FirebaseService.signIn(this.login);
 
-      const user = firebase.auth().currentUser;
-      this.$store.state.user = user;
+      if(result !== undefined){
+        const user = await FirebaseService.getUserInfo();
+        
+        if(user !== null){
+          this.$store.state.user = user;
+          localStorage.setItem("user", JSON.stringify(user));
+        }
 
-      localStorage.setItem("user", JSON.stringify(user));
-
-      this.isLoginStage(true);
-      this.$store.commit("loginDialog", false);
-      this.$router.push("/");
+        this.isLoginStage(true);
+        this.$store.commit("loginDialog", false);
+        this.$router.push("/");
+      }
     }
   },
   computed: {

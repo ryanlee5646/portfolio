@@ -6,13 +6,15 @@
         <div class="portfolio-table controls">
           <ul class="breadcrumbs">
             <li class="filter" :class="{ active: isFiltered('all') }"
-             @click="filter('all')">All work</li>
+             @click="filter('all')">All</li>
             <li class="filter" :class="{ active: isFiltered('blog') }"
-             @click="filter('blog')">Blogs</li>
+             @click="filter('blog')">성</li>
             <li class="filter" :class="{ active: isFiltered('shop') }"
-             @click="filter('shop')">Internet Shop</li>
+             @click="filter('shop')">정</li>
             <li class="filter" :class="{ active: isFiltered('landing') }"
-             @click="filter('landing')">Landing Page</li>
+             @click="filter('landing')">웅</li>
+             <li class="filter" :class="{ active: isFiltered('landing') }"
+              @click="filter('landing')">진</li>
           </ul>
         </div>
 
