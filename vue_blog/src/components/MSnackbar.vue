@@ -9,7 +9,6 @@
    :top="y === 'top'"
    :vertical="mode === 'vertical'"
  >
-   {{ text }}
  </v-snackbar>
 </template>
 

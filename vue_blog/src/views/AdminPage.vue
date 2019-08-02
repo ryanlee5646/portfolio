@@ -164,9 +164,12 @@
 import FirebaseService from '@/services/FirebaseService'
 import Title from '../components/Title.vue'
 import UserTable from '../components/UserTable.vue'
+import store from '../store'
+import Vuex from 'vuex'
 
 export default{
     name: 'ManagePage',
+    store,
     data(){
         return{
             category: { 
@@ -258,8 +261,6 @@ export default{
                     });
                 }
             });
-
-            console.log(users);
         },
         getPhotoURL(user){
             if(user.photoURL != undefined){
@@ -299,7 +300,24 @@ export default{
         this.getDocumentsNumber();
         this.getAllUserInfo(this.users, this.groups);
        
-    }
+    },
+    beforeRouteEnter (to, from, next) {
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      console.log(user);
+      if(user != "" || user != null){ 
+        if(user.auth === 'manager'){
+          next();
+        }else{
+          alert('[info] 권한이 없습니다. 관리자에게 문의하세요. ^^* ');
+          next({
+                  path: '/',
+              })
+        }
+      }
+      else{
+        alert('[info] 로그인이 필요한 페이지입니다. 로그인 후 접속해 주세요.');
+      }
+    },
 }
 </script>
 

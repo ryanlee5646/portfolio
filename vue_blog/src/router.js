@@ -8,40 +8,41 @@ import PostWriter from './views/PostWriter.vue';
 import MainPage from './views/MainPage.vue';
 
 Vue.use(Router);
-
+/* eslint-disable */
 export default new Router({
-  mode: 'history',
-  base: process.env.BASE_URL,
-  routes: [{
-    path: '/',
-    name: 'mainPage',
-    component: MainPage,
-  },
-  {
-    path: '/portfolio/write',
-    name: 'portfoliowrite',
-    component: PortfolioWriter,
-  },
-  {
-    path: '/portfolio/view/:id',
-    name: 'portfolioview',
-    component: PortfolioView,
-    props: true,
-  },
-  {
-    path: '/admin',
-    name: 'AdminPage',
-    component: AdminPage,
-  },
-  {
-    path: '/reply',
-    name: 'Reply',
-    component: Reply,
-  },
-  {
-    path: '/post/write',
-    name: 'postwrite',
-    component: PostWriter,
-  },
-  ],
+    mode: 'history',
+    base: process.env.BASE_URL,
+    routes: [{
+            path: '/',
+            name: 'mainPage',
+            component: MainPage,
+            meta: { authRequired: false }
+        },
+        {
+            path: '/portfolio/write',
+            name: 'portfoliowrite',
+            component: PortfolioWriter,
+        },
+        {
+            path: '/portfolio/view/:id',
+            name: 'portfolioview',
+            component: PortfolioView,
+            props: true,
+        },
+        {
+            path: '/admin',
+            name: 'AdminPage',
+            component: AdminPage,
+        },
+        {
+            path: '/reply',
+            name: 'Reply',
+            component: Reply,
+        },
+        {
+            path: '/post/write',
+            name: 'postwrite',
+            component: PostWriter,
+        },
+    ],
 });
