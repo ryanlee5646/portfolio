@@ -44,15 +44,12 @@ export default {
     window.vueStore = this.$store;
     document.body.classList.add('loading');
     FirebaseService.getPortfolios().then((data) => {
-      console.log("App.vue - 1  ", data);
       this.$store.commit('updatePortfolios', data);
       this.isLoaded = true;
       this.$nextTick(() => document.body.classList.remove('loading'));
     });
 
     FirebaseService.getPosts().then((data) => {
-      console.log("App.vue - ", data);
-
       this.$store.commit('updatePosts', data);
       this.isLoaded = true;
       this.$nextTick(() => document.body.classList.remove('loading'));

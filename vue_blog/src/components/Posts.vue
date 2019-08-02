@@ -6,27 +6,21 @@
             <!-- <div class="portfolio-link">
               <a @click="routePath(p.uid)" class="popup_content"  target="_blank">See</a>
             </div> -->
-
-            <!-- <p>Move the mouse over the table rows to see the effect.</p> -->
-
-            <table >
-              <tr>
-                <th>First Name</th>
-                <th>Last Name</th>
-              </tr>
-              <tr v-for="(p, index) in this.posts">
-                <td>{{p.post.title}}</td>
-                <td>{{p.post.userID}}</td>
-              </tr>
-
-            </table>
+          <table >
+            <tr>
+              <th>First Name</th>
+              <th>Last Name</th>
+            </tr>
+            <tr v-for="(p, index) in this.posts" :key="p.created_at" :uid="p.uid" >
+              <td><a @click="routePath(p.uid)" >{{p.post.title}}</a></td>
+              <td>{{p.post.userID}}</td>
+            </tr>
+          </table>
 
         <!-- <transition-group name="filter" tag="div" class="row justify-content-center"> -->
-
           <!-- <div class="col-md-4 col-lg-auto portfolio-item" v-for="(p, index) in filteredPosts"
            :key="p.created_at" :uid="p.uid" :idx="index">
            {{p.post.content}}
-           dfadfdhodksskdhk
             <div class="portfolio-link">
               <a @click="routePath(p.uid)" class="popup_content"  target="_blank">See</a>
             </div>
@@ -111,7 +105,7 @@ export default {
     },
     routePath(uid){
       console.log(uid + " routePath 넘어옴?");
-      // this.$router.push({path: '/portfolio/view/' + uid })
+      this.$router.push({path: '/post/view/' + uid })
     },
   },
   computed: {
@@ -232,7 +226,7 @@ export default {
     padding: 8px;
     text-align: left;
     border-bottom: 1px solid #ddd;
-    font-size: 2vw;
+    font-size: 1.5vw;
   }
 
   tr:hover {background-color:#f5f5f5;}

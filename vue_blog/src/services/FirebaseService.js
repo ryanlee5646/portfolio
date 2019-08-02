@@ -7,6 +7,7 @@ const VIEWS = 'views';
 const PORTFOLIOS = 'portfolios';
 const USERS = 'users';
 const PORTFOLIO_REPLYS = 'portfolio_replys';
+const POST_REPLYS = 'post_replys';
 const LOGHISTORY = 'logHistory';
 // Setup Firebase
 const config = {
@@ -197,7 +198,7 @@ export default {
       });
   },
 
-  /* Reply
+  /* PortfolioReply
     Create : PortfolioReply();
     Update : editReply();
     Read : getPortfolioReply();
@@ -361,6 +362,7 @@ export default {
 
   editPost() {
     console.log('[info] start editPost func()');
+
   },
 
   getPosts() {
@@ -375,6 +377,7 @@ export default {
         return docSnapshots.docs.map((doc) => {
           let data = doc.data()
           data.created_at = new Date(data.created_at.toDate())
+          data.uid = doc.id; // Post uid
           return data
         })
       })
@@ -388,6 +391,45 @@ export default {
   deletePost() {
     console.log('[info] start deletePost func()');
   },
+
+
+  /* PostReply
+    Create : PostReplyWriter();
+    Update : editPostReply();
+    Read : getPostReplys();
+    Delete : deletePostReply();
+  */
+
+  PostReplyWriter(postReply, postUID){
+    console.log('[info] start PostReplyWriter func()');
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const postCollection = firestore.collection(POSTS);
+    postReply.email = user.nickName; // eslint-disable-line
+
+    return postCollection.doc(postUID).collection(POST_REPLYS).add({
+      postReply,
+      created_at: firebase.firestore.FieldValue.serverTimestamp(),
+    }).catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(`[error] PostReplyWriter func() : [CODE ${errorCode}] Error : ${errorMessage}`);
+    });
+
+  },
+  editPostReply(){
+    console.log('[info] start editPostReply func()');
+
+  },
+  getPostReplys(){
+    console.log('[info] start getPostReplys func()');
+  },
+
+  deletePostReply(){
+    console.log('[info] start deletePostReply func()');
+
+  },
+
+
 
   /* Log */
   FirebaseLoginLog() {
