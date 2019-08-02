@@ -1,4 +1,19 @@
+const path = require('path');
+
 module.exports = {
+  outputDir: 'backend/public',
+  assetsDir: 'assets',
+  devServer: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3000/api',
+        secure: true,
+        pathRewrite: {
+          '^/api': '',
+        },
+      },
+    },
+  },
   configureWebpack: {
     devtool: 'source-map',
   },

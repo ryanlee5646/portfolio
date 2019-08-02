@@ -29,6 +29,7 @@ import AnimateWhenVisible from './components/AnimateWhenVisible.vue';
 import './style/css/app.scss';
 // import addPolyfills from './polyfills';
 
+
 const firebase = require('firebase/app');
 
 Vue.use(BootstrapVue);
