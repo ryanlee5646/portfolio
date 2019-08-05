@@ -1,103 +1,104 @@
 <template>
-  <v-container justify-center py-5>
-    <v-layout justify-center>
-      <v-flex xs8 class="notranslate text-xs-center">
-        <div class="stretchRight" v-for="i in $store.state.posts.length">
-          <div v-if="$store.state.posts[i -1].uid === id">
-            <div v-if="flag2 === false">
+<v-container justify-center py-5>
+  <v-layout justify-center>
+    <v-flex xs12 class="notranslate text-xs-center">
+      <div class="stretchRight" v-for="i in $store.state.posts.length">
+        <div v-if="$store.state.posts[i -1].uid === id">
+          <div v-if="flag2 === false">
+
             <a style="display: none !important;">{{index = i-1}}</a>
-              <div class="flex justify-center items-center h-screen portfolioDiv">
-                <div class="max-w-sm rounded overflow-hidden shadow-lg">
-                  <!-- <img class="w-full .text-pop-up-top" :src = "$store.state.portfolios[i -1].portfolio.thumbnail" alt="Sunset in the mountains"> -->
-                  <div class="px-6 py-4 portfolioDiv2">
-                    <a class="font-bold text-xl mb-2 title" style="font-size : 2.5vw !important;"> " {{$store.state.posts[i -1].post.title}} "</a><hr>
-                    <span style="font-size : 1.5vw !important;">조회수 : {{$store.state.posts[i -1].viewCount}}</span>
-                    <p id="markdownP" class="text-gray-700 text-base" style="font-size : 1.5vw !important;" v-html="compiledMarkdown">
-                      {{$store.state.posts[i -1].post.content}}
-                    </p>
+            <!-- <div  > -->
+              <!-- class="max-w-sm rounded overflow-hidden shadow-lg" -->
+              <AnimateWhenVisible name="fadeLeft" class="col-12 col-md">
+              <div class="cardDiv slideDown ">
+                <!-- <div class="px-6 py-4 portfolioDiv2"> -->
+                  <br><a class="font-bold text-xl mb-2 title" style="font-size : 2.2vw !important;">  <b> {{$store.state.posts[i -1].post.title}}</b> </a><hr>
+                  <p id="views" style="font-size : 1.0vw !important;" > [  조회수 :  {{$store.state.posts[i -1].views}}  ]</p>
+                  <p id="views" style="font-size : 1.2vw !important;" >   작성자 :  {{$store.state.posts[i -1].post.userID}}  </p>
+                  <hr>
+
+
+                  <div id="content" style="font-size : 1.5vw !important;" v-html="compiledMarkdown">  {{$store.state.posts[i -1].post.content}} </div>
+
+                  <!-- <p id="markdownP" class="text-gray-700 text-base" style="font-size : 1.5vw !important;" v-html="compiledMarkdown">
+                    {{$store.state.posts[i -1].post.content}} </p> -->
+
+                <!-- </div> -->
+                <button class="button" v-if="$store.state.posts[i -1].post.userID === nowUser.nickName"  @click="deletePost()">Delete</button>
+                <button class="button" v-if="$store.state.posts[i -1].post.userID === nowUser.nickName"  @click="editPostClick(i)">Edit</button>
+              </div>
+            </AnimateWhenVisible>
+            <!-- </div> -->
+          </div>
+
+          <!-- 수정 폼 -->
+          <div v-else>
+            <v-text-field label="제목" v-model="postTemp.title"></v-text-field>
+            <markdown-editor v-model="postTemp.content" ref="markdownEditor"></markdown-editor>
+            <hr><button class="button" @click="editPost()">Edit</button>
+            <button class="button" to="/" block flat>뒤로</button>
+          </div>
+
+        </div>
+      </div>
+    </v-flex>
+  </v-layout>
+
+  <!-- 댓글 작성 -->
+  <br><hr>
+  <v-layout wrap justify-center>
+    <!-- 댓글 입력  -->
+    <div class="reply-write-area col-xs-6">
+      <div class="rw-inner">
+        <div class="textarea">
+          <textarea v-model="postReply.content" class="form-control noresize" placeholder="댓글을 입력하세요." maxlength="3000"></textarea>
+        </div>
+        <div class="bnts ">
+          <v-btn @click="PostReplyWriter() " block flat>Add</v-btn>
+        </div>
+      </div>
+    </div>
+    <!-- 작성 댓글 출력 -->
+    <v-flex xs12>
+         <hr><br><h1>Comments 😊</h1>
+        <section class="comment-list">
+          <article v-for="(r, index) in this.postReplys" class="row">
+
+            <div class="col-md-2 col-xs-6s hidden-xs">
+              <figure class="profile">
+                {{getUserInfoByEmail(r.postReply.email)}}
+                <img class="img-responsive userPhoto"  :src="nowUser.photoURL" width="70%;" />
+              </figure>
+              <!-- photoURL -->
+            </div>
+            <div class="col-md-10 col-sm-10">
+              <div class="panel panel-default arrow left">
+                <div class="panel-body">
+                  <header class="text-left">
+                    <div class="comment-user"><i class="fa fa-user"></i> {{r.postReply.email}}</div>
+                    <hr>
+                  </header>
+                  <div class="comment-post" v-if="flag === false">
+                    <p> {{r.postReply.content}} </p>
+                    <button v-if="r.postReply.email === nowUser.nickName" class="button" @click="editClick(index)">수 정</button>
+                    <button v-if="r.postReply.email === nowUser.nickName" class="button" @click="deletePostReply(index)">삭 제</button>
                   </div>
-                  <button class="button" @click="deletePortfolio(i)">Delete</button>
-                  <button class="button" @click="editPortfolioClick(i)">Edit</button>
+                  <div class="comment-post" v-else-if="r.postReply.email === nowEmail">
+                    <p v-if="editIdx === index">
+                      <input type="text" v-model="editReplyContent" :placeholder="r.postReply.content"></input> </p>
+                    <button class="button" @click="editPostReply(index)">O K</button>
+                  </div>
                 </div>
               </div>
             </div>
-
-            <!-- 수정 폼 -->
-            <div v-else>
-                <v-text-field label="제목" v-model="portfolioTemp.title"></v-text-field>
-                <markdown-editor v-model="portfolioTemp.content" ref="markdownEditor"></markdown-editor>
-                <v-text-field solo name="input-7-4" label="썸네일 URL" v-model="portfolioTemp.thumbnail"></v-text-field>
-                <ImageComponent></ImageComponent>
-
-              <!-- <v-layout wrap justify-center>
-                <div v-if="this.$store.state.ImageLink == '' ">이 곳에 생성되는 url을 복사하여 사용해주세요 :-)</div>
-                <div v-else style="color : #43b848de;">
-                  <b><span v-html="this.$store.state.ImageLink"></span></b><br>
-                </div><br><br>
-              </v-layout><br> -->
-
-              <hr><button class="button" @click="editPortfolio()">Edit</button>
-              <button  class="button" to="/portfolio" block flat>뒤로</button>
-            </div>
-
-          </div>
-        </div>
+          </article>
+        </section>
       </v-flex>
-    </v-layout>
+    </div>
+    </div>
+  </v-layout><br>
 
-    <!-- 댓글 작성 -->
-    <br><hr>
-    <v-layout wrap justify-center>
-      <!-- 댓글 입력  -->
-      <div class="reply-write-area col-xs-6">
-        <div class="rw-inner">
-          <div class="textarea">
-            <textarea v-model="postReply.content" class="form-control noresize" placeholder="댓글을 입력하세요." maxlength="3000"></textarea>
-          </div>
-          <div class="bnts ">
-            <v-btn @click="PostReplyWriter() " block flat>Add</v-btn>
-          </div>
-        </div>
-      </div>
-      <!-- 작성 댓글 출력 -->
-            <!-- <div class="row"><br>
-               <h2 class="page-header"><br>Comments</h2><br>
-              <section class="comment-list">
-                <article v-for="(r, index) in this.portfolioReplys" class="row">
-                  <div class="col-md-2 col-xs-6s hidden-xs">
-                    <figure class="profile">
-                      <img class="img-responsive" src="http://www.tangoflooring.ca/wp-content/uploads/2015/07/user-avatar-placeholder.png" width="70%;" />
-                    </figure>
-                  </div>
-                  <div class="col-md-10 col-sm-10">
-                    <div class="panel panel-default arrow left">
-                      <div class="panel-body">
-                        <header class="text-left">
-                          <div class="comment-user"><i class="fa fa-user"></i> {{r.portfolioReply.email}}</div>
-                          <hr>
-                        </header>
-                        <div class="comment-post" v-if="flag === false">
-                          <p> {{r.portfolioReply.content}} </p>
-                          <button v-if="r.portfolioReply.email === nowEmail" class="button" @click="editClick(index)">수 정</button>
-                          <button v-if="r.portfolioReply.email === nowEmail" class="button" @click="deleteReply(index)">삭 제</button>
-                        </div>
-                        <div class="comment-post" v-else-if="r.portfolioReply.email === nowEmail">
-                          <p v-if="editIdx === index">
-                            <input type="text" v-model="editReplyContent" :placeholder="r.portfolioReply.content"></input> </p>
-                          <button class="button" @click="editReply(index)">O K</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </article>
-              </section>
-            </div> -->
-      </div>
-      </div>
-    </v-layout><br>
-
-  </v-container>
-
+</v-container>
 </template>
 
 <script>
@@ -116,8 +117,8 @@ export default {
         content: ""
       },
       nowUser: this.$store.state.user,
-      emailArr: this.$store.state.user.email.split('@'),
-      nowEmail: "",
+      // emailArr: this.$store.state.user.email.split('@'),
+      // nowEmail: this.$store.state.user.nickName,
       index: "",
       postIdx: 0,
       flag: false,
@@ -129,6 +130,7 @@ export default {
         title: "",
         content: "",
       },
+      photoURL : "",
     }
   },
   components: {
@@ -149,72 +151,62 @@ export default {
     },
   },
   created() {
-    console.log(this.id + " PostView created??");
-    // FirebaseService.addPortfoliosCount(this.id);
+    FirebaseService.addPostViews(this.id);
   },
   methods: {
-    async PostReplyWriter(){
-       console.log("PostReplyWriter in?");
-       const result = await FirebaseService.PostReplyWriter(this.postReply , this.id)
-       this.getPostReplys();
-     },
+    async PostReplyWriter() {
+      console.log("PostReplyWriter in?");
+      const result = await FirebaseService.PostReplyWriter(this.postReply, this.id)
+      this.getPostReplys();
+    },
     async getPostReplys() {
-      this.portfolioReplys = await FirebaseService.getPostReplys(this.id);
-      this.$store.commit('updatePortfolioReplys', this.portfolioReplys);
-      // console.log(this.portfolioReplys + " 댓글 왔닝");
-      // this.getPortfolioReply();
+      this.postReplys = await FirebaseService.getPostReplys(this.id);
+      this.$store.commit('updatePostReplys', this.postReplys);
     },
-    async deleteReply(index) {
-      console.log(this.$store.state.portfolioReplys[index].uid + " 선택한 댓글?");
-      const result = await FirebaseService.deleteReply(this.id, this.$store.state.portfolioReplys[index].uid);
-      this.$store.state.portfolioReplys.splice(index, 1);
+    async deletePostReply(index) {
+      const result = await FirebaseService.deletePostReply(this.id, this.$store.state.postReplys[index].uid);
+      this.$store.state.postReplys.splice(index, 1);
     },
-    async editReply(index) {
-      console.log(this.$store.state.portfolioReplys[index].uid + " 선택한 댓글?");
+    async editPostReply(index) {
       this.flag = true;
-      const result = await FirebaseService.editReply(this.id, this.$store.state.portfolioReplys[index].uid, this.editReplyContent, this.nowEmail);
-      // this.$store.state.portfolioReplys.splice(index, 1);
+      const result = await FirebaseService.editPostReply(this.id, this.$store.state.postReplys[index].uid, this.editReplyContent, this.$store.state.user.nickName);
       this.flag = false;
-      this.getPortfolioReply();
+      this.getPostReplys();
     },
     editClick(index) {
       this.flag = true;
       this.editIdx = index;
     },
-    editPortfolioClick(idx) {
+    editPostClick(idx) {
       this.flag2 = true;
-      // console.log(idx + " 수정 클릭");
-      this.portfolioIdx = idx - 1;
-      this.portfolioTemp.userID = this.nowEmail;
-      this.portfolioTemp.startdate = this.$store.state.portfolios[this.portfolioIdx].portfolio.startdate;
-      this.portfolioTemp.enddate = this.$store.state.portfolios[this.portfolioIdx].portfolio.enddate;
-      this.portfolioTemp.sdate = this.$store.state.portfolios[this.portfolioIdx].portfolio.sdate;
-      this.portfolioTemp.edate = this.$store.state.portfolios[this.portfolioIdx].portfolio.edate;
-      this.portfolioTemp.title = this.$store.state.portfolios[this.portfolioIdx].portfolio.title;
-      this.portfolioTemp.content = this.$store.state.portfolios[this.portfolioIdx].portfolio.content;
-      this.portfolioTemp.teams = this.$store.state.portfolios[this.portfolioIdx].portfolio.teams;
-      this.portfolioTemp.thumbnail = this.$store.state.portfolios[this.portfolioIdx].portfolio.thumbnail;
+      this.postIdx = idx - 1;
+      this.postTemp.userID = this.$store.state.user.nickName;
+      this.postTemp.title = this.$store.state.posts[this.postIdx].post.title;
+      this.postTemp.content = this.$store.state.posts[this.postIdx].post.content;
     },
-    async deletePortfolio() {
-      const result = await FirebaseService.deletePortfolio(this.id);
-      this.portfolios = await FirebaseService.getPortfolios();
-      this.$store.commit('updatePortfolios', this.portfolios);
+    async deletePost() {
+      const result = await FirebaseService.deletePost(this.id);
+      this.posts = await FirebaseService.getPosts();
+      this.$store.commit('updatePosts', this.posts);
       this.$router.replace('/');
     },
-    async editPortfolio() {
-      const result = await FirebaseService.editPortfolio(this.id, this.portfolioTemp);
+    async editPost() {
+      const result = await FirebaseService.editPost(this.id, this.postTemp);
       this.flag2 = false;
-      this.portfolios = await FirebaseService.getPortfolios();
-      this.$store.commit('updatePortfolios', this.portfolios);
-      this.$router.replace('/portfolio/view/' + this.id);
+      this.posts = await FirebaseService.getPosts();
+      this.$store.commit('updatePosts', this.posts);
+      this.$router.replace('/post/view/' + this.id);
+    },
+    async getUserInfoByEmail(){
+      const result = await FirebaseService.getUserInfoByEmail(byEmail);
+      console.log(result);
     }
   },
   mounted() {
     console.log(this.nowUser.email + " 접속한 유저 정보");
-    this.nowEmail = this.emailArr[0]; //유저의 이메일에서 아이디만 저장
-    console.log(this.nowEmail);
+    // this.nowEmail = this.emailArr[0]; //유저의 이메일에서 아이디만 저장
 
-    this.getPortfolioReply();
+    this.getPostReplys();
     document.querySelectorAll('.card').forEach((elem) => {
       const head = elem.querySelector('.card__head')
       const image = elem.querySelector('.card__image')
@@ -260,3 +252,87 @@ const factor = (elemA, elemB, prop) => {
   return sizeB / sizeA
 }
 </script>
+
+
+<style>
+.userPhoto{
+  border-radius: 50px;
+}
+.title{
+  font-size: 2vw;
+}
+#views{
+  text-align: right;
+}
+
+.cardDiv{
+  width: 90% !important;
+}
+#content{
+  text-align: left;
+  padding: 10px;
+  margin: 10px;
+  background-color: #fafbfc;
+    border-radius: 40px;
+  /* border: 2px solid gray;
+  border-radius: 40px; */
+}
+/*  */
+
+/* .slideDown{
+	animation-name: slideDown;
+	-webkit-animation-name: slideDown;
+
+	animation-duration: 3s;
+	-webkit-animation-duration: 3s;
+
+	animation-timing-function: ease;
+	-webkit-animation-timing-function: ease;
+
+	visibility: visible !important;
+}
+
+@keyframes slideDown {
+	0% {
+		transform: translateY(-100%);
+	}
+	50%{
+		transform: translateY(8%);
+	}
+	65%{
+		transform: translateY(-4%);
+	}
+	80%{
+		transform: translateY(4%);
+	}
+	95%{
+		transform: translateY(-2%);
+	}
+	100% {
+		transform: translateY(0%);
+	}
+}
+
+@-webkit-keyframes slideDown {
+	0% {
+		-webkit-transform: translateY(-100%);
+	}
+	50%{
+		-webkit-transform: translateY(8%);
+	}
+	65%{
+		-webkit-transform: translateY(-4%);
+	}
+	80%{
+		-webkit-transform: translateY(4%);
+	}
+	95%{
+		-webkit-transform: translateY(-2%);
+	}
+	100% {
+		-webkit-transform: translateY(0%);
+	}
+} */
+
+
+</style>

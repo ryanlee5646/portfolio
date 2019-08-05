@@ -50,6 +50,9 @@ export default new Vuex.Store({
     updatePosts(state, data) {
       state.posts = data;
     },
+    updatePostReplys(state, data){
+      state.postReplys = data;
+    },
 
   },
 });
