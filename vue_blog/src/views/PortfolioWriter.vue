@@ -85,7 +85,7 @@ export default {
     return {
       portfolios : [],
       portfolio: {
-        userID: "", //this.$store.state.user
+        userID: this.$store.state.user.nickName, //this.$store.state.user
         startdate: "",
         enddate: "",
         sdate: "",
@@ -93,7 +93,7 @@ export default {
         title: "",
         content: "",
         teams: "",
-        // viewCount : 0,
+        views : 0,
         // portfolioCnt: this.$store.state.user.portfolioCount,
         // postCnt: this.$store.state.user.postCount,
       },

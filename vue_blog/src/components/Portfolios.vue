@@ -24,7 +24,6 @@
             <img :src="post.portfolio.thumbnail" alt="Alt" style="width : 100%; height: 100%;"/>
             <div class="portfolio-link">
               <!-- <a>{{post.uid}}</a> -->
-              <!-- <a>{{index}}</a> -->
               <a @click="routePath(post.uid)" class="popup_content"  target="_blank">See</a>
               <!-- <a href="/portfolio/view/acrKqb3TuKTJz9h4Dnkp"  class="popup_content" target="_blank">Detail</a> -->
             </div>
