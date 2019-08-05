@@ -8,6 +8,7 @@
         </ImgBanner>
         <router-view></router-view>
         <Chatbot></Chatbot>
+        <mFooter></mFooter>
       </div>
       <div class="loader wrapper" style="overflow:hidden;" v-else key="loader">
         <div class="spinner-loader"></div>
@@ -29,6 +30,7 @@ import mHeader from './components/MHeader.vue';
 import FirebaseService from '@/services/FirebaseService';
 import Chatbot from './components/Chatbot.vue';
 import writePage from './components/WritePage.vue'
+import mFooter from './components/Mfooter.vue';
 
 
 // @vue/compontent
@@ -78,6 +80,7 @@ export default {
     mSnackbar,
     mHeader,
     Chatbot,
+    mFooter,
     // writePage,
   },
 };
