@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import { stat } from 'fs';
 
 Vue.use(Vuex);
 
@@ -14,6 +15,12 @@ export default new Vuex.Store({
         portfolioReplys: [],
         posts: [],
         nowUser: '',
+        error: {
+            type: '',
+            state: false,
+            code: '',
+            message: '',
+        },
     },
     mutations: {
         displayDrawer(state, flag) {
@@ -25,8 +32,8 @@ export default new Vuex.Store({
         logout(state) {
             state.accessToken = '';
             state.user = '';
-            localStorage.setItem('user', JSON.stringify(state.user));
-            localStorage.setItem('accessToken', state.accessToken);
+            localStorage.removeItem('user');
+            localStorage.removeItem('accessToken');
         },
         addImageLink(state, link) {
             console.log(`${link} store.js`); // eslint-disable-line no-console
@@ -49,10 +56,25 @@ export default new Vuex.Store({
         updatePosts(state, data) {
             state.posts = data;
         },
+        setError(state, data) {
+            state.error.state = true;
+            state.error.type = data.type;
+            state.error.code = data.code;
+            state.error.message = data.message;
+        },
+        setErrorState(state) {
+            state.error.state = false;
+            state.type = '';
+            state.error.code = '';
+            state.error.message = '';
+        },
     },
     getters: {
-        getUserInfo: state => {
+        getUserInfo: (state) => {
             return state.user;
+        },
+        getError: (state) => {
+            return state.error;
         },
     },
 });

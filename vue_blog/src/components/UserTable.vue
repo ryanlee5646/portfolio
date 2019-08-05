@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-layout>
+
         <v-data-table
           :headers="headers"
           :items="desserts"
@@ -8,7 +8,7 @@
           class="elevation-1"
         >
         <template slot="items" slot-scope="props">
-        <td>{{ props.item.name }}</td>
+        <td >{{ props.item.name }}</td>
         <td class="text-xs-right">{{ props.item.portfolio }}</td>
         <td class="text-xs-right">{{ props.item.post }}</td>
         <td class="text-xs-right">{{ props.item.reply }}</td>
@@ -24,7 +24,6 @@
       </template>
         </v-data-table>
         
-    </v-layout>
   </v-container>
 </template>
 
@@ -38,15 +37,15 @@ import FirebaseService from '@/services/FirebaseService'
       headers: [
         {
           text: 'NickName',
-          align: 'left',
-          sortable: false,
+          align: 'center',
+          sortable: true,
           value: 'name'
         },
-        { text: 'Portfolio', value: 'portfolio' },
-        { text: 'Post', value: 'post' },
-        { text: 'Reply', value: 'reply' },
-        { text: 'Date', value: 'date' },
-        { text: 'Actions', value: 'name', sortable: false }
+        { text: 'Portfolio', value: 'portfolio', align: 'right' },
+        { text: 'Post', value: 'post', align: 'right' },
+        { text: 'Reply', value: 'reply', align: 'right' },
+        { text: 'Date', value: 'date', align: 'right' },
+        { text: 'Actions', value: 'name', sortable: false, align: 'center' }
       ],
       desserts: []
     }

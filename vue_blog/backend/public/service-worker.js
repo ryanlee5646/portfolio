@@ -1,4 +1,4 @@
-importScripts("/precache-manifest.2d41eee6e3c3a7ceb87298a119970379.js", "https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
+importScripts("/precache-manifest.6fa9ba83edeca04a4af21af38252909b.js", "https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 const CACHE_NAME = 'abdie-cache-v1';
 const urlsToCache = [

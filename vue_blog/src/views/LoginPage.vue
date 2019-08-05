@@ -20,7 +20,7 @@
               <v-text-field
                 v-model="login.password"
                 :rules="PasswordRules"
-                :counter="10"
+                :counter="20"
                 label="비밀번호"
                 class="dohyeon-font"
                 type="password"
@@ -358,7 +358,6 @@ export default {
       this.isLogin = flag;
     },
     async signUp() {
-      alert("[signUp]");
       // 이메일 검증
       const result = await FirebaseService.signUp(this.signup);
 

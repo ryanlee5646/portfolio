@@ -16,7 +16,6 @@ export default new Router({
             path: '/',
             name: 'mainPage',
             component: MainPage,
-            meta: { authRequired: false }
         },
         {
             path: '/portfolio/write',
