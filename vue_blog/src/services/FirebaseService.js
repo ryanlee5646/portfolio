@@ -1,6 +1,7 @@
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/auth';
+import 'firebase/messaging';
 
 const POSTS = 'posts';
 const VIEWS = 'views';
@@ -10,15 +11,23 @@ const PORTFOLIO_REPLYS = 'portfolio_replys';
 const LOGHISTORY = 'logHistory';
 // Setup Firebase
 const config = {
-  apiKey: 'AIzaSyBaK-tJRZvUUOHQYSTidhKMf16c5FCF_nE',
-  authDomain: 'vue-blog-f1b07.firebaseapp.com',
-  databaseURL: 'https://vue-blog-f1b07.firebaseio.com',
-  projectId: 'vue-blog-f1b07',
-  storageBucket: 'vue-blog-f1b07.appspot.com',
+    apiKey: 'AIzaSyBaK-tJRZvUUOHQYSTidhKMf16c5FCF_nE',
+    authDomain: 'vue-blog-f1b07.firebaseapp.com',
+    databaseURL: 'https://vue-blog-f1b07.firebaseio.com',
+    projectId: 'vue-blog-f1b07',
+    storageBucket: 'vue-blog-f1b07.appspot.com',
+    messagingSenderId: '1084798491757',
+    appId: '1:1084798491757:web:0f3fe9dbe280e6f7'
 };
 
 firebase.initializeApp(config);
 const firestore = firebase.firestore();
+const messaging = firebase.messaging();
+messaging.usePublicVapidKey('BE71GiStXCZkedHmFGZLNsz7vP1bETIPB9Oiz8cd7s0aDepoiht_xoxcXPPZpFEeIvaA1l6pRgcaQLVw8cqG2Kc');
+
+messaging.onMessage((payload) => {
+  alert('Message received ' + payload.notification.title)
+})
 
 export default {
   /* POST */
@@ -141,6 +150,8 @@ export default {
     return firebase.auth().signOut().then(() => {
       console.log('[info] success signOut');
       this.FirebaseLogoutLog(user.email);
+      this.outToken();
+
       return true;
     }).catch((error) => {
       const errorCode = error.code;
@@ -522,4 +533,45 @@ export default {
       });
   },
 
+  // push_notification check
+  notificationCheck() {
+    alert("노티피케이션")
+    Notification.requestPermission().then(function(permission) {
+      if(permission === 'granted') {
+        console.log("알림이 허용됨")
+      } else{
+        console.log("알림이 거부됨")
+      }
+    })
+  },
+  // 로그인시 토큰 얻기
+  gettingToken() {
+    messaging.getToken().then(function(currentToken){
+      if (currentToken){
+        var test_token = currentToken
+        console.log(test_token)
+        firestore.collection('tokens').doc(test_token).set({
+          test_token : test_token
+        })
+        } else {
+          console.log("No Instance ID token availabe")
+        }
+    }).catch(function(err){
+      console.log("An error occurred while retrieving token", err);
+    })
+  },
+
+  outToken(){
+    messaging.getToken().then(function(currentToken){
+      if (currentToken) {
+        var test_token = currentToken
+        console.log(test_token)
+        firestore.collection('tokens').doc(test_token).delete()
+      } else {
+        console.log("No Instance ID token available. Request permission to generate one.");
+      }
+    }).catch(function(err){
+      console.log("An error occurred while retrieving token", err)
+    })
+  }
 }; // eslint-disable-line

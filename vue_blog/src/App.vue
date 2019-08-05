@@ -61,12 +61,17 @@ export default {
     // 조회수
     FirebaseService.addViews();
   },
-
+  methods:{
+    async check(){ // 알림허용
+      await FirebaseService.notificationCheck()
+    }
+  },
   mounted() {
     const isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
     if (!isChrome) {
       this.snackbar = true;
     }
+    this.check() // 알림허용할지 확인
   },
   components: {
     ImgBanner,
