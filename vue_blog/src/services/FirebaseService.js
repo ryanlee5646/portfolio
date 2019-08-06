@@ -468,28 +468,38 @@ export default {
                 console.log(`[error] fail getUSerPostNumber : [CODE ${errorCode}] Error : ${errorMessage}`);
             });
     },
-    getUSerReplyNumber(nickName) {
+    getUserReplyNumber(nickName) {
         console.log('[info] start getUSerReplyNumber func()'); // .where('post.userID', '==', nickName)
         return firestore.collection(PORTFOLIOS).get()
-            .then(function(querySnapshot) { // eslint-disable-line
-                return querySnapshot.forEach(function(doc) { // eslint-disable-line
-                    const email = doc.data().email; // eslint-disable-line
-                    firestore.collection(PORTFOLIOS).doc(email).collection(PORTFOLIO_REPLYS).where('portfolioReply.email', '==', nickName)
-                        .get()
-                        .then(function(querySnapshot) { // eslint-disable-line
-                            return querySnapshot.size;
-                        })
-                        .catch((error) => {
-                            const errorCode = error.code;
-                            const errorMessage = error.message;
-                            console.log(`[error] fail getUSerPostNumber : [CODE ${errorCode}] Error : ${errorMessage}`);
-                        });
-                });
+            .then(async(querySnapshot) => { // eslint-disable-line
+                let replySum = 0;
+                for (let i = 0; i < querySnapshot.size; i += 1) {
+                    replySum += await this.getUserReplyCountByPortfolio(querySnapshot.docs[i].id, nickName); // eslint-disable-line
+                }
+                return replySum;
             })
             .catch((error) => {
                 const errorCode = error.code;
                 const errorMessage = error.message;
                 console.log(`[error] fail getUSerReplyNumber : [CODE ${errorCode}] Error : ${errorMessage}`);
+            });
+    },
+    getUserReplyCountByPortfolio(portfolioID, nickName) {
+        // console.log('[info] start getUserReplyCountByPortfolio func()');
+        return firestore.collection(PORTFOLIOS).doc(portfolioID).collection(PORTFOLIO_REPLYS).get()
+            .then(function(querySnapshot) { // eslint-disable-line
+                let cnt = 0;
+                for (let j = 0; j < querySnapshot.size; j += 1) {
+                    if (querySnapshot.docs[j].data().portfolioReply.email === nickName) {
+                        cnt += 1;
+                    }
+                }
+                return cnt;
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.log(`[error] fail getUserReplyCountByPortfolio : [CODE ${errorCode}] Error : ${errorMessage}`);
             });
     },
     getPortfolioNumber() {

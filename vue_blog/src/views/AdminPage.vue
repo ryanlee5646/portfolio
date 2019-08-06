@@ -149,15 +149,7 @@
                   </v-card>
                 </v-dialog>
                 <UserTable></UserTable>
-        <!-- <v-flex v-for="user in users" :key="user">
-            <h2> <img :src="getPhotoURL(user)" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;"> {{user.email}} {{user.name}} {{user.auth}}</h2>
-             <select v-model="user.auth">
-                <option disabled value="">select auth</option>
-                <option>Visitor</option>
-                <option>MyTeam</option>
-                <option>Admin</option>
-            </select> 
-        </v-flex>    -->
+ 
         </v-layout>
     </v-container>
 </template>

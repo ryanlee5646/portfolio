@@ -61,6 +61,7 @@ export default {
       console.log("App.vue - ", data);
 
       this.$store.commit('updatePosts', data);
+      //this.$store.commit('logout');
       this.isLoaded = true;
       this.$nextTick(() => document.body.classList.remove('loading'));
     });

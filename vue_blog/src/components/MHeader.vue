@@ -149,6 +149,8 @@ export default {
   },
   computed: {
     isLogined() {
+      console.log("[isLogined]");
+      console.log(this.$store.state.user);
       return this.$store.state.user !== "" && this.$store.state.user != null;
     },
     isAuth() {
