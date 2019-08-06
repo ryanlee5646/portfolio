@@ -3,9 +3,10 @@
     <transition name="fade" tag="div">
       <div class="wrapper" v-if="isLoaded" key="app">
         <mHeader></mHeader>
-        <ImgBanner imgSrc="https://source.unsplash.com/random">
+        <!-- <ImgBanner imgSrc="https://source.unsplash.com/random">
           <div style="line-height:1.2em;font-size:1.2em;" slot="text">Portfolio</div>
-        </ImgBanner>
+        </ImgBanner> -->
+        <HomeBanner></HomeBanner>
         <router-view></router-view>
         <Chatbot></Chatbot>
         <mFooter></mFooter>
@@ -25,6 +26,7 @@ import $ from 'jquery';
 import axios from 'axios';
 import store from './store';
 import ImgBanner from './components/ImgBanner.vue';
+import HomeBanner from './components/homeBanner.vue';
 import mSnackbar from './components/MSnackbar.vue';
 import mHeader from './components/MHeader.vue';
 import FirebaseService from '@/services/FirebaseService';
@@ -77,6 +79,7 @@ export default {
   },
   components: {
     ImgBanner,
+    HomeBanner,
     mSnackbar,
     mHeader,
     Chatbot,
