@@ -1,6 +1,7 @@
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/auth';
+import store from '../store';
 
 const POSTS = 'posts';
 const VIEWS = 'views';
@@ -104,6 +105,7 @@ export default {
                 const errorCode = error.code;
                 const errorMessage = error.message;
                 console.log(`[error] signUp func() : [CODE ${errorCode}] Error : ${errorMessage}`);
+                store.commit('setError', { type: 'error', code: '회원가입 오류', message: ' 예기치않은 오류로 인해 회원가입에 실패했습니다.' });
             });
 
         firestore.collection(USERS).doc(signup.email).set({
@@ -127,9 +129,12 @@ export default {
                 const errorCode = error.code;
                 const errorMessage = error.message;
                 if (errorCode === 'auth/wrong-password') {
-                    alert('[오류] 비밀번호가 올바르지 않습니다.'); // eslint-disable-line no-alert
+                    store.commit('setError', { type: 'error', code: '비밀번호 오류', message: ' 비밀번호가 올바르지 않습니다. 다시 한번 입력해주세요.' });
+                } else if (errorCode === 'auth/user-not-found') {
+                    store.commit('setError', { type: 'error', code: '아이디 오류', message: ' 아이디가 존재하지 않습니다. 회원 가입을 진행해 주세요.' });
                 } else {
                     console.log(`[error] fail singIn : [CODE ${errorCode}] Error : ${errorMessage}`);
+                    store.commit('setError', { type: 'error', code: errorCode, message: errorMessage });
                 }
             });
     },
@@ -156,6 +161,7 @@ export default {
                 const errorCode = error.code;
                 const errorMessage = error.message;
                 console.log(`[error] fail loginWithGoogle : [CODE ${errorCode}] Error : ${errorMessage}`);
+                store.commit('setError', { type: 'error', code: errorCode, message: errorMessage });
             });
     },
     loginWithFacebook() {
@@ -166,6 +172,7 @@ export default {
                 const errorCode = error.code;
                 const errorMessage = error.message;
                 console.log(`[error] fail loginWithFacebook : [CODE ${errorCode}] Error : ${errorMessage}`);
+                store.commit('setError', { type: 'error', code: errorCode, message: errorMessage });
             });
     },
     addGitlabInfo(gitlab) {
@@ -577,29 +584,38 @@ export default {
                 console.log(`[error] fail getUSerPostNumber : [CODE ${errorCode}] Error : ${errorMessage}`);
             });
     },
-    getUSerReplyNumber(nickName) {
+    getUserReplyNumber(nickName) {
         console.log('[info] start getUSerReplyNumber func()'); // .where('post.userID', '==', nickName)
-        const portfolioCollection = firestore.collection(PORTFOLIOS);
-        return portfolioCollection.get()
-            .then(function(querySnapshot) { // eslint-disable-line
-                return querySnapshot.forEach(function(doc) { // eslint-disable-line
-                    const email = doc.data().email; // eslint-disable-line
-                    portfolioCollection.doc(email).collection(PORTFOLIO_REPLYS).where('portfolioReply.email', '==', nickName)
-                        .get()
-                        .then(function(querySnapshot) { // eslint-disable-line
-                            return querySnapshot.size;
-                        })
-                        .catch((error) => {
-                            const errorCode = error.code;
-                            const errorMessage = error.message;
-                            console.log(`[error] fail getUSerPostNumber : [CODE ${errorCode}] Error : ${errorMessage}`);
-                        });
-                });
+        return firestore.collection(PORTFOLIOS).get()
+            .then(async(querySnapshot) => { // eslint-disable-line
+                let replySum = 0;
+                for (let i = 0; i < querySnapshot.size; i += 1) {
+                    replySum += await this.getUserReplyCountByPortfolio(querySnapshot.docs[i].id, nickName); // eslint-disable-line
+                }
+                return replySum;
             })
             .catch((error) => {
                 const errorCode = error.code;
                 const errorMessage = error.message;
                 console.log(`[error] fail getUSerReplyNumber : [CODE ${errorCode}] Error : ${errorMessage}`);
+            });
+    },
+    getUserReplyCountByPortfolio(portfolioID, nickName) {
+        // console.log('[info] start getUserReplyCountByPortfolio func()');
+        return firestore.collection(PORTFOLIOS).doc(portfolioID).collection(PORTFOLIO_REPLYS).get()
+            .then(function(querySnapshot) { // eslint-disable-line
+                let cnt = 0;
+                for (let j = 0; j < querySnapshot.size; j += 1) {
+                    if (querySnapshot.docs[j].data().portfolioReply.email === nickName) {
+                        cnt += 1;
+                    }
+                }
+                return cnt;
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.log(`[error] fail getUserReplyCountByPortfolio : [CODE ${errorCode}] Error : ${errorMessage}`);
             });
     },
     getPortfolioNumber() {

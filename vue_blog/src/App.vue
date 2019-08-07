@@ -16,6 +16,7 @@
       </div>
     </transition>
     <!-- <writePage></writePage> -->
+    <message-modal></message-modal>
     <!-- 크롬 브라우저가 아닐 시 최적화 메시지 띄워주는 스낵바-->
     <mSnackbar :snackbar="snackbar"></mSnackbar>
   </v-app>
@@ -31,8 +32,9 @@ import mSnackbar from './components/MSnackbar.vue';
 import mHeader from './components/MHeader.vue';
 import FirebaseService from '@/services/FirebaseService';
 import Chatbot from './components/Chatbot.vue';
-import writePage from './components/WritePage.vue'
 import mFooter from './components/Mfooter.vue';
+import writePage from './components/WritePage.vue';
+import MessageModal from './components/MessageModal.vue';
 
 
 // @vue/compontent
@@ -60,6 +62,7 @@ export default {
 
     FirebaseService.getPosts().then((data) => {
       this.$store.commit('updatePosts', data);
+      //this.$store.commit('logout');
       this.isLoaded = true;
       this.$nextTick(() => document.body.classList.remove('loading'));
     });
@@ -81,6 +84,7 @@ export default {
     mHeader,
     Chatbot,
     mFooter,
+    MessageModal,
     // writePage,
   },
 };

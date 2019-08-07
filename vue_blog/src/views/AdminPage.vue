@@ -116,7 +116,9 @@
                               <v-card class="drag-item" v-for="item in group.items" :key="item.id" :data-id="item.id">
                                 <v-layout py-4 pl-1>
                                   <v-flex shrink xs3>
-                                    <v-img height="70px" width="70px" src="https://pondokindahmall.co.id/assets/img/default.png"></v-img>
+                                    <v-avatar>
+                                      <v-img height="50px" width="50px" :src="getPhotoURL(item)" style="margin-top:10px;"></v-img>
+                                    </v-avatar>
                                   </v-flex>
                                   <v-flex text-center xs8>
                                     <v-container grid-list-lg pa-0>
@@ -146,17 +148,8 @@
                     </v-card-actions>
                   </v-card>
                 </v-dialog>
-                
                 <UserTable></UserTable>
-        <!-- <v-flex v-for="user in users" :key="user">
-            <h2> <img :src="getPhotoURL(user)" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;"> {{user.email}} {{user.name}} {{user.auth}}</h2>
-             <select v-model="user.auth">
-                <option disabled value="">select auth</option>
-                <option>Visitor</option>
-                <option>MyTeam</option>
-                <option>Admin</option>
-            </select> 
-        </v-flex>    -->
+ 
         </v-layout>
     </v-container>
 </template>
@@ -229,7 +222,7 @@ export default{
     },
     components: {
       Title,
-      UserTable
+      UserTable,
     },
     methods:{
         async getAllUserInfo(users, groups){
@@ -239,7 +232,7 @@ export default{
                 if(user.auth === 'visitor'){
                     groups.forEach(function(group){
                         if(group.id === 3){
-                            group.items.push({id: idNum, name: user.name, email: user.email, groupid: 3});
+                            group.items.push({id: idNum, name: user.name, email: user.email, photoURL: user.photoURL, groupid: 3});
                             ++idNum;
                         }
                     });
@@ -247,7 +240,7 @@ export default{
                 else if(user.auth === 'manager'){
                     groups.forEach(function(group){
                         if(group.id === 1){
-                            group.items.push({id: idNum, name: user.name, email: user.email, groupid: 1});
+                            group.items.push({id: idNum, name: user.name, email: user.email, photoURL: user.photoURL, groupid: 1});
                             ++idNum;
                         }
                     });
@@ -255,7 +248,7 @@ export default{
                 else if(user.auth === 'team'){
                     groups.forEach(function(group){
                         if(group.id === 2){
-                            group.items.push({id: idNum, name: user.name, email: user.email, groupid: 2});
+                            group.items.push({id: idNum, name: user.name, email: user.email, photoURL: user.photoURL, groupid: 2});
                             ++idNum;
                         }
                     });
@@ -303,20 +296,23 @@ export default{
     },
     beforeRouteEnter (to, from, next) {
       const user = JSON.parse(localStorage.getItem('user') || '{}');
-      console.log(user);
-      if(user != "" || user != null){ 
+      if(user.email != undefined){ 
         if(user.auth === 'manager'){
           next();
         }else{
-          alert('[info] 권한이 없습니다. 관리자에게 문의하세요. ^^* ');
+          store.commit('setError', { type: 'error', code: '접근권한 오류', message: '접근권한이 없습니다. 관리자에게 문의하세요.' });
           next({
-                  path: '/',
-              })
+            path: '/',
+          })
         }
       }
       else{
-        alert('[info] 로그인이 필요한 페이지입니다. 로그인 후 접속해 주세요.');
+        store.commit('setError', { type: 'error', code: '로그인 오류', message: '로그인이 필요한 페이지입니다. 로그인 후 접속해 주세요.' });
+        next({
+          path: '/',
+        })
       }
+      
     },
 }
 </script>

@@ -47,7 +47,7 @@
           </li>
           <li @click="doLogout()" flat v-if="isLogined">
             <AnimateWhenVisible name="fadeUp" :duration="1.9">
-              <a href="#post">
+              <a @click="siteMove('/')">
                 Logout
                 <span></span>
               </a>
@@ -109,13 +109,14 @@ export default {
     },
     async doLogout() {
       let flag = await FirebaseService.signOut();
+      this.$store.commit('logout');
       if(flag === true){
           this.$store.commit('logout');
-          alert("정상적으로 로그아웃 되었습니다."); // eslint-disable-line no-alert
+          this.$store.commit('setError', { type: 'success', code: '로그아웃', message: '정상적으로 로그아웃 되었습니다.' });
           this.$router.push({ path: '/' });
         }
         else{
-          alert("[오류] 비정상적인 로그아웃 입니다."); // eslint-disable-line no-alert
+          this.$store.commit('setError', { type: 'warning', code: '로그아웃', message: '비정상적인 로그아웃 입니다.' });
           this.$router.push({ path: '/' });
         }
     },
@@ -148,6 +149,8 @@ export default {
   },
   computed: {
     isLogined() {
+      console.log("[isLogined]");
+      console.log(this.$store.state.user);
       return this.$store.state.user !== "" && this.$store.state.user != null;
     },
     isAuth() {

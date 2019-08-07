@@ -1,14 +1,14 @@
 <template>
   <v-container>
-    <v-layout>
+        <h1>User Information</h1>
         <v-data-table
           :headers="headers"
           :items="desserts"
-          :items-per-page="11"
+          :items-per-page="5"
           class="elevation-1"
         >
         <template slot="items" slot-scope="props">
-        <td>{{ props.item.name }}</td>
+        <td >{{ props.item.name }}</td>
         <td class="text-xs-right">{{ props.item.portfolio }}</td>
         <td class="text-xs-right">{{ props.item.post }}</td>
         <td class="text-xs-right">{{ props.item.reply }}</td>
@@ -24,7 +24,6 @@
       </template>
         </v-data-table>
         
-    </v-layout>
   </v-container>
 </template>
 
@@ -38,15 +37,15 @@ import FirebaseService from '@/services/FirebaseService'
       headers: [
         {
           text: 'NickName',
-          align: 'left',
+          align: 'center',
           sortable: false,
           value: 'name'
         },
-        { text: 'Portfolio', value: 'portfolio' },
-        { text: 'Post', value: 'post' },
-        { text: 'Reply', value: 'reply' },
-        { text: 'Date', value: 'date' },
-        { text: 'Actions', value: 'name', sortable: false }
+        { text: 'Portfolio', value: 'portfolio', align: 'right' },
+        { text: 'Post', value: 'post', align: 'right' },
+        { text: 'Reply', value: 'reply', align: 'right' },
+        { text: 'Date', value: 'date', align: 'right' },
+        { text: 'Actions', value: 'name', sortable: false, align: 'center' }
       ],
       desserts: []
     }
@@ -65,8 +64,8 @@ import FirebaseService from '@/services/FirebaseService'
         let d = new Date(user.created_at.toDate());
         d = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
         // console.log(d);
-        const replyNum = 0;
-        // const replyNum = await FirebaseService.getUSerReplyNumber();
+        //const replyNum = 0;
+        const replyNum = await FirebaseService.getUserReplyNumber(user.nickName);
         // console.log(replyNum);
         this.desserts.push({value: false, name: user.email, portfolio: portfolioNum, post: postNum, reply: replyNum, date: d});
       });

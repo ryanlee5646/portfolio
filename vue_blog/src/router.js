@@ -11,44 +11,44 @@ import PostView from './views/PostView.vue';
 Vue.use(Router);
 /* eslint-disable */
 export default new Router({
-  mode: 'history',
-  base: process.env.BASE_URL,
-  routes: [{
-      path: '/',
-      name: 'mainPage',
-      component: MainPage,
-    },
-    {
-      path: '/portfolio/write',
-      name: 'portfoliowrite',
-      component: PortfolioWriter,
-    },
-    {
-      path: '/portfolio/view/:id',
-      name: 'portfolioview',
-      component: PortfolioView,
-      props: true,
-    },
-    {
-      path: '/admin',
-      name: 'AdminPage',
-      component: AdminPage,
-    },
-    {
-      path: '/reply',
-      name: 'Reply',
-      component: Reply,
-    },
-    {
-      path: '/post/write',
-      name: 'postwrite',
-      component: PostWriter,
-    },
-    {
-      path: '/post/view/:id',
-      name: 'postView',
-      component: PostView,
-      props: true,
-    },
-  ],
+    mode: 'history',
+    base: process.env.BASE_URL,
+    routes: [{
+            path: '/',
+            name: 'mainPage',
+            component: MainPage,
+        },
+        {
+            path: '/portfolio/write',
+            name: 'portfoliowrite',
+            component: PortfolioWriter,
+        },
+        {
+            path: '/portfolio/view/:id',
+            name: 'portfolioview',
+            component: PortfolioView,
+            props: true,
+        },
+        {
+            path: '/admin',
+            name: 'AdminPage',
+            component: AdminPage,
+        },
+        {
+            path: '/reply',
+            name: 'Reply',
+            component: Reply,
+        },
+        {
+            path: '/post/write',
+            name: 'postwrite',
+            component: PostWriter,
+        },
+        {
+            path: '/post/view/:id',
+            name: 'postView',
+            component: PostView,
+            props: true,
+        },
+    ],
 });
