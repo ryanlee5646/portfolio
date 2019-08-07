@@ -258,6 +258,7 @@ export default {
     };
   },
   methods: {
+    // 구글로그인
     async loginWithGoogle() {
       const result = await FirebaseService.loginWithGoogle();
       this.$store.state.accessToken = result.credential.accessToken;
@@ -297,7 +298,11 @@ export default {
       this.$store.commit("loginDialog", false);
       this.$router.push("/");
       // localStorage.setItem("portfolios", this.$store.state.portfolios);
+      
+      FirebaseService.gettingToken();
+    
     },
+    // 페이스북 로그인
     async loginWithFacebook() {
       const result = await FirebaseService.loginWithFacebook();
       this.$store.state.accessToken = result.credential.accessToken;
@@ -331,7 +336,10 @@ export default {
       }
       this.$store.commit("loginDialog", false);
       this.$router.push("/");
+
+      FirebaseService.gettingToken();
     },
+    
     async addGitlabInfo(){
       try {
         await FirebaseService.addGitlabInfo(this.gitlab);
@@ -364,6 +372,7 @@ export default {
       this.$store.commit("loginDialog", false);
       this.$router.push("/");
     },
+    // 일반로그인
     async signIn() {
       const result = await FirebaseService.signIn(this.login);
 
@@ -379,6 +388,7 @@ export default {
         this.$store.commit("loginDialog", false);
         this.$router.push("/");
       }
+      FirebaseService.gettingToken();
     }
   },
   computed: {
