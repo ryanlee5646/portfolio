@@ -101,13 +101,13 @@
              <h2 class="page-header"><br>Comments 👀</h2><br>
             <section class="comment-list">
               <article v-for="(r, index) in this.portfolioReplys" class="row">
-                <div class="col-md-2 col-xs-6s hidden-xs">
+                <div class="col-sm-2 d-none d-sm-block">
                   <figure class="profile">
-                    <img class="img-responsive" src="http://www.tangoflooring.ca/wp-content/uploads/2015/07/user-avatar-placeholder.png" width="70%;" />
+                    <img class="img-responsive" width="100%" src="http://www.tangoflooring.ca/wp-content/uploads/2015/07/user-avatar-placeholder.png" />
                     <!-- <figcaption class="text-center">{{r.portfolioReply.email}}</figcaption> -->
                   </figure>
                 </div>
-                <div class="col-md-10 col-sm-10">
+                <div class="col-md-10 col-sm-10 col-xs-12">
                   <div class="panel panel-default arrow left">
                     <div class="panel-body">
                       <header class="text-left">
@@ -162,7 +162,7 @@ export default {
         content: ""
       },
       nowUser: this.$store.state.user,
-      emailArr: this.$store.state.user.email.split('@'),
+      emailArr: this.$store.state.user.email ? this.$store.state.user.email.split('@') : '',
       nowEmail: "",
       index: "",
       portfolioIdx: 0,
