@@ -7,14 +7,14 @@
           <ul class="breadcrumbs">
             <li class="filter" :class="{ active: isFiltered('all') }"
              @click="filter('all')">All</li>
-            <li class="filter" :class="{ active: isFiltered('blog') }"
-             @click="filter('blog')">성</li>
-            <li class="filter" :class="{ active: isFiltered('shop') }"
-             @click="filter('shop')">정</li>
-            <li class="filter" :class="{ active: isFiltered('landing') }"
-             @click="filter('landing')">웅</li>
-             <li class="filter" :class="{ active: isFiltered('landing') }"
-              @click="filter('landing')">진</li>
+            <li class="filter" :class="{ active: isFiltered('문용성') }"
+             @click="filter('문용성')">용성</li>
+            <li class="filter" :class="{ active: isFiltered('신은정') }"
+             @click="filter('신은정')">은정</li>
+            <li class="filter" :class="{ active: isFiltered('윤관웅') }"
+             @click="filter('윤관웅')">관웅</li>
+             <li class="filter" :class="{ active: isFiltered('이규진') }"
+              @click="filter('이규진')">규진</li>
           </ul>
         </div>
 
@@ -24,7 +24,6 @@
             <img :src="post.portfolio.thumbnail" alt="Alt" style="width : 100%; height: 100%;"/>
             <div class="portfolio-link">
               <!-- <a>{{post.uid}}</a> -->
-              <!-- <a>{{index}}</a> -->
               <a @click="routePath(post.uid)" class="popup_content"  target="_blank">See</a>
               <!-- <a href="/portfolio/view/acrKqb3TuKTJz9h4Dnkp"  class="popup_content" target="_blank">Detail</a> -->
             </div>
@@ -117,7 +116,7 @@ export default {
       if (this.currentFilter === 'all') {
         return this.portfolios;
       }
-      return this.posts.filter(post => post.tags && post.tags.includes(this.currentFilter));
+      return this.portfolios.filter(portfolio => portfolio.portfolio.teams && portfolio.portfolio.teams.includes(this.currentFilter));
     },
   },
 };
@@ -145,12 +144,12 @@ export default {
     background-color: $bg-portfolio;
     color: map-get($colors, light);
   }
-
-  /deep/ .text-wrapper {
-    &:after {
-      border-bottom: 1px solid map-get($colors, light);
-    }
-  }
+  //
+  // /deep/ .text-wrapper {
+  //   &:after {
+  //     border-bottom: 1px solid map-get($colors, light);
+  //   }
+  // }
 
   .breadcrumbs {
     text-align: center;

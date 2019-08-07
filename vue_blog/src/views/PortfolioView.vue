@@ -12,7 +12,8 @@
                 <!-- <img class="w-full .text-pop-up-top" :src = "$store.state.portfolios[i -1].portfolio.thumbnail" alt="Sunset in the mountains"> -->
                 <div class="px-6 py-4 portfolioDiv2">
                   <a class="font-bold text-xl mb-2 title" style="font-size : 2.5vw !important;"> " {{$store.state.portfolios[i -1].portfolio.title}} "</a><hr>
-                  <span style="font-size : 1.5vw !important;">조회수 : {{$store.state.portfolios[i -1].viewCount}}</span>
+                  <span style="font-size : 1.5vw !important;">조회수 : {{$store.state.portfolios[i -1].views}}</span>
+                  <br><span style="font-size : 1.5vw !important;">작성자 : {{$store.state.portfolios[i -1].portfolio.userID}}</span>
                   <div>
                     {{$store.state.portfolios[i -1].portfolio.sdate}} ~ {{$store.state.portfolios[i -1].portfolio.edate}}
                     <!-- <b-progress :value="90" variant="warning" striped :animated="true"></b-progress> -->
@@ -27,8 +28,8 @@
                     # {{$store.state.portfolios[i -1].portfolio.teams}}
                   </span>
                 </div><br>
-                <button class="button" @click="deletePortfolio(i)">Delete</button>
-                <button class="button" @click="editPortfolioClick(i)">Edit</button>
+                <button class="button" v-if="$store.state.portfolios[i -1].portfolio.userID === nowUser.nickName"  @click="deletePortfolio(i)">Delete</button>
+                <button class="button" v-if="$store.state.portfolios[i -1].portfolio.userID === nowUser.nickName"  @click="editPortfolioClick(i)">Edit</button>
               </div>
             </div>
           </div>
@@ -65,14 +66,17 @@
                     <div v-else style="color : #43b848de;">
                       <b><span v-html="this.$store.state.ImageLink"></span></b><br>
                     </div><br><br>
-                  </v-layout><br> -->
+                  </v-layout><br>
+             -->
 
-                  <hr><button class="button" @click="editPortfolio()">Edit</button>
-                  <button  class="button" to="/portfolio" block flat>뒤로</button>
-
+              <hr><button class="button"  @click="editPortfolio()">Edit</button>
+              <button  class="button" to="/" block flat>뒤로</button>
           </div>
         </div>
       </div>
+      <h2>HI</h2>
+    <repository></repository>
+    <h2>HI</h2>
     </v-flex>
   </v-layout>
 
@@ -97,16 +101,16 @@
         <v-flex xs8 class="text-xs-center"> -->
           <div class="row"><br>
             <!-- <div class="col-md-8"> -->
-             <h2 class="page-header"><br>Comments</h2><br>
+             <h2 class="page-header"><br>Comments 👀</h2><br>
             <section class="comment-list">
               <article v-for="(r, index) in this.portfolioReplys" class="row">
-                <div class="col-md-2 col-xs-6s hidden-xs">
+                <div class="col-sm-2 d-none d-sm-block">
                   <figure class="profile">
-                    <img class="img-responsive" src="http://www.tangoflooring.ca/wp-content/uploads/2015/07/user-avatar-placeholder.png" width="70%;" />
+                    <img class="img-responsive" width="100%" src="http://www.tangoflooring.ca/wp-content/uploads/2015/07/user-avatar-placeholder.png" />
                     <!-- <figcaption class="text-center">{{r.portfolioReply.email}}</figcaption> -->
                   </figure>
                 </div>
-                <div class="col-md-10 col-sm-10">
+                <div class="col-md-10 col-sm-10 col-xs-12">
                   <div class="panel panel-default arrow left">
                     <div class="panel-body">
                       <header class="text-left">
@@ -117,10 +121,10 @@
                       <div class="comment-post" v-if="flag === false">
                         <p> {{r.portfolioReply.content}} </p>
                         <!-- @click="flag = true"  -->
-                        <button v-if="r.portfolioReply.email === nowEmail" class="button" @click="editClick(index)">수 정</button>
-                        <button v-if="r.portfolioReply.email === nowEmail" class="button" @click="deleteReply(index)">삭 제</button>
+                        <button v-if="r.portfolioReply.email === nowUser.nickName" class="button" @click="editClick(index)">수 정</button>
+                        <button v-if="r.portfolioReply.email === nowUser.nickName" class="button" @click="deleteReply(index)">삭 제</button>
                       </div>
-                      <div class="comment-post" v-else-if="r.portfolioReply.email === nowEmail">
+                      <div class="comment-post" v-else-if="r.portfolioReply.email === nowUser.nickName">
                         <p v-if="editIdx === index">
                           <input type="text" v-model="editReplyContent" :placeholder="r.portfolioReply.content"></input> </p>
                         <button class="button" @click="editReply(index)">O K</button>
@@ -139,6 +143,7 @@
 
     </div>
     </div>
+    
   </v-layout><br>
 </v-container>
 </template>
@@ -148,6 +153,8 @@ import marked from 'marked';
 import FirebaseService from '@/services/FirebaseService'
 import markdownEditor from 'vue-simplemde/src/markdown-editor';
 import ImageComponent from '../components/ImageComponent.vue';
+import Repository from '../components/Repository.vue';
+
 // import FlipCard from 'vue-flip-card';
 // import portfoliowrite from '../views/PortfolioWriter.vue';
 
@@ -161,7 +168,7 @@ export default {
         content: ""
       },
       nowUser: this.$store.state.user,
-      emailArr: this.$store.state.user.email.split('@'),
+      emailArr: this.$store.state.user.email ? this.$store.state.user.email.split('@') : '',
       nowEmail: "",
       index: "",
       portfolioIdx: 0,
@@ -185,7 +192,7 @@ export default {
   components: {
     markdownEditor,
     ImageComponent,
-
+    Repository,
   },
   props: {
     id: {
@@ -202,7 +209,7 @@ export default {
   },
   created() {
     console.log(this.id + "created??");
-    FirebaseService.addPortfoliosCount(this.id);
+    FirebaseService.addPortfoliosViews(this.id);
   },
   methods: {
     async PortfolioReply(){
@@ -225,7 +232,7 @@ export default {
     async editReply(index) {
       console.log(this.$store.state.portfolioReplys[index].uid + " 선택한 댓글?");
       this.flag = true;
-      const result = await FirebaseService.editReply(this.id, this.$store.state.portfolioReplys[index].uid, this.editReplyContent, this.nowEmail);
+      const result = await FirebaseService.editReply(this.id, this.$store.state.portfolioReplys[index].uid, this.editReplyContent, this.nowUser.nickName);
       // this.$store.state.portfolioReplys.splice(index, 1);
       this.flag = false;
       this.getPortfolioReply();
@@ -263,9 +270,6 @@ export default {
     }
   },
   mounted() {
-    console.log(this.nowUser.email + " 접속한 유저 정보");
-    this.nowEmail = this.emailArr[0]; //유저의 이메일에서 아이디만 저장
-    console.log(this.nowEmail);
 
     this.getPortfolioReply();
     document.querySelectorAll('.card').forEach((elem) => {

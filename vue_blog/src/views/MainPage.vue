@@ -1,6 +1,6 @@
 <template>
   <div>
-    <AboutMe :category="categories[1]" :posts="posts" :user="users[0]"></AboutMe>
+    <AboutMe :category="categories[1]" :aboutus="aboutus"></AboutMe>
     <Portfolios :category="categories[0]" :portfolios="getPortfolios"></Portfolios>
     <Posts :category="categories[2]" :portfolios="getPortfolios"></Posts>
   </div>
@@ -19,7 +19,7 @@ export default {
         description: 'I can show you the portfolios',
       },
       {
-        name: 'AboutUs',
+        name: 'Members',
         description: 'Look at this awesome personnnnn',
       },
       {
@@ -29,14 +29,10 @@ export default {
       users: [{
         name: 'Kwanwoong Yoon',
       }],
-      posts: [{
-        slug: 'Kwanwoong Yoon',
-        'few-words-about-me': {
-          title: 'This is titleeee',
-          content: 'I have no idea of this paragraph. Indeed, i just type any words to fill out this whitespace. damnnnnn.',
-        },
-        'personal-information': {
+      aboutus: {
+        이규진: {
           title: 'Thie is secondary title',
+          content: '<p>I have no idea of this paragraph. Indeed, i just type any words to fill out this whitespace. damnnnnn.</p>',
           meta: {
             email: 'dbsrhksdnd@gmail.com',
             skype: 'dbsrhksdnd@gmail.com',
@@ -49,7 +45,7 @@ export default {
             ],
           },
         },
-      }],
+      },
     };
   },
   components: {

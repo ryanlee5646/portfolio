@@ -26,6 +26,7 @@
         "vue-draggable": "^2.0.2",
         "vue-filepond": "^5.1.1",
         "vue-gitlab-api": "^0.1.8",
+        "vue-google-charts": "^0.3.2",
         "vue-light-timeline": "^1.0.3",
         "vue-number-animation": "^1.0.5",
         "vue-resource": "^1.5.1",

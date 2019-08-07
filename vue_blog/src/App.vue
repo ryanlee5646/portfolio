@@ -3,31 +3,38 @@
     <transition name="fade" tag="div">
       <div class="wrapper" v-if="isLoaded" key="app">
         <mHeader></mHeader>
-        <ImgBanner imgSrc="https://source.unsplash.com/random">
+        <!-- <ImgBanner imgSrc="https://source.unsplash.com/random">
           <div style="line-height:1.2em;font-size:1.2em;" slot="text">Portfolio</div>
-        </ImgBanner>
+        </ImgBanner> -->
+        <HomeBanner></HomeBanner>
         <router-view></router-view>
         <Chatbot></Chatbot>
+        <mFooter></mFooter>
       </div>
       <div class="loader wrapper" style="overflow:hidden;" v-else key="loader">
         <div class="spinner-loader"></div>
       </div>
     </transition>
     <!-- <writePage></writePage> -->
+    <message-modal></message-modal>
     <!-- 크롬 브라우저가 아닐 시 최적화 메시지 띄워주는 스낵바-->
     <mSnackbar :snackbar="snackbar"></mSnackbar>
   </v-app>
 </template>
 
 <script>
+import $ from 'jquery';
+import axios from 'axios';
 import store from './store';
 import ImgBanner from './components/ImgBanner.vue';
+import HomeBanner from './components/homeBanner.vue';
 import mSnackbar from './components/MSnackbar.vue';
 import mHeader from './components/MHeader.vue';
 import FirebaseService from '@/services/FirebaseService';
 import Chatbot from './components/Chatbot.vue';
-import writePage from './components/WritePage.vue'
-import $ from 'jquery';
+import mFooter from './components/Mfooter.vue';
+import writePage from './components/WritePage.vue';
+import MessageModal from './components/MessageModal.vue';
 
 
 // @vue/compontent
@@ -41,19 +48,21 @@ export default {
     };
   },
   created() {
+    axios.get('/api')
+      .then((response) => {
+        console.log('response ', response);
+      });
     window.vueStore = this.$store;
     document.body.classList.add('loading');
     FirebaseService.getPortfolios().then((data) => {
-      console.log("App.vue - 1  ", data);
       this.$store.commit('updatePortfolios', data);
       this.isLoaded = true;
       this.$nextTick(() => document.body.classList.remove('loading'));
     });
 
     FirebaseService.getPosts().then((data) => {
-      console.log("App.vue - ", data);
-
       this.$store.commit('updatePosts', data);
+      //this.$store.commit('logout');
       this.isLoaded = true;
       this.$nextTick(() => document.body.classList.remove('loading'));
     });
@@ -75,9 +84,12 @@ export default {
   },
   components: {
     ImgBanner,
+    HomeBanner,
     mSnackbar,
     mHeader,
     Chatbot,
+    mFooter,
+    MessageModal,
     // writePage,
   },
 };

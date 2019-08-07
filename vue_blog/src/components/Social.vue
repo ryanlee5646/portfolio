@@ -1,9 +1,9 @@
 <template>
   <div class="social-wrap">
     <ul>
-      <li v-for="social in socialUrls">
+      <li v-for="(social, idx) in socialUrls" :key="idx">
         <a :href="social.url" target="_blank">
-          <i :class="social.icon"></i>
+          <v-icon style="margin-right: 5px;">{{social.icon}}</v-icon>
         </a>
       </li>
     </ul>

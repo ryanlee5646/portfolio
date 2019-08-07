@@ -6,7 +6,7 @@
       <nav class="nav-bar" v-if="isMenuVisible">
         <ul @click="isMenuVisible = !isMenuVisible">
           <li @click="scrolling">
-            <AnimateWhenVisible name="fadeUp">
+            <AnimateWhenVisible name="fadeUp" :duration="1.9">
               <a @click="siteMove('/')">
                 Home
                 <span></span>
@@ -14,23 +14,15 @@
             </AnimateWhenVisible>
           </li>
           <li @click="scrolling">
-            <AnimateWhenVisible name="fadeUp" :duration="1.3">
+            <AnimateWhenVisible name="fadeUp" :duration="1.9">
               <a href="#about">
                 About Us
                 <span></span>
               </a>
             </AnimateWhenVisible>
-          </li>
+          </li> 
           <li @click="scrolling">
-            <AnimateWhenVisible name="fadeUp" :duration="1.3">
-              <a @click="siteMove('/admin')">
-                Admin
-                <span></span>
-              </a>
-            </AnimateWhenVisible>
-          </li>
-          <li @click="scrolling">
-            <AnimateWhenVisible name="fadeUp" :duration="1.6">
+            <AnimateWhenVisible name="fadeUp" :duration="1.9">
               <a href="#portfolio">
                 Portfolio
                 <span></span>
@@ -38,7 +30,7 @@
             </AnimateWhenVisible>
           </li>
           <li @click="scrolling">
-            <AnimateWhenVisible name="fadeUp" :duration="1.6">
+            <AnimateWhenVisible name="fadeUp" :duration="1.9">
               <a href="#post">
                 Post
                 <span></span>
@@ -46,20 +38,25 @@
             </AnimateWhenVisible>
           </li>
           <li @click="doLogin()" flat v-if="!isLogined">
-
             <AnimateWhenVisible name="fadeUp" :duration="1.9">
               <a>
                 Login
                 <span></span>
               </a>
-
-
             </AnimateWhenVisible>
           </li>
           <li @click="doLogout()" flat v-if="isLogined">
             <AnimateWhenVisible name="fadeUp" :duration="1.9">
-              <a href="#post">
+              <a @click="siteMove('/')">
                 Logout
+                <span></span>
+              </a>
+            </AnimateWhenVisible>
+          </li>
+          <li @click="scrolling" v-if="isAuth">
+            <AnimateWhenVisible name="fadeUp" :duration="1.9">
+              <a @click="siteMove('/admin')">
+                DashBoard
                 <span></span>
               </a>
             </AnimateWhenVisible>
@@ -112,12 +109,15 @@ export default {
     },
     async doLogout() {
       let flag = await FirebaseService.signOut();
+      this.$store.commit('logout');
       if(flag === true){
           this.$store.commit('logout');
-          alert("정상적으로 로그아웃 되었습니다."); // eslint-disable-line no-alert
+          this.$store.commit('setError', { type: 'success', code: '로그아웃', message: '정상적으로 로그아웃 되었습니다.' });
+          this.$router.push({ path: '/' });
         }
         else{
-          alert("[오류] 비정상적인 로그아웃 입니다."); // eslint-disable-line no-alert
+          this.$store.commit('setError', { type: 'warning', code: '로그아웃', message: '비정상적인 로그아웃 입니다.' });
+          this.$router.push({ path: '/' });
         }
     },
     getImageURL(filename) {
@@ -149,7 +149,12 @@ export default {
   },
   computed: {
     isLogined() {
+      console.log("[isLogined]");
+      console.log(this.$store.state.user);
       return this.$store.state.user !== "" && this.$store.state.user != null;
+    },
+    isAuth() {
+      return this.$store.state.user.auth === 'manager';
     }
   }
 };

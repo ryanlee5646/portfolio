@@ -8,12 +8,13 @@
           </div>
 
           <div class="chat-output scrollbar" id="chat-output">
-            <Message v-for="(dialog, idx) in dialogs" :key="idx"
-              :speaker="dialog.speaker"
-              :text="dialog.text"
-            ></Message>
+              <Message v-for="(dialog, idx) in dialogs" :key="idx"
+                :speaker="dialog.speaker"
+                :type="dialog.type"
+                :text="dialog.text"
+                :cover="dialog.cover"
+              ></Message>
           </div>
-
           <div class="chat-input">
             <form action="#0" id="user-input-form">
               <v-text-field
@@ -77,6 +78,7 @@
 
 <script>
 import Message from './Message.vue';
+import axios from 'axios';
 
 export default {
   data() {
@@ -87,7 +89,8 @@ export default {
       dialogs: [
         {
           speaker: 'bot',
-          text: '안녕하세요. 무엇을 도와드릴까요?',
+          type: 'text',
+          text: '안녕하세요. 무엇을 도와드릴까요? 사이트에 대해서 물어보시거나 개발자들에 대해 물어보세요!',
         },
       ],
     };
@@ -102,27 +105,57 @@ export default {
     routePage(target) {
       this.$router.push({ path: target });
     },
+    dialogScrollDown() {
+      const outputArea = document.getElementById('chat-output');
+      outputArea.scrollTop = outputArea.scrollHeight;
+    },
+    sendMessage(params) {
+      axios
+        .post('/api', params)
+        .then((response) => {
+          response.data.bubbles.forEach((element) => {
+            if (element.type === 'template') {
+              this.dialogs.push({
+                speaker: 'bot',
+                type: 'template',
+                text: element.data.contentTable,
+                cover: element.data.cover,
+              });
+            } else {
+              this.dialogs.push({
+                speaker: 'bot',
+                type: 'text',
+                text: element.data.description,
+              });
+            }
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+        .then(() => {
+          this.dialogScrollDown();
+        });
+    },
   },
   mounted() {
     const userInput = document.getElementById('user-input-form');
-    const outputArea = document.getElementById('chat-output');
     userInput.addEventListener('submit', (event) => {
       event.preventDefault();
 
       this.dialogs.push({
         speaker: 'user',
+        type: 'text',
         text: this.input,
       });
 
-      setTimeout(() => {
-        this.dialogs.push({
-          speaker: 'bot',
-          text: '저 사실 로봇이라 대화를 못해요',
-        });
-        setTimeout(() => {
-          outputArea.scrollTop = outputArea.scrollHeight;
-        }, 150);
-      }, 250);
+      let params = {
+        message: this.input,
+        action: 'send',
+        userid: 'dbsrhksdnd@gmail.com',
+      };
+
+      this.sendMessage(params);
 
       this.input = '';
     });

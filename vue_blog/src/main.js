@@ -29,6 +29,7 @@ import AnimateWhenVisible from './components/AnimateWhenVisible.vue';
 import './style/css/app.scss';
 // import addPolyfills from './polyfills';
 
+
 const firebase = require('firebase/app');
 
 Vue.use(BootstrapVue);
@@ -50,9 +51,6 @@ new Vue({
                 // User is signed in.
                 const data = await FirebaseService.getPortfolios();
                 store.commit('updatePortfolios', data);
-            } else {
-                // No user is signed in.
-                store.commit('updatePortfolios', []);
             }
         });
     },
