@@ -51,4 +51,11 @@ export default new Router({
             props: true,
         },
     ],
+    scrollBehavior (to, from, savedPosition) {
+      if (to.hash) {
+        return {
+          selector: to.hash
+        }
+      }
+    },
 });

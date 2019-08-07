@@ -17,7 +17,7 @@
         </div>
         <div class="row">
           <AnimateWhenVisible name="fadeLeft" class="col-12 col-md">
-            <SkillChart></SkillChart>
+            <SkillChart :skills="aboutus[currentFilter].skills"></SkillChart>
           </AnimateWhenVisible>
           <Photo class="col-12 col-md text-center"/>
           <AnimateWhenVisible name="fadeRight" class="col-12 col-md">

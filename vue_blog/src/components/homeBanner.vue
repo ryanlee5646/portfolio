@@ -1,14 +1,49 @@
 <template>
-  <div class="banner">
-    <div id="mainDiv">
-        <div id="boxDiv">
-            <div id="front"></div>
-            <div id="back"></div>
-            <div id="left"></div>
-            <div id="right"></div>
-            <div id="top"></div>
-            <div id="bottom"></div>
-        </div>
+  <div id="homeBanner" class="banner">
+    <!-- Please typing your favorite word!-->
+    <div class="slogun-wrapper">
+      <div id="slogun">
+        <div class="text">CREATIVITY HUMANITY CONFIDENCE</div>
+        <div class="text">CREATIVITY HUMANITY CONFIDENCE</div>
+        <div class="text">CREATIVITY HUMANITY CONFIDENCE</div>
+        <div class="text">CREATIVITY HUMANITY CONFIDENCE</div>
+        <div class="text">CREATIVITY HUMANITY CONFIDENCE</div>
+        <div class="text">CREATIVITY HUMANITY CONFIDENCE</div>
+        <div class="text">CREATIVITY HUMANITY CONFIDENCE</div>
+        <div class="text">CREATIVITY HUMANITY CONFIDENCE</div>
+        <div class="text">CREATIVITY HUMANITY CONFIDENCE</div>
+        <div class="text">CREATIVITY HUMANITY CONFIDENCE</div>
+        <div class="text">CREATIVITY HUMANITY CONFIDENCE</div>
+        <div class="text">CREATIVITY HUMANITY CONFIDENCE</div>
+        <div class="text">CREATIVITY HUMANITY CONFIDENCE</div>
+        <div class="text">CREATIVITY HUMANITY CONFIDENCE</div>
+        <div class="text">CREATIVITY HUMANITY CONFIDENCE</div>
+        <div class="text">CREATIVITY HUMANITY CONFIDENCE</div>
+        <div class="text">CREATIVITY HUMANITY CONFIDENCE</div>
+        <div class="text">CREATIVITY HUMANITY CONFIDENCE</div>
+        <div class="text">CREATIVITY HUMANITY CONFIDENCE</div>
+        <div class="text">CREATIVITY HUMANITY CONFIDENCE</div>
+        <div class="text">CREATIVITY HUMANITY CONFIDENCE</div>
+        <div class="text">CREATIVITY HUMANITY CONFIDENCE</div>
+        <div class="text">CREATIVITY HUMANITY CONFIDENCE</div>
+        <div class="text">CREATIVITY HUMANITY CONFIDENCE</div>
+        <div class="text">CREATIVITY HUMANITY CONFIDENCE</div>
+        <div class="text">CREATIVITY HUMANITY CONFIDENCE</div>
+        <div class="text">CREATIVITY HUMANITY CONFIDENCE</div>
+        <div class="text">CREATIVITY HUMANITY CONFIDENCE</div>
+        <div class="text">CREATIVITY HUMANITY CONFIDENCE</div>
+        <div class="text">CREATIVITY HUMANITY CONFIDENCE</div>
+        <div class="text">CREATIVITY HUMANITY CONFIDENCE</div>
+        <div class="text">CREATIVITY HUMANITY CONFIDENCE</div>
+        <div class="text">CREATIVITY HUMANITY CONFIDENCE</div>
+        <div class="text">CREATIVITY HUMANITY CONFIDENCE</div>
+        <div class="text">CREATIVITY HUMANITY CONFIDENCE</div>
+        <div class="text">CREATIVITY HUMANITY CONFIDENCE</div>
+        <div class="text">CREATIVITY HUMANITY CONFIDENCE</div>
+        <div class="text">CREATIVITY HUMANITY CONFIDENCE</div>
+        <div class="text">CREATIVITY HUMANITY CONFIDENCE</div>
+        <div class="text">CREATIVITY HUMANITY CONFIDENCE</div>
+      </div>
     </div>
   </div>
 </template>
@@ -21,98 +56,87 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
+
+// Please change your favorite font-size!
+$fontSize: 8vw;
+
 
 .banner {
-  min-height: 700px;
+  height: 100vh;
   display: flex;
   flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #222;
+  overflow: hidden;
+}
+
+
+.slogun-wrapper {
+  flex: 1;
+  background: #222;
+  // overflow: hidden;
+  // display: flex;
   justify-content: center;
+  align-items: center;
+  color: #fff;
+  perspective: 800px;
+  min-height: 500px;
+  min-width: 500px;
+  position: relative;
 }
 
-.main-img {
-  width: 100%;
-  height: 500px;
-}
-
-#mainDiv {
-    width: 400px;
-    height: 400px;
-    margin: 200px auto;
-    perspective: 800px;
-}
-
-#boxDiv {
-    width: 400px;
-    transform-style: preserve-3d;
-    animation: rotate 15s linear infinite;
-}
-
-#boxDiv div {
+#slogun {
+  .text {
     position: absolute;
-    width: 400px;
-    height: 400px;
-    opacity: 0.85;
-    color: white;
-}
+    font-size: $fontSize;
+    color: #fff;
+    line-height: $fontSize * 1.2;
+    opacity: 1;
+    max-width: 50%;
+    font-family: 'Anton', sans-serif;
+    transform: translate(10%, 0%);
+    mix-blend-mode: screen;
 
-#front {
-    transform: translateZ(200px);
-    background: black;
-    background-image: url('/img/cover.jpg');
-    background-position: center;
-    background-repeat: no-repeat;
+    @for $i from 0 through 100 {
+      $key: $i + 1;
+      &:nth-child(#{$key}) {
+        $row: floor($i / 20);
+        color: rgba(255 - $key * 2, 50 - $key / 2, $key * 3, 1);
+        clip-path: polygon(
+          floor($i / 2) * 10% - $row * 100% $row * 50%,
+          floor($key / 2) * 10% - $row * 100% ceil($key % 2) * 50% + ($row * 50%),
+          ceil($key / 2) * 10% - $row * 100% ($row + 1) * 50%
+        );
+        transform-origin: random(100) - 50 + floor($i / 2) * 10% - $row * 100%  random(100) - 50 + $row * 50%;
+        animation: fly#{$key} 5000ms $i * 40ms cubic-bezier(0.360, 0.100, 0.160, 1.000) alternate;
 
-}
-
-
-#back {
-    transform: rotateY(180deg) translateZ(200px);
-    background: #101010;
-    background-image: url('/img/cover.jpg');
-    background-position: center;
-    background-repeat: no-repeat;
-}
-
-#left {
-    transform: rotateY(-90deg) translateX(-200px);
-    transform-origin: left;
-    background: black;
-    background-image: url('/img/cover.jpg');
-    background-position: center;
-    background-repeat: no-repeat;
-}
-
-#right {
-    transform: rotateY(90deg) translateX(200px);
-    transform-origin: right;
-    background: #101010;
-    background-image: url('/img/cover.jpg');
-    background-position: center;
-    background-repeat: no-repeat;
-}
-
-#top {
-    transform: rotateX(-90deg) translateY(-200px);
-    transform-origin: top;
-    background: black;
-    background-image: url('/img/cover.jpg');
-    background-position: center;
-    background-repeat: no-repeat;
-}
-
-#bottom {
-    transform: rotateX(90deg) translateY(200px);
-    transform-origin: bottom;
-    background: #101010;
-    background-image: url('/img/cover.jpg');
-    background-position: center;
-    background-repeat: no-repeat;
-}
-
-@keyframes rotate {
-    0% { transform: rotateY(0); }
-    100% { transform: rotateY(360deg); }
+        @keyframes fly#{$key} {
+          $initX: random(1000) - 500;
+          $initY: random(1000) - 500;
+          $initZ: random(1000) - 500;
+          $initDepth: random(3000) - 2500;
+          0% {
+            opacity: 0;
+            transform: translate(10%, 0%) rotateX(#{$initX}deg) rotateY(#{$initY}deg) rotateZ(#{$initZ}deg) translateZ(#{$initDepth}px);
+          }
+          10% {
+            opacity: 0;
+            transform: translate(10%, 0%) rotateX(#{$initX}deg) rotateY(#{$initY}deg) rotateZ(#{$initZ}deg) translateZ(#{$initDepth}px);
+          }
+          90% {
+            opacity: 1;
+            transform: translate(10%, 0%) rotate(0deg) rotateY(0deg) rotateZ(0deg) translateZ(0px);
+          }
+          100% {
+            opacity: 1;
+            transform: translate(10%, 0%) rotate(0deg) rotateY(0deg) rotateZ(0deg) translateZ(0px);
+          }
+        }
+      }
+    }
+  }
 }
 
 </style>
