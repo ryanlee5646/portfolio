@@ -74,6 +74,9 @@
           </div>
         </div>
       </div>
+      <h2>HI</h2>
+    <repository></repository>
+    <h2>HI</h2>
     </v-flex>
   </v-layout>
 
@@ -140,6 +143,7 @@
 
     </div>
     </div>
+    
   </v-layout><br>
 </v-container>
 </template>
@@ -149,6 +153,8 @@ import marked from 'marked';
 import FirebaseService from '@/services/FirebaseService'
 import markdownEditor from 'vue-simplemde/src/markdown-editor';
 import ImageComponent from '../components/ImageComponent.vue';
+import Repository from '../components/Repository.vue';
+
 // import FlipCard from 'vue-flip-card';
 // import portfoliowrite from '../views/PortfolioWriter.vue';
 
@@ -186,7 +192,7 @@ export default {
   components: {
     markdownEditor,
     ImageComponent,
-
+    Repository,
   },
   props: {
     id: {
