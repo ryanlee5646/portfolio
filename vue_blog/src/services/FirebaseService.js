@@ -27,7 +27,7 @@ messaging.usePublicVapidKey('BE71GiStXCZkedHmFGZLNsz7vP1bETIPB9Oiz8cd7s0aDepoiht
 
 // 화면을 보고 있을 때 푸쉬알림
 messaging.onMessage((payload) => {
-    alert('Message received ' + payload.notification.title)
+    alert('이거울리면 푸시알람 온거임! ' + payload.notification.title)
 })
 
 export default {
@@ -545,21 +545,22 @@ export default {
     })
   },
   // 로그인시 토큰 얻기
-    gettingToken() {
-        messaging.getToken().then(function(currentToken){
-          const Email = firebase.auth().currentUser.email;
-          if (currentToken) {
-          var test_token = currentToken
-          alert(test_token)
-          firestore.collection(USERS).doc(Email).collection('tokens').doc(test_token).set({
-            test_token : test_token
-          })
-          } else {
-            console.log("No Instance ID token availabe")
-          }
-      }).catch(function(err){
-      console.log("An error occurred while retrieving token", err);
-    })
+  gettingToken() {
+    messaging.getToken().then(function(currentToken){
+      const Email = firebase.auth().currentUser.email;
+      if (currentToken) {
+      var test_token = currentToken
+      alert(test_token)
+      alert(Email)
+      firestore.collection(USERS).doc(Email).update({
+        token : test_token
+      })
+      } else {
+        console.log("No Instance ID token availabe")
+      }
+    }).catch(function(err){
+    console.log("An error occurred while retrieving token", err);
+  })
   },
 
   outToken(user){
@@ -568,7 +569,9 @@ export default {
       if (currentToken) {
         var test_token = currentToken
         console.log(test_token)
-        firestore.collection(USERS).doc(Email).collection('tokens').doc(test_token).delete()
+        firestore.collection(USERS).doc(Email).update({
+          token : ''
+        })
       } else {
         console.log("No Instance ID token available. Request permission to generate one.");
       }

@@ -1,30 +1,92 @@
 const admin = require('firebase-admin');
 const functions = require('firebase-functions');
-const serviceAccount = require("./serviceAccountKey.json");
+const serviceAccount = require('./serviceAccountKey.json');
+
+
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount), 
     databaseURL: "https://vue-blog-f1b07.firebaseio.com"
 });
-var firestore = admin.firestore();
+
+var db = admin.firestore();
 // 포트폴리오 푸시
-exports.portfolioPush = functions.firestore.document('portfolio/{any}').onCreate(event 
-=> {
+exports.portfolioPush = functions.firestore.document('portfolios/{any}').onCreate(event => {
     const payload = { 
         notification : {
-                title: '포스트 생성되었습니다',
+                title: '포트폴리오가 생성되었습니다',
                 body: '알림아 울려줘' 
             }
         } 
-    console.log('글변경') 
-    firestore.collection('users').get().then((snapshot)=> {  // 로그인할때 토큰정보를 유저정보에다가 넣기
+    db.collection('users').get().then((snapshot)=> {  
         snapshot.forEach(doc => {
-            console.log(doc.data()['test_token'])
-            admin.messaging().sendToDevice(doc.data()['test_token'], payload) 
+            console.log(doc.data()['token'])
+            if (doc.data()['token']){
+                admin.messaging().sendToDevice(doc.data()['token'], payload) 
+            }
             })
-        }) 
-});
-
+        })
+    });
+// 포스트 푸시
+exports.postPush = functions.firestore.document('posts/{any}').onCreate(event => {
+        const payload = { 
+            notification : {
+                    title: '포스트가 생성되었습니다',
+                    body: '알림아 울려줘' 
+                }
+            } 
+        console.log('글변경') 
+        db.collection('users').get().then((snapshot)=> {  
+            snapshot.forEach(doc => {
+                console.log(doc.data()['token'])
+                if (doc.data()['token']){
+                    admin.messaging().sendToDevice(doc.data()['token'], payload) 
+                }
+                })
+            })
+    });
+// 포트폴리오 댓글 푸시
+exports.portfolioReplyPush = functions.firestore.document('portfolios/{any}/portfolio_replys/{anys}').onCreate(event => {
+        const payload = { 
+            notification : {
+                    title: '포트폴리오에 댓글이 생성되었습니다',
+                    body: '알림아 울려줘' 
+                }
+            } 
+        console.log('글변경') 
+        db.collection('users').get().then((snapshot)=> {  
+            snapshot.forEach(doc => {
+                console.log(doc.data()['token'])
+                if (doc.data()['token']){
+                    if(doc.data()['auth'] === 'manager'){
+                        admin.messaging().sendToDevice(doc.data()['token'], payload)
+                    }
+                     
+                }
+                })
+            })
+    });   
+// 포스트 댓글 푸시
+exports.postReplyPush = functions.firestore.document('posts/{any}/post_replys/{anys}').onCreate(event => {
+        const payload = { 
+            notification : {
+                    title: '포스트에 댓글이 생성되었습니다',
+                    body: '알림아 울려줘' 
+                }
+            } 
+        console.log('글변경') 
+        db.collection('users').get().then((snapshot)=> {  
+            snapshot.forEach(doc => {
+                console.log(doc.data()['token'])
+                if (doc.data()['token']){
+                    if(doc.data()['auth'] === 'manager'){
+                        admin.messaging().sendToDevice(doc.data()['token'], payload)
+                    }
+                     
+                }
+            })
+    })
+});   
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions
 //
