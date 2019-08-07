@@ -65,7 +65,7 @@
       <v-btn @click="PortfolioWriter()" block flat>작성하기</v-btn>
     </v-flex>
     <v-flex xs12 sm3 md2>
-      <v-btn to="/portfolio" block flat>뒤로</v-btn>
+      <v-btn to="/" block flat>뒤로</v-btn>
     </v-flex>
   </v-layout>
   <br>
@@ -85,7 +85,8 @@ export default {
     return {
       portfolios : [],
       portfolio: {
-        userID: this.$store.state.user.nickName, //this.$store.state.user
+        userID: this.$store.state.user.email, //this.$store.state.user
+        nickName : this.$store.state.user.nickName,
         startdate: "",
         enddate: "",
         sdate: "",

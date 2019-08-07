@@ -2,36 +2,83 @@
 <!-- style="font-size : 3vw !important ;" -->
 <v-container justify-center py-5>
   <v-layout justify-center>
-    <v-flex xs8 class="notranslate text-xs-center">
+    <v-flex xs12 class="text-xs-center">
       <div class="stretchRight" v-for="i in $store.state.portfolios.length">
         <div v-if="$store.state.portfolios[i -1].uid === id">
-          <div v-if="flag2 === false">
-          <a style="display: none !important;">{{index = i-1}}</a>
-            <div class="flex justify-center items-center h-screen portfolioDiv">
-              <div class="max-w-sm rounded overflow-hidden shadow-lg">
-                <!-- <img class="w-full .text-pop-up-top" :src = "$store.state.portfolios[i -1].portfolio.thumbnail" alt="Sunset in the mountains"> -->
-                <div class="px-6 py-4 portfolioDiv2">
-                  <a class="font-bold text-xl mb-2 title" style="font-size : 2.5vw !important;"> " {{$store.state.portfolios[i -1].portfolio.title}} "</a><hr>
-                  <span style="font-size : 1.5vw !important;">조회수 : {{$store.state.portfolios[i -1].views}}</span>
-                  <br><span style="font-size : 1.5vw !important;">작성자 : {{$store.state.portfolios[i -1].portfolio.userID}}</span>
-                  <div>
-                    {{$store.state.portfolios[i -1].portfolio.sdate}} ~ {{$store.state.portfolios[i -1].portfolio.edate}}
-                    <!-- <b-progress :value="90" variant="warning" striped :animated="true"></b-progress> -->
-                    <hr>
-                  </div>
-                  <p id="markdownP" class="text-gray-700 text-base" style="font-size : 1.5vw !important;" v-html="compiledMarkdown">
-                    {{$store.state.portfolios[i -1].portfolio.content}}
-                  </p>
+          <div class="portfolioDiv" v-if="flag2 === false">
+            <a style="display: none !important;">{{index = i-1}}</a>
+            <hr><br>
+            <AnimateWhenVisible name="fadeLeft" class="col-12 col-md">
+            <div>
+              <!--content inner-->
+              <!-- <div class="content__inner"> -->
+                <!--tabs-->
+                <div class="tabs">
+                  <!--tabs navigation-->
+                  <div class="tabs__nav">
+                    <ul class="tabs__nav-list">
+                      <li class="tabs__nav-item js-active"><a  class="btn-1" v-on:click="clickDiv = 'intro'">Intro</a></li>
+                      <li class="tabs__nav-item"><a  class="btn-1" v-on:click="clickDiv = 'content'">Content</a></li>
+                      <!-- <li class="tabs__nav-item"><a v-on:click="clickDiv = 'Q&A'">Q/A</a></li> -->
+                      <li class="tabs__nav-item"><a  class="btn-1" v-on:click="clickDiv = 'git'">Git</a></li>
+                    </ul>
+                  </div><hr>
+
+                  <!-- {{clickDiv}} -->
+                  <div class="cardDiv slideDown intro " v-if="clickDiv === 'intro'">
+                    <!-- <div class="px-6 py-4 portfolioDiv2"> -->
+                      <br><a class="font-bold text-xl mb-2 title" style="font-size : 2.2vw !important;">  <b> {{$store.state.portfolios[i -1].portfolio.title}}</b> </a><hr>
+                      <p id="viewsPortfolio" style="font-size : 1.0vw !important;" > [  조회수 :  {{$store.state.portfolios[i -1].views}}  ]</p>
+                      <p id="viewsPortfolio" style="font-size : 1.3vw !important;" >   작성자 :  {{$store.state.portfolios[i -1].portfolio.nickName}}  </p>
+                      <p id="viewsPortfolio" style="font-size : 1.3vw !important;">{{$store.state.portfolios[i -1].portfolio.sdate}} ~ {{$store.state.portfolios[i -1].portfolio.edate}}</p>
+                        <p id="viewsPortfolio" style="font-size : 1.3vw !important;"># {{$store.state.portfolios[i -1].portfolio.teams}}</p>
+                      <hr>
+                      <!-- <div  id="markdownP" style="font-size : 1.5vw !important;" v-html="compiledMarkdown">  {{$store.state.portfolios[i -1].portfolio.content}} </div>
+                    <br>
+                    <button class="button" v-if="$store.state.portfolios[i -1].portfolio.userID === nowUser.email"  @click="deletePortfolio()">Delete</button>
+                    <button class="button" v-if="$store.state.portfolios[i -1].portfolio.userID === nowUser.email"  @click="editPortfolioClick(i)">Edit</button> -->
                 </div>
+                <div class="cardDiv slideDown content " v-else-if="clickDiv === 'content'">
+                     <div id="markdownP" style="font-size : 1.5vw !important;" v-html="compiledMarkdown">  {{$store.state.portfolios[i -1].portfolio.content}} </div>
+                </div>
+                <div class="cardDiv slideDown " v-else-if="clickDiv === 'git'">
+                  <h2>HI</h2>
+                  <repository></repository>
+                  <h2>HI</h2>
+                </div>
+                <br>
+                <button class="button" v-if="$store.state.portfolios[i -1].portfolio.userID === nowUser.email"  @click="deletePortfolio()">Delete</button>
+                <button class="button" v-if="$store.state.portfolios[i -1].portfolio.userID === nowUser.email"  @click="editPortfolioClick(i)">Edit</button>
+                </div>
+              <!-- </div> -->
+            </div>
+            <!-- <div id="test">come?</div> -->
+          </AnimateWhenVisible>
+            <!-- <div class="flex justify-center items-center h-screen portfolioDiv"> -->
+              <!-- <div class="max-w-sm rounded overflow-hidden shadow-lg"> -->
+                <!-- <img class="w-full .text-pop-up-top" :src = "$store.state.portfolios[i -1].portfolio.thumbnail" alt="Sunset in the mountains"> -->
+                <!-- <div class="px-6 py-4  "> -->
+
+                <!-- <a class="font-bold text-xl mb-2 title" style="font-size : 2.5vw !important;"> " {{$store.state.portfolios[i -1].portfolio.title}} "</a><hr>
+                <span style="font-size : 1.5vw !important;">조회수 : {{$store.state.portfolios[i -1].views}}</span>
+                <br><span style="font-size : 1.5vw !important;">작성자 : {{$store.state.portfolios[i -1].portfolio.userID}}</span>
+                <div>
+                  {{$store.state.portfolios[i -1].portfolio.sdate}} ~ {{$store.state.portfolios[i -1].portfolio.edate}}
+                  <hr>
+                </div>
+                <p id="markdownP" class="text-gray-700 text-base" style="font-size : 1.5vw !important;" v-html="compiledMarkdown">
+                  {{$store.state.portfolios[i -1].portfolio.content}}
+                </p>
+
                 <div class="px-6 py-4">
                   <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2" style="font-size : 1.5vw !important;">
                     # {{$store.state.portfolios[i -1].portfolio.teams}}
                   </span>
                 </div><br>
                 <button class="button" v-if="$store.state.portfolios[i -1].portfolio.userID === nowUser.nickName"  @click="deletePortfolio(i)">Delete</button>
-                <button class="button" v-if="$store.state.portfolios[i -1].portfolio.userID === nowUser.nickName"  @click="editPortfolioClick(i)">Edit</button>
-              </div>
-            </div>
+                <button class="button" v-if="$store.state.portfolios[i -1].portfolio.userID === nowUser.nickName"  @click="editPortfolioClick(i)">Edit</button> -->
+              <!-- </div> -->
+            <!-- </div> -->
           </div>
 
           <!-- 수정 폼 -->
@@ -61,22 +108,21 @@
               <v-text-field solo name="input-7-4" label="썸네일 URL" v-model="portfolioTemp.thumbnail"></v-text-field>
               <ImageComponent></ImageComponent>
 
-            <!-- <v-layout wrap justify-center>
-                    <div v-if="this.$store.state.ImageLink == '' ">이 곳에 생성되는 url을 복사하여 사용해주세요 :-)</div>
+            <v-layout wrap justify-center>
+            <!--         <div v-if="this.$store.state.ImageLink == '' ">이 곳에 생성되는 url을 복사하여 사용해주세요 :-)</div>
                     <div v-else style="color : #43b848de;">
                       <b><span v-html="this.$store.state.ImageLink"></span></b><br>
-                    </div><br><br>
+                    </div><br><br> -->
                   </v-layout><br>
-             -->
+
 
               <hr><button class="button"  @click="editPortfolio()">Edit</button>
               <button  class="button" to="/" block flat>뒤로</button>
           </div>
         </div>
       </div>
-      <h2>HI</h2>
-    <repository></repository>
-    <h2>HI</h2>
+
+
     </v-flex>
   </v-layout>
 
@@ -96,54 +142,40 @@
       </div>
     </div>
     <!-- 작성 댓글 출력 -->
-    <!-- <v-container justify-center py-5> -->
-      <!-- <v-layout justify-center>
-        <v-flex xs8 class="text-xs-center"> -->
-          <div class="row"><br>
-            <!-- <div class="col-md-8"> -->
-             <h2 class="page-header"><br>Comments 👀</h2><br>
-            <section class="comment-list">
-              <article v-for="(r, index) in this.portfolioReplys" class="row">
-                <div class="col-sm-2 d-none d-sm-block">
-                  <figure class="profile">
-                    <img class="img-responsive" width="100%" src="http://www.tangoflooring.ca/wp-content/uploads/2015/07/user-avatar-placeholder.png" />
-                    <!-- <figcaption class="text-center">{{r.portfolioReply.email}}</figcaption> -->
-                  </figure>
-                </div>
-                <div class="col-md-10 col-sm-10 col-xs-12">
-                  <div class="panel panel-default arrow left">
-                    <div class="panel-body">
-                      <header class="text-left">
-                        <div class="comment-user"><i class="fa fa-user"></i> {{r.portfolioReply.email}}</div>
-                        <hr>
-                        <!-- <time class="comment-date" datetime="16-12-2014 01:05"><i class="fa fa-clock-o"></i> July 29, 2019</time> -->
-                      </header>
-                      <div class="comment-post" v-if="flag === false">
-                        <p> {{r.portfolioReply.content}} </p>
-                        <!-- @click="flag = true"  -->
-                        <button v-if="r.portfolioReply.email === nowUser.nickName" class="button" @click="editClick(index)">수 정</button>
-                        <button v-if="r.portfolioReply.email === nowUser.nickName" class="button" @click="deleteReply(index)">삭 제</button>
-                      </div>
-                      <div class="comment-post" v-else-if="r.portfolioReply.email === nowUser.nickName">
-                        <p v-if="editIdx === index">
-                          <input type="text" v-model="editReplyContent" :placeholder="r.portfolioReply.content"></input> </p>
-                        <button class="button" @click="editReply(index)">O K</button>
-                      </div>
-                    </div>
+    <v-flex xs12>
+         <hr><br><h1>Comments 😊</h1>
+        <section class="comment-list">
+          <article v-for="(r, index) in this.portfolioReplys" class="row">
+
+            <div class="col-md-2 col-xs-6s hidden-xs">
+              <figure class="profile">
+                <img class="img-responsive" :src="r.portfolioReply.photoURL" />
+              </figure>
+              <!-- photoURL -->
+            </div>
+            <div class="col-md-10 col-sm-10">
+              <div class="panel panel-default arrow left">
+                <div class="panel-body">
+                  <header class="text-left">
+                    <div class="comment-user"><i class="fa fa-user"></i> {{r.portfolioReply.nickName}}</div>
+                    <hr>
+                  </header>
+                  <div class="comment-post" v-if="flag === false">
+                    <p> {{r.portfolioReply.content}} </p>
+                    <button v-if="r.portfolioReply.email === nowUser.email" class="button" @click="editClick(index)">수 정</button>
+                    <button v-if="r.portfolioReply.email === nowUser.email" class="button" @click="deleteReply(index)">삭 제</button>
+                  </div>
+                  <div class="comment-post" v-else-if="r.portfolioReply.email === nowUser.email">
+                    <p v-if="editIdx === index">
+                      <input type="text" v-model="editReplyContent" :placeholder="r.portfolioReply.content"></input> </p>
+                    <button class="button" @click="editReply(index)">O K</button>
                   </div>
                 </div>
-              </article>
-            </section>
-            <!-- </div> -->
-          </div>
-        <!-- </v-flex>
-      </v-layout> -->
-    <!-- </v-container> -->
-    <!-- </div> -->
-
-    </div>
-    </div>
-    
+              </div>
+            </div>
+          </article>
+        </section>
+      </v-flex>
   </v-layout><br>
 </v-container>
 </template>
@@ -155,9 +187,6 @@ import markdownEditor from 'vue-simplemde/src/markdown-editor';
 import ImageComponent from '../components/ImageComponent.vue';
 import Repository from '../components/Repository.vue';
 
-// import FlipCard from 'vue-flip-card';
-// import portfoliowrite from '../views/PortfolioWriter.vue';
-
 export default {
   data() {
     return {
@@ -165,10 +194,12 @@ export default {
       portfolioReplys: [],
       portfolioReply: {
         email: "",
-        content: ""
+        nickName : "",
+        content: "",
+        photoURL : ""
       },
       nowUser: this.$store.state.user,
-      emailArr: this.$store.state.user.email ? this.$store.state.user.email.split('@') : '',
+      // emailArr: this.$store.state.user.email ? this.$store.state.user.email.split('@') : '',
       nowEmail: "",
       index: "",
       portfolioIdx: 0,
@@ -177,7 +208,8 @@ export default {
       editReplyContent: "",
       editIdx: "",
       portfolioTemp: {
-        userID: "", //this.$store.state.user
+        userID: this.$store.state.user.email, //this.$store.state.user,
+        nickName : this.$store.state.user.nickName,
         startdate: "",
         enddate: "",
         sdate: "",
@@ -187,6 +219,8 @@ export default {
         teams: "",
         thumbnail: "",
       },
+      clickDiv : "intro",
+      // replyPhotoURL : "",
     }
   },
   components: {
@@ -214,7 +248,8 @@ export default {
   methods: {
     async PortfolioReply(){
        console.log("PortfolioReply in?");
-       const result = await FirebaseService.PortfolioReply(this.portfolioReply , this.id)
+       const result = await FirebaseService.PortfolioReply(this.portfolioReply , this.id);
+       this.portfolioReply.content = '';
        this.getPortfolioReply();
        // this.$router.push('/')
      },
@@ -232,7 +267,7 @@ export default {
     async editReply(index) {
       console.log(this.$store.state.portfolioReplys[index].uid + " 선택한 댓글?");
       this.flag = true;
-      const result = await FirebaseService.editReply(this.id, this.$store.state.portfolioReplys[index].uid, this.editReplyContent, this.nowUser.nickName);
+      const result = await FirebaseService.editReply(this.id, this.$store.state.portfolioReplys[index].uid, this.editReplyContent);
       // this.$store.state.portfolioReplys.splice(index, 1);
       this.flag = false;
       this.getPortfolioReply();
@@ -245,7 +280,8 @@ export default {
       this.flag2 = true;
       // console.log(idx + " 수정 클릭");
       this.portfolioIdx = idx - 1;
-      this.portfolioTemp.userID = this.nowEmail;
+      this.portfolioTemp.userID = this.$store.state.user.email;
+      this.portfolioTemp.nickName = this.$store.state.user.nickName;
       this.portfolioTemp.startdate = this.$store.state.portfolios[this.portfolioIdx].portfolio.startdate;
       this.portfolioTemp.enddate = this.$store.state.portfolios[this.portfolioIdx].portfolio.enddate;
       this.portfolioTemp.sdate = this.$store.state.portfolios[this.portfolioIdx].portfolio.sdate;
@@ -267,55 +303,21 @@ export default {
       this.portfolios = await FirebaseService.getPortfolios();
       this.$store.commit('updatePortfolios', this.portfolios);
       this.$router.replace('/portfolio/view/' + this.id);
-    }
+    },
+    // async getUserInfoByEmail(byEmail){
+    //   console.log(byEmail + " byEmail?????");
+    //   const result = await FirebaseService.getUserInfoByEmail(byEmail);
+    //   console.log(result);
+    //   console.log(result.photoURL);
+    //   this.replyPhotoURL = result.photoURL;
+    // },
   },
   mounted() {
-
     this.getPortfolioReply();
-    document.querySelectorAll('.card').forEach((elem) => {
-      const head = elem.querySelector('.card__head')
-      const image = elem.querySelector('.card__image')
-      const author = elem.querySelector('.card__author')
-      const body = elem.querySelector('.card__body')
-      const foot = elem.querySelector('.card__foot')
-
-      elem.onmouseenter = () => {
-        elem.classList.add('hover')
-        const imageScale = 1 + factor(head, body, 'height')
-        image.style.transform = `scale(${ imageScale })`
-
-        const bodyDistance = height(foot) * -1
-        body.style.transform = `translateY(${ bodyDistance }px)`
-
-        const authorDistance = distance(head, author, 'height')
-        author.style.transform = `translateY(${ authorDistance }px)`
-
-      }
-      elem.onmouseleave = () => {
-        elem.classList.remove('hover')
-        image.style.transform = `none`
-        body.style.transform = `none`
-        author.style.transform = `none`
-      }
-    })
   }
 };
-//
-const height = (elem) => {
-  return elem.getBoundingClientRect().height
-}
 
-const distance = (elemA, elemB, prop) => {
-  const sizeA = elemA.getBoundingClientRect()[prop]
-  const sizeB = elemB.getBoundingClientRect()[prop]
-  return sizeB - sizeA
-}
 
-const factor = (elemA, elemB, prop) => {
-  const sizeA = elemA.getBoundingClientRect()[prop]
-  const sizeB = elemB.getBoundingClientRect()[prop]
-  return sizeB / sizeA
-}
 </script>
 
 
@@ -323,7 +325,22 @@ const factor = (elemA, elemB, prop) => {
 <style>
 /* @import '/style/css/portfolio.css'; */
 @import "/vuelendar/scss/vuelendar.scss";
+.img-responsive{
+  /* 댓글 작성자 이미지 */
+ border-radius: 55px;
+ width: 80px;
+}
+#viewsPortfolio{
+  text-align: left;
+}
 
+a.tabBtn:active {
+  background-color: red;
+}
+
+/* div.next_btn:active {
+background-image: url(images/next_btn_click.png);
+} */
 /* test */
 .panel-body {
   font-size: 1vw;
@@ -335,17 +352,14 @@ const factor = (elemA, elemB, prop) => {
 
 .portfolioDiv {
   /* padding: 100px; */
-  width: 100%
+  /* width: 100% */
   /* font-size: 4vw !important ; */
+  /* border: 1px solid ; */
 }
-
-.portfolioDiv2 {
-  padding-top: 30%;
-  padding-bottom: 10%;
-  padding-left: 5%;
-  padding-right: 5%;
-  /* padding-left:  */
-}
+/*
+.content{
+  text-align: center;
+} */
 
 .editor {
   display: inline-block;
@@ -361,8 +375,15 @@ img[alt=image] {
   height: 300px;
 }
 
+#markdownP{
+  width: 100%;
+  text-align: left;
+  /* margin-left: 20%; */
+}
+
 #markdownP img {
-  width: 77%;
+  width: 80%;
+  text-align: center;
 }
 
 .button {
@@ -571,4 +592,97 @@ stretchRight
 		-webkit-transform: scaleX(1);
 	}
 }
+
+/*  */
+
+.tabs__nav-list {
+ position: relative;
+ display: flex;
+ justify-content: space-between;
+ list-style-type: none;
+ z-index: 5;
+ /* background-color: gray; */
+ font-size: 2rem;
+ text-align: center;
+}
+/*  */
+
+@-webkit-keyframes sheen {
+  0% {
+    -webkit-transform: skewY(-45deg) translateX(0);
+            transform: skewY(-45deg) translateX(0);
+  }
+  100% {
+    -webkit-transform: skewY(-45deg) translateX(12.5em);
+            transform: skewY(-45deg) translateX(12.5em);
+  }
+}
+@keyframes sheen {
+  0% {
+    -webkit-transform: skewY(-45deg) translateX(0);
+            transform: skewY(-45deg) translateX(0);
+  }
+  100% {
+    -webkit-transform: skewY(-45deg) translateX(12.5em);
+            transform: skewY(-45deg) translateX(12.5em);
+  }
+}
+
+/*  */
+\
+
+
+[class*="btn-"] {
+ position: relative;
+ display: inline-block;
+ width: 100%;
+ color: #red;
+ font-size: 16px;
+ line-height: 45px;
+ margin-right:3em;
+ max-width: 100px;
+ text-decoration: none;
+ text-transform: uppercase;
+ vertical-align: middle;
+}
+
+/**
+* ===========================
+* @class : btn-1
+* ===========================
+*/
+.btn-1 {
+ letter-spacing: 0;
+ -webkit-transition: all .28s ease-in-out;
+ transition: all .28s ease-in-out;
+}
+.btn-1:hover,
+.btn-1:focus,
+.btn-1:active {
+ letter-spacing: 5px;
+}
+.btn-1:after,
+.btn-1:before {
+ border: 1px solid  gray;
+ bottom: 0;
+ content: " ";
+ display: block;
+ margin: 0 auto;
+ position: relative;
+ -webkit-transition: all .28s ease-in-out;
+ transition: all .28s ease-in-out;
+ width: 0;
+}
+.btn-1:hover:after,
+.btn-1:hover:before {
+ border-color: gray;
+ -webkit-transition: width 350ms ease-in-out;
+ transition: width 350ms ease-in-out;
+ width: 70%;
+}
+.btn-1:hover:before {
+ bottom: auto;
+ top: 0;
+}
+
 </style>

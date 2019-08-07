@@ -13,6 +13,7 @@ export default new Vuex.Store({
         portfolios: [],
         portfolioReplys: [],
         posts: [],
+        postReplys: [],
         nowUser: '',
         error: {
             type: '',
@@ -54,6 +55,9 @@ export default new Vuex.Store({
         },
         updatePosts(state, data) {
             state.posts = data;
+        },
+        updatePostReplys(state, data){
+          state.postReplys = data;
         },
         setError(state, data) {
             state.error.state = true;

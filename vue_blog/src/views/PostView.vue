@@ -5,32 +5,24 @@
       <div class="stretchRight" v-for="i in $store.state.posts.length">
         <div v-if="$store.state.posts[i -1].uid === id">
           <div v-if="flag2 === false">
-
             <a style="display: none !important;">{{index = i-1}}</a>
             <!-- <div  > -->
               <!-- class="max-w-sm rounded overflow-hidden shadow-lg" -->
               <AnimateWhenVisible name="fadeLeft" class="col-12 col-md">
               <div class="cardDiv slideDown ">
                 <!-- <div class="px-6 py-4 portfolioDiv2"> -->
-                  <br><a class="font-bold text-xl mb-2 title" style="font-size : 2.2vw !important;">  <b> {{$store.state.posts[i -1].post.title}}</b> </a><hr>
-                  <p id="views" style="font-size : 1.0vw !important;" > [  조회수 :  {{$store.state.posts[i -1].views}}  ]</p>
-                  <p id="views" style="font-size : 1.2vw !important;" >   작성자 :  {{$store.state.posts[i -1].post.userID}}  </p>
+                  <br><p class="font-bold text-xl mb-2 title" style="font-size : 2.2vw !important;">  <b> {{$store.state.posts[i -1].post.title}}</b> </p><hr>
+                  <hr><p id="views" style="font-size : 1.0vw !important;" > [  조회수 :  {{$store.state.posts[i -1].views}}  ]</p>
+                  <p id="views" style="font-size : 1.2vw !important;" >   작성자 :  {{$store.state.posts[i -1].post.nickName}}  </p>
                   <hr>
-
-
                   <div id="content" style="font-size : 1.5vw !important;" v-html="compiledMarkdown">  {{$store.state.posts[i -1].post.content}} </div>
-
-                  <!-- <p id="markdownP" class="text-gray-700 text-base" style="font-size : 1.5vw !important;" v-html="compiledMarkdown">
-                    {{$store.state.posts[i -1].post.content}} </p> -->
-
-                <!-- </div> -->
-                <button class="button" v-if="$store.state.posts[i -1].post.userID === nowUser.nickName"  @click="deletePost()">Delete</button>
-                <button class="button" v-if="$store.state.posts[i -1].post.userID === nowUser.nickName"  @click="editPostClick(i)">Edit</button>
+                <br>
+                <button class="button" v-if="$store.state.posts[i -1].post.userID === nowUser.email"  @click="deletePost()">Delete</button>
+                <button class="button" v-if="$store.state.posts[i -1].post.userID === nowUser.email"  @click="editPostClick(i)">Edit</button>
               </div>
             </AnimateWhenVisible>
             <!-- </div> -->
           </div>
-
           <!-- 수정 폼 -->
           <div v-else>
             <v-text-field label="제목" v-model="postTemp.title"></v-text-field>
@@ -51,7 +43,7 @@
     <div class="reply-write-area col-xs-6">
       <div class="rw-inner">
         <div class="textarea">
-          <textarea v-model="postReply.content" class="form-control noresize" placeholder="댓글을 입력하세요." maxlength="3000"></textarea>
+          <textarea v-model="postReply.content" class="form-control" placeholder="댓글을 입력하세요." maxlength="6000"></textarea>
         </div>
         <div class="bnts ">
           <v-btn @click="PostReplyWriter() " block flat>Add</v-btn>
@@ -66,8 +58,7 @@
 
             <div class="col-md-2 col-xs-6s hidden-xs">
               <figure class="profile">
-                {{getUserInfoByEmail(r.postReply.email)}}
-                <img class="img-responsive userPhoto"  :src="nowUser.photoURL" width="70%;" />
+                <img class="img-responsive" :src="r.postReply.photoURL" />
               </figure>
               <!-- photoURL -->
             </div>
@@ -75,15 +66,15 @@
               <div class="panel panel-default arrow left">
                 <div class="panel-body">
                   <header class="text-left">
-                    <div class="comment-user"><i class="fa fa-user"></i> {{r.postReply.email}}</div>
+                    <div class="comment-user"><i class="fa fa-user"></i> {{r.postReply.nickName}}</div>
                     <hr>
                   </header>
                   <div class="comment-post" v-if="flag === false">
                     <p> {{r.postReply.content}} </p>
-                    <button v-if="r.postReply.email === nowUser.nickName" class="button" @click="editClick(index)">수 정</button>
-                    <button v-if="r.postReply.email === nowUser.nickName" class="button" @click="deletePostReply(index)">삭 제</button>
+                    <button v-if="r.postReply.email === nowUser.email" class="button" @click="editClick(index)">수 정</button>
+                    <button v-if="r.postReply.email === nowUser.email" class="button" @click="deletePostReply(index)">삭 제</button>
                   </div>
-                  <div class="comment-post" v-else-if="r.postReply.email === nowEmail">
+                  <div class="comment-post" v-else-if="r.postReply.email === nowUser.email">
                     <p v-if="editIdx === index">
                       <input type="text" v-model="editReplyContent" :placeholder="r.postReply.content"></input> </p>
                     <button class="button" @click="editPostReply(index)">O K</button>
@@ -114,7 +105,9 @@ export default {
       postReplys: [],
       postReply: {
         email: "",
-        content: ""
+        nickName : "",
+        content: "",
+        photoURL : ""
       },
       nowUser: this.$store.state.user,
       // emailArr: this.$store.state.user.email.split('@'),
@@ -126,11 +119,12 @@ export default {
       editReplyContent: "",
       editIdx: "",
       postTemp: {
-        userID: this.$store.state.user.nickName, //this.$store.state.user
+        userID: this.$store.state.user.email, //this.$store.state.user
+        nickName : this.$store.state.user.nickName,
         title: "",
         content: "",
       },
-      photoURL : "",
+      // photoURL : "",
     }
   },
   components: {
@@ -156,7 +150,8 @@ export default {
   methods: {
     async PostReplyWriter() {
       console.log("PostReplyWriter in?");
-      const result = await FirebaseService.PostReplyWriter(this.postReply, this.id)
+      const result = await FirebaseService.PostReplyWriter(this.postReply, this.id);
+      this.postReply.content = '';
       this.getPostReplys();
     },
     async getPostReplys() {
@@ -169,7 +164,7 @@ export default {
     },
     async editPostReply(index) {
       this.flag = true;
-      const result = await FirebaseService.editPostReply(this.id, this.$store.state.postReplys[index].uid, this.editReplyContent, this.$store.state.user.nickName);
+      const result = await FirebaseService.editPostReply(this.id, this.$store.state.postReplys[index].uid, this.editReplyContent);
       this.flag = false;
       this.getPostReplys();
     },
@@ -197,10 +192,6 @@ export default {
       this.$store.commit('updatePosts', this.posts);
       this.$router.replace('/post/view/' + this.id);
     },
-    async getUserInfoByEmail(){
-      const result = await FirebaseService.getUserInfoByEmail(byEmail);
-      console.log(result);
-    }
   },
   mounted() {
     console.log(this.nowUser.email + " 접속한 유저 정보");
@@ -209,7 +200,7 @@ export default {
     this.getPostReplys();
     document.querySelectorAll('.card').forEach((elem) => {
       const head = elem.querySelector('.card__head')
-      const image = elem.querySelector('.card__image')
+      const image = elem.querySelector('.card__image')``
       const author = elem.querySelector('.card__author')
       const body = elem.querySelector('.card__body')
       const foot = elem.querySelector('.card__foot')
@@ -255,6 +246,14 @@ const factor = (elemA, elemB, prop) => {
 
 
 <style>
+
+.textarea{
+  height: 200px;
+}
+.form-control{
+  height: 150px !important;
+  font-size: 2.5rem !important;
+}
 .userPhoto{
   border-radius: 50px;
 }
