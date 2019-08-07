@@ -25,8 +25,9 @@ const firestore = firebase.firestore();
 const messaging = firebase.messaging();
 messaging.usePublicVapidKey('BE71GiStXCZkedHmFGZLNsz7vP1bETIPB9Oiz8cd7s0aDepoiht_xoxcXPPZpFEeIvaA1l6pRgcaQLVw8cqG2Kc');
 
+// 화면을 보고 있을 때 푸쉬알림
 messaging.onMessage((payload) => {
-  alert('Message received ' + payload.notification.title)
+    alert('Message received ' + payload.notification.title)
 })
 
 export default {
@@ -54,44 +55,43 @@ export default {
 
   /* User */
   addUser(email, name, auth, photoURL, gitlabID, gitlabToken, gitlabAllow) {
-    console.log('[info] start addUser func()');
-    const nickName = email.split('@')[0];
-    return firestore.collection(USERS).doc(email).set({
-      email,
-      nickName,
-      name,
-      auth,
-      photoURL,
-      gitlabID,
-      gitlabToken,
-      gitlabAllow,
-      created_at: firebase.firestore.FieldValue.serverTimestamp(),
-    });
-  },
-  getUserInfo() {
-    console.log('[info] start getUserInfo func()');
-    let user = firebase.auth().currentUser;
-    if (user === null) {
-      user = JSON.parse(localStorage.getItem('user') || '{}');
-    }
-
-    return firestore.collection(USERS).doc(user.email)
-      .get()
-      .then((doc) => {
-        let data = null;
-        if (doc.exists) {
-          data = doc.data();
-        } else {
-          console.log('[error] doc does not exist.');
+        console.log('[info] start addUser func()');
+        const nickName = email.split('@')[0];
+        return firestore.collection(USERS).doc(email).set({
+            email,
+            nickName,
+            name,
+            auth,
+            photoURL,
+            gitlabID,
+            gitlabToken,
+            gitlabAllow,
+            created_at: firebase.firestore.FieldValue.serverTimestamp(),
+        });
+    },
+    getUserInfo() {
+        console.log('[info] start getUserInfo func()');
+        let user = firebase.auth().currentUser;
+        if (user === null) {
+            user = JSON.parse(localStorage.getItem('user') || '{}');
         }
-        return data;
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(`[error] fail FirebaseLogoutLog : [CODE ${errorCode}] Error : ${errorMessage}`);
-      });
-  },
+        return firestore.collection(USERS).doc(user.email)
+            .get()
+            .then((doc) => {
+                let data = null;
+                if (doc.exists) {
+                    data = doc.data();
+                } else {
+                    console.log('[error] doc does not exist.');
+                }
+                return data;
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.log(`[error] fail FirebaseLogoutLog : [CODE ${errorCode}] Error : ${errorMessage}`);
+            });
+    },
   getAllUserInfo() {
     return firestore.collection(USERS).get()
       .then(function(querySnapshot) { // eslint-disable-line
@@ -150,7 +150,7 @@ export default {
     return firebase.auth().signOut().then(() => {
       console.log('[info] success signOut');
       this.FirebaseLogoutLog(user.email);
-      this.outToken();
+      this.outToken(user);
 
       return true;
     }).catch((error) => {
@@ -545,28 +545,30 @@ export default {
     })
   },
   // 로그인시 토큰 얻기
-  gettingToken() {
-    messaging.getToken().then(function(currentToken){
-      if (currentToken){
-        var test_token = currentToken
-        console.log(test_token)
-        firestore.collection('tokens').doc(test_token).set({
-          test_token : test_token
-        })
-        } else {
-          console.log("No Instance ID token availabe")
-        }
-    }).catch(function(err){
+    gettingToken() {
+        messaging.getToken().then(function(currentToken){
+          const Email = firebase.auth().currentUser.email;
+          if (currentToken) {
+          var test_token = currentToken
+          alert(test_token)
+          firestore.collection(USERS).doc(Email).collection('tokens').doc(test_token).set({
+            test_token : test_token
+          })
+          } else {
+            console.log("No Instance ID token availabe")
+          }
+      }).catch(function(err){
       console.log("An error occurred while retrieving token", err);
     })
   },
 
-  outToken(){
+  outToken(user){
     messaging.getToken().then(function(currentToken){
+      const Email = user.email;
       if (currentToken) {
         var test_token = currentToken
         console.log(test_token)
-        firestore.collection('tokens').doc(test_token).delete()
+        firestore.collection(USERS).doc(Email).collection('tokens').doc(test_token).delete()
       } else {
         console.log("No Instance ID token available. Request permission to generate one.");
       }

@@ -6,9 +6,9 @@ admin.initializeApp({
     credential: admin.credential.cert(serviceAccount), 
     databaseURL: "https://vue-blog-f1b07.firebaseio.com"
 });
-var db = admin.firestore();
-
-exports.dbWrite = functions.firestore.document('posts/{any}').onCreate(event 
+var firestore = admin.firestore();
+// 포트폴리오 푸시
+exports.portfolioPush = functions.firestore.document('portfolio/{any}').onCreate(event 
 => {
     const payload = { 
         notification : {
@@ -16,13 +16,13 @@ exports.dbWrite = functions.firestore.document('posts/{any}').onCreate(event
                 body: '알림아 울려줘' 
             }
         } 
-console.log('글변경')
-db.collection('tokens').get().then((snapshot)=> { 
-    snapshot.forEach(doc => {
-        console.log(doc.data()['test_token'])
-        admin.messaging().sendToDevice(doc.data()['test_token'], payload) 
-        })
-    }) 
+    console.log('글변경') 
+    firestore.collection('users').get().then((snapshot)=> {  // 로그인할때 토큰정보를 유저정보에다가 넣기
+        snapshot.forEach(doc => {
+            console.log(doc.data()['test_token'])
+            admin.messaging().sendToDevice(doc.data()['test_token'], payload) 
+            })
+        }) 
 });
 
 // // Create and Deploy Your First Cloud Functions
