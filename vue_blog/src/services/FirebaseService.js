@@ -13,13 +13,6 @@ const POST_REPLYS = 'post_replys';
 const LOGHISTORY = 'logHistory';
 // Setup Firebase
 const config = {
-<<<<<<< HEAD
-  apiKey: 'AIzaSyBaK-tJRZvUUOHQYSTidhKMf16c5FCF_nE',
-  authDomain: 'vue-blog-f1b07.firebaseapp.com',
-  databaseURL: 'https://vue-blog-f1b07.firebaseio.com',
-  projectId: 'vue-blog-f1b07',
-  storageBucket: 'vue-blog-f1b07.appspot.com',
-=======
     apiKey: 'AIzaSyBaK-tJRZvUUOHQYSTidhKMf16c5FCF_nE',
     authDomain: 'vue-blog-f1b07.firebaseapp.com',
     databaseURL: 'https://vue-blog-f1b07.firebaseio.com',
@@ -27,7 +20,6 @@ const config = {
     storageBucket: 'vue-blog-f1b07.appspot.com',
     messagingSenderId: '1084798491757',
     appId: '1:1084798491757:web:0f3fe9dbe280e6f7'
->>>>>>> e83a8be8ffbca519fbbf1a57a9832cee94f9558f
 };
 
 firebase.initializeApp(config);
@@ -41,157 +33,6 @@ messaging.onMessage((payload) => {
 })
 
 export default {
-<<<<<<< HEAD
-  /* POST */
-  // getPosts() {
-  //     const postsCollection = firestore.collection(POSTS)
-  //     return postsCollection
-  //         .orderBy('created_at', 'desc')
-  //         .get()
-  //         .then((docSnapshots) => {
-  //             return docSnapshots.docs.map((doc) => {
-  //                 let data = doc.data()
-  //                 data.created_at = new Date(data.created_at.toDate())
-  //                 return data
-  //             })
-  //         })
-  // },
-  // postPost(title, body) {
-  //     return firestore.collection(POSTS).add({
-  //         title,
-  //         body,
-  //         created_at: firebase.firestore.FieldValue.serverTimestamp()
-  //     })
-  // },
-  /* User */
-  addUser(email, name, auth, photoURL, gitlabID, gitlabToken, gitlabAllow) {
-    console.log('[info] start addUser func()');
-    const nickName = email.split('@')[0];
-    return firestore.collection(USERS).doc(email).set({
-      email,
-      nickName,
-      name,
-      auth,
-      photoURL,
-      gitlabID,
-      gitlabToken,
-      gitlabAllow,
-      created_at: firebase.firestore.FieldValue.serverTimestamp(),
-    });
-  },
-  getUserInfo() {
-    console.log('[info] start getUserInfo func()');
-    let user = firebase.auth().currentUser;
-    if (user === null) {
-      user = JSON.parse(localStorage.getItem('user') || '{}');
-    }
-
-    return firestore.collection(USERS).doc(user.email)
-      .get()
-      .then((doc) => {
-        let data = null;
-        if (doc.exists) {
-          data = doc.data();
-        } else {
-          console.log('[error] doc does not exist.');
-        }
-        return data;
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(`[error] fail FirebaseLogoutLog : [CODE ${errorCode}] Error : ${errorMessage}`);
-      });
-  },
-  getAllUserInfo() {
-    return firestore.collection(USERS).get()
-      .then(function(querySnapshot) { // eslint-disable-line
-        let users = []; // eslint-disable-line
-        querySnapshot.forEach(function(doc) { // eslint-disable-line
-          users.push(doc.data());
-        });
-        return users;
-      });
-  },
-  // getUserInfoByEmail(email){
-  //   console.log('[info] start getUserInfoByEmail func()');
-  //   return firestore.collection(USERS).doc(email)
-  //     .get()
-  //     .then((doc) => {
-  //       let data = null;
-  //       if (doc.exists) {
-  //         data = doc.data();
-  //         console.log("getUserInfoByEmail" + data);
-  //       } else {
-  //         console.log('[error] doc does not exist.');
-  //       }
-  //       return data;
-  //     })
-  //     .catch((error) => {
-  //       const errorCode = error.code;
-  //       const errorMessage = error.message;
-  //       console.log(`[error] fail getUserInfoByEmail : [CODE ${errorCode}] Error : ${errorMessage}`);
-  //     });
-  // },
-
-  /* login & logout */
-  signUp(signup) {
-    console.log('[info] start signUp func()');
-    const nickName = signup.email.split('@')[0];
-
-    firebase.auth().createUserWithEmailAndPassword(signup.email, signup.password)
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(`[error] signUp func() : [CODE ${errorCode}] Error : ${errorMessage}`);
-        store.commit('setError', {
-          type: 'error',
-          code: '회원가입 오류',
-          message: ' 예기치않은 오류로 인해 회원가입에 실패했습니다.'
-        });
-      });
-
-    firestore.collection(USERS).doc(signup.email).set({
-      email: signup.email,
-      nickName,
-      name: signup.name,
-      auth: 'visitor',
-      photoURL: 'https://pondokindahmall.co.id/assets/img/default.png',
-      gitlabID: signup.gitlabID,
-      gitlabToken: signup.gitlabToken,
-      gitlabAllow: false,
-      created_at: firebase.firestore.FieldValue.serverTimestamp(),
-    });
-  },
-  signIn(login) {
-    return firebase.auth().signInWithEmailAndPassword(login.email, login.password)
-      .then((result) => {
-        console.log('[info] success singIn');
-        return result;
-      }).catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        if (errorCode === 'auth/wrong-password') {
-          store.commit('setError', {
-            type: 'error',
-            code: '비밀번호 오류',
-            message: ' 비밀번호가 올바르지 않습니다. 다시 한번 입력해주세요.'
-          });
-        } else if (errorCode === 'auth/user-not-found') {
-          store.commit('setError', {
-            type: 'error',
-            code: '아이디 오류',
-            message: ' 아이디가 존재하지 않습니다. 회원 가입을 진행해 주세요.'
-          });
-        } else {
-          console.log(`[error] fail singIn : [CODE ${errorCode}] Error : ${errorMessage}`);
-          store.commit('setError', {
-            type: 'error',
-            code: errorCode,
-            message: errorMessage
-          });
-        }
-=======
     /* POST */
     // getPosts() {
     //     const postsCollection = firestore.collection(POSTS)
@@ -305,7 +146,6 @@ export default {
                     console.log(`[error] fail singIn : [CODE ${errorCode}] Error : ${errorMessage}`);
                     store.commit('setError', { type: 'error', code: errorCode, message: errorMessage });
                 }
->>>>>>> e83a8be8ffbca519fbbf1a57a9832cee94f9558f
       });
   },
   signOut() {
@@ -316,11 +156,8 @@ export default {
     return firebase.auth().signOut().then(() => {
       console.log('[info] success signOut');
       this.FirebaseLogoutLog(user.email);
-<<<<<<< HEAD
-=======
       this.outToken(user);
 
->>>>>>> e83a8be8ffbca519fbbf1a57a9832cee94f9558f
       return true;
     }).catch((error) => {
       const errorCode = error.code;
@@ -336,14 +173,11 @@ export default {
         const errorCode = error.code;
         const errorMessage = error.message;
         console.log(`[error] fail loginWithGoogle : [CODE ${errorCode}] Error : ${errorMessage}`);
-<<<<<<< HEAD
         store.commit('setError', {
           type: 'error',
           code: errorCode,
           message: errorMessage
         });
-=======
->>>>>>> e83a8be8ffbca519fbbf1a57a9832cee94f9558f
       });
   },
   loginWithFacebook() {
@@ -354,14 +188,11 @@ export default {
         const errorCode = error.code;
         const errorMessage = error.message;
         console.log(`[error] fail loginWithFacebook : [CODE ${errorCode}] Error : ${errorMessage}`);
-<<<<<<< HEAD
         store.commit('setError', {
           type: 'error',
           code: errorCode,
           message: errorMessage
         });
-=======
->>>>>>> e83a8be8ffbca519fbbf1a57a9832cee94f9558f
       });
   },
   addGitlabInfo(gitlab) {
@@ -389,15 +220,9 @@ export default {
             return false;
           }
           return true;
-<<<<<<< HEAD
         });
       });
   },
-=======
-                });
-            });
-    },
->>>>>>> e83a8be8ffbca519fbbf1a57a9832cee94f9558f
 
   /* PortfolioReply
     Create : PortfolioReply();
