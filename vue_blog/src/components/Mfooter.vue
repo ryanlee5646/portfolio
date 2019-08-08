@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-footer style="height: 100%; background-color: transparent;">
-      <v-layout wrap>
+      <v-layout wrap >
         <v-flex xs12 pa-2
          style="background-image: linear-gradient(#212529, rgb(39, 49, 70)); height: 60px;">
         </v-flex>

@@ -1,5 +1,6 @@
 <template>
   <div id="toolbar">
+    <Logo></Logo>
     <LoginPage></LoginPage>
     <BtnMenu @click.native="isMenuVisible = !isMenuVisible" :active="isMenuVisible" />
     <transition name="fade">
@@ -7,7 +8,7 @@
         <ul @click="isMenuVisible = !isMenuVisible">
           <li @click="scrolling">
             <AnimateWhenVisible name="fadeUp" :duration="1.9">
-              <a @click="siteMove('/')">
+              <a @click="siteMove('/#toolbar')">
                 Home
                 <span></span>
               </a>
@@ -20,7 +21,7 @@
                 <span></span>
               </a>
             </AnimateWhenVisible>
-          </li> 
+          </li>
           <li @click="scrolling">
             <AnimateWhenVisible name="fadeUp" :duration="1.9">
               <a href="#portfolio">
@@ -70,6 +71,7 @@
 
 <script>
 import BtnMenu from "./BtnMenu.vue";
+import Logo from './Logo.vue';
 import { animate } from "../utils";
 import FirebaseService from "@/services/FirebaseService";
 import LoginPage from "../views/LoginPage.vue";
@@ -78,7 +80,8 @@ export default {
   name: "mHeader",
   components: {
     BtnMenu,
-    LoginPage: LoginPage
+    LoginPage: LoginPage,
+    Logo,
   },
   data: () => ({
     isMenuVisible: false,
@@ -164,6 +167,7 @@ export default {
 @import "../style/css/variables.scss";
 
 $text-nav-bar: map-get($colors, light) !default;
+
 
 .nav-bar {
   position: fixed;

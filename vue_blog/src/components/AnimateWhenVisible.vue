@@ -31,6 +31,7 @@ export default {
     appear: { type: Boolean, default: false },
     offsetTop: { type: Number, default: 0 },
     duration: { type: Number, default: 1 },
+    updatedFlag: { type: Boolean, default: true },
   },
   data: () => ({
     isVisible: false,
@@ -54,6 +55,16 @@ export default {
     window.removeEventListener('scroll', this.detectVisibility);
     window.removeEventListener('resize', this.detectVisibility);
     window.removeEventListener('orientationchange', this.detectVisibility);
+  },
+  watch: {
+    updatedFlag: function(newVal, oldVal) {
+      console.log(newVal, oldVal);
+      if (oldVal && !newVal) {
+        this.isVisible = false;
+      } else if (!oldVal && newVal) {
+        this.isVisible = true;
+      }
+    },
   },
 };
 </script>

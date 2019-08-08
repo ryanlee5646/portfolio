@@ -61,43 +61,9 @@ export default {
   data() {
     return {
       currentFilter: 'development',
-      skills: {
-        development: [{
-          name: 'HTML5',
-          level: 98,
-        }, {
-          name: 'Javascript',
-          level: 60,
-        }, {
-          name: 'Vue',
-          level: 65,
-        }, {
-          name: 'CSS3',
-          level: 37,
-        }, {
-          name: 'C++',
-          level: 55,
-        }],
-        design: [{
-          name: 'Photoshop',
-          level: 25,
-        }, {
-          name: 'Illustrator',
-          level: 30,
-        }, {
-          name: 'UserExperience',
-          level: 45,
-        }],
-        productivity: [{
-          name: 'Git + Github, Bitbucket & Sourcetree',
-          level: 70,
-        }, {
-          name: 'Microsoft Office',
-          level: 55,
-        }],
-      },
     };
   },
+  props: ['skills'],
   computed: {
     filteredClass() {
       return {

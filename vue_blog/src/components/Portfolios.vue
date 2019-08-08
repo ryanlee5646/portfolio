@@ -17,18 +17,34 @@
               @click="filter('이규진')">규진</li>
           </ul>
         </div>
-
         <transition-group name="filter" tag="div" class="row justify-content-center">
-          <div class="col-md-4 col-lg-auto portfolio-item" v-for="(post, index) in filteredPosts"
-           :key="post.created_at" :uid="post.uid" :idx="index">
-            <img :src="post.portfolio.thumbnail" alt="Alt" style="width : 100%; height: 100%;"/>
+          <div class="col-md-4 col-lg-auto portfolio-item"
+          v-for="index in filteredPosts.length > limits ? limits : filteredPosts.length"
+           :key="filteredPosts[index-1].created_at" :uid="filteredPosts[index-1].uid" :idx="index-1">
+            <img :src="filteredPosts[index-1].portfolio.thumbnail" alt="Alt" style="width : 100%; height: 100%;"/>
             <div class="portfolio-link">
               <!-- <a>{{post.uid}}</a> -->
-              <a @click="routePath(post.uid)" class="popup_content"  target="_blank">See</a>
+              <a @click="routePath(filteredPosts[index-1].uid)" class="popup_content"  target="_blank">See</a>
               <!-- <a href="/portfolio/view/acrKqb3TuKTJz9h4Dnkp"  class="popup_content" target="_blank">Detail</a> -->
             </div>
           </div>
         </transition-group>
+        <div style="height: 25px;">
+        </div>
+        <div v-show="!loaded">
+          <v-progress-circular
+            :width="5"
+            color="blue"
+            indeterminate
+            size="100"
+            style="left: 50%; transform: translateX(-30%); margin-bottom: 50px;"
+            ></v-progress-circular>
+        </div>
+        <div v-if="loadMore">
+          <v-icon id="expand-icon" @click="loadMorePortfolios()" size="30" class="mr-2">
+            expand_more
+          </v-icon>
+        </div>
       </div>
     </section>
 </template>
@@ -46,8 +62,8 @@ export default {
     };
   },
   props: {
-    limits: { type: Number, default: 8 },
-    loadMore: { type: Boolean, default: false },
+    limits: { type: Number, default: 6 },
+    loadMore: { type: Boolean, default: true },
     column: { type: Number, default: 1 },
     portfolios: { type: Array },
     category: { type: Object },
@@ -56,40 +72,41 @@ export default {
     Title,
   },
   mounted() {
-    $(() => {
-      const Page = ((() => {
-        const $navArrows = $('#nav-arrows').hide();
-        const $shadow = $('#shadow').hide();
-        const slicebox = $('#sb-slider').slicebox({
-          onReady() {
-            $navArrows.show();
-            $shadow.show();
-          },
-          orientation: 'r',
-          cuboidsRandom: true,
-          disperseFactor: 30,
-        });
-        const initEvents = () => {
-          // add navigation events
-          $navArrows.children(':first').on('click', () => {
-            slicebox.next();
-            return false;
-          });
-          $navArrows.children(':last').on('click', () => {
-            slicebox.previous();
-            return false;
-          });
-        };
-        const init = () => {
-          initEvents();
-        };
-        return { init };
-      })());
-      Page.init();
-    });
-
-    console.log("app mounted");
-    this.$store.watch(() => this.$store.state.portfolios, portfolios => { console.log(""); this.portfolios = portfolios; })
+    console.log(this.filteredPosts.length);
+    // $(() => {
+    //   const Page = ((() => {
+    //     const $navArrows = $('#nav-arrows').hide();
+    //     const $shadow = $('#shadow').hide();
+    //     const slicebox = $('#sb-slider').slicebox({
+    //       onReady() {
+    //         $navArrows.show();
+    //         $shadow.show();
+    //       },
+    //       orientation: 'r',
+    //       cuboidsRandom: true,
+    //       disperseFactor: 30,
+    //     });
+    //     const initEvents = () => {
+    //       // add navigation events
+    //       $navArrows.children(':first').on('click', () => {
+    //         slicebox.next();
+    //         return false;
+    //       });
+    //       $navArrows.children(':last').on('click', () => {
+    //         slicebox.previous();
+    //         return false;
+    //       });
+    //     };
+    //     const init = () => {
+    //       initEvents();
+    //     };
+    //     return { init };
+    //   })());
+    //   Page.init();
+    // });
+    //
+    // console.log("app mounted");
+    // this.$store.watch(() => this.$store.state.portfolios, portfolios => { console.log(""); this.portfolios = portfolios; })
   },
   methods: {
     // 더보기 클릭했을 때 실행되는 함수
@@ -144,12 +161,12 @@ export default {
     background-color: $bg-portfolio;
     color: map-get($colors, light);
   }
-  //
-  // /deep/ .text-wrapper {
-  //   &:after {
-  //     border-bottom: 1px solid map-get($colors, light);
-  //   }
-  // }
+
+  ::v-deep .text-wrapper {
+    &:after {
+      border-bottom: 1px solid map-get($colors, light);
+    }
+  }
 
   .breadcrumbs {
     text-align: center;
@@ -214,4 +231,81 @@ export default {
       }
     }
   }
+
+#expand-icon{
+  position: relative;
+  border-radius: 25px;
+  background-color: #fafafa;
+  left: 50%;
+}
+// #expand-icon::after{
+//   content: '';
+//   position: absolute;
+//   z-index: -1;
+// }
+
+@-webkit-keyframes expanding-light{
+  from{
+    box-shadow: 1px 1px 1px rgba(255,197,0, 0);
+  }
+  to{
+    box-shadow: 5px 10px 30px rgba(255,197,0, 0.3);
+  }
+}
+
+@keyframes expanding-light{
+  from{
+    box-shadow: 1px 1px 1px rgba(255,197,0, 0);
+  }
+  to{
+    box-shadow: 5px 10px 30px rgba(255,197,0, 0.3);
+  }
+}
+
+@-webkit-keyframes expanding{
+  from {
+    top: 0px;
+    border-color: rgba(255,197,0,0);
+    box-shadow: 0px 0px 0px rgba(255,197,0, 0);
+  }
+  to{
+    top : 10px;
+    border-color: rgba(255,197,0,0.5);
+    box-shadow: 1px 2px 4px rgba(255,197,0, 0.5);
+  }
+}
+
+@keyframes expanding{
+  from {
+    top: 0px;
+    border-color: rgba(255,197,0,0);
+    box-shadow: 0px 0px 0px rgba(255,197,0, 0);
+  }
+  to{
+    top : 10px;
+    border-color: rgba(255,197,0,0.5);
+    box-shadow: 1px 2px 4px rgba(255,197,0, 0.5);
+  }
+}
+
+@keyframes emptyanimation{  }
+
+  #expand-icon:hover{
+    -webkit-animation-name : expanding;
+    -webkit-animation-duration: 1s;
+    animation-name: expanding;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    animation-fill-mode: forwards;
+  }
+
+  #expand-icon::after:hover{
+    -webkit-animation-name: expanding-light;
+    -webkit-animation-duration: 1s;
+    animation-name: expanding-light;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+    animation-iteration-count: infinite;
+  }
+
 </style>
