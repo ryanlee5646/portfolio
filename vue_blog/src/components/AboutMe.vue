@@ -16,11 +16,12 @@
           </ul>
         </div>
         <div class="row">
-          <AnimateWhenVisible name="fadeLeft" class="col-12 col-md">
+          <AnimateWhenVisible name="fadeLeft" class="col-12 col-md" :updatedFlag="updatedFlag">
             <SkillChart :skills="aboutus[currentFilter].skills"></SkillChart>
           </AnimateWhenVisible>
-          <Photo class="col-12 col-md text-center"/>
-          <AnimateWhenVisible name="fadeRight" class="col-12 col-md">
+          <Photo :src="aboutus[currentFilter].profile"
+          class="col-12 col-md text-center" :updatedFlag="updatedFlag"/>
+          <AnimateWhenVisible name="fadeRight" class="col-12 col-md" :updatedFlag="updatedFlag">
             <PersonalInfo :aboutme="aboutus[currentFilter]" :userName="currentFilter"/>
           </AnimateWhenVisible>
         </div>
@@ -30,7 +31,6 @@
 </template>
 
 <script>
-import { group } from '../utils';
 import Title from './Title.vue';
 import Photo from './Photo.vue';
 import PersonalInfo from './PersonalInfo.vue';
@@ -41,6 +41,7 @@ export default {
   data() {
     return {
       currentFilter: '이규진',
+      updatedFlag: true,
     };
   },
   props: ['category', 'aboutus'],
@@ -50,21 +51,16 @@ export default {
     SkillChart,
     PersonalInfo,
   },
-  computed: {
-    groupedPosts() {
-      return group(this.posts);
-    },
-    filteredUser() {
-      return true;
-      // return this.users.filter(element = > element.);
-    },
-  },
   methods: {
     isFiltered(name) {
       return this.currentFilter === name;
     },
     filter(name) {
+      this.updatedFlag = false;
       this.currentFilter = name;
+      setTimeout(() => {
+        this.updatedFlag = true;
+      }, 500);
     },
   },
 };
