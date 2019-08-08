@@ -20,7 +20,8 @@
     <!-- 크롬 브라우저가 아닐 시 최적화 메시지 띄워주는 스낵바-->
     <mSnackbar :snackbar="snackbar"></mSnackbar>
     <!-- 푸시알림 스낵바 -->
-    
+    <PushSnackbar></PushSnackbar>
+
   </v-app>
 </template>
 
@@ -37,6 +38,7 @@ import Chatbot from './components/Chatbot.vue';
 import mFooter from './components/Mfooter.vue';
 import writePage from './components/WritePage.vue';
 import MessageModal from './components/MessageModal.vue';
+import PushSnackbar from './components/PushSnackbar.vue';
 
 
 // @vue/compontent
@@ -92,6 +94,7 @@ export default {
     Chatbot,
     mFooter,
     MessageModal,
+    PushSnackbar,
     // writePage,
   },
 };

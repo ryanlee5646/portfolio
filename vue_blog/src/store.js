@@ -21,6 +21,12 @@ export default new Vuex.Store({
             code: '',
             message: '',
         },
+        push: {
+            type: '',
+            state: false,
+            title: '',
+            message: '',
+        }
     },
     mutations: {
         displayDrawer(state, flag) {
@@ -71,6 +77,20 @@ export default new Vuex.Store({
             state.error.code = '';
             state.error.message = '';
         },
+
+        setPush(state, data) {
+            state.push.state = true;
+            state.push.type = data.type;
+            state.push.title = data.title;
+            state.error.message = data.message;
+        },
+
+        setPushState(state) {
+            state.push.state = false;
+            state.push.type = '';
+            state.push.title = '';
+            state.error.message = '';
+        }
     },
     getters: {
         getUserInfo: (state) => {
@@ -78,6 +98,9 @@ export default new Vuex.Store({
         },
         getError: (state) => {
             return state.error;
+        },
+        getPush: (state) => {
+            return state.push;
         },
     },
 });

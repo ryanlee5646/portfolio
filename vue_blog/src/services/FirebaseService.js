@@ -30,7 +30,8 @@ messaging.usePublicVapidKey('BE71GiStXCZkedHmFGZLNsz7vP1bETIPB9Oiz8cd7s0aDepoiht
 
 // 화면을 보고 있을 때 푸쉬알림
 messaging.onMessage((payload) => {
-    store.commit('setError', { type: 'info', code: `${payload.notification.title}`, message: `${payload.notification.body}` });
+  
+    store.commit('setPush', { type: 'push', title: `${payload.notification.title}`, message: `${payload.notification.body}` });
 });
 
 export default {
