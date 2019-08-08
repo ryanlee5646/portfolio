@@ -98,9 +98,9 @@
             </v-layout>
             
             <!-- draggable -->
-                <v-container class="drag-container" v-drag-and-drop:options="options">
+                <v-container class="drag-container" v-drag-and-drop:options="options" hidden-sm-and-down>
                     <h1>User Authentication</h1>
-                    <v-flex class="drag-list" hidden-sm-and-down>
+                    <v-flex class="drag-list">
                         <v-card class="drag-column" v-for="group in groups" :key="group.id">
                             <v-flex class="drag-column-header">
                                 {{ group.name }}

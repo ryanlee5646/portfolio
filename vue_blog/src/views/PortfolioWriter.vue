@@ -9,11 +9,34 @@
 
   <v-layout justify-center pt-5>
     <v-flex xs12 sm5 md4>
-      <v-text-field label="프로젝트 참여 팀원" v-model="portfolio.teams">
+      <v-text-field label="프로젝트 참여 팀원" v-model="portfolio.teams" 
+      @click="up">
       </v-text-field>
+        <v-card
+      class="mx-auto"
+      max-width="300"
+      tile
+      v-if="showCard"
+    >
+      <v-list dense>
+        <v-subheader>REPORTS</v-subheader>
+        <v-list-item-group v-model="item" color="primary">
+          <v-list-item
+            v-for="(item, i) in items"
+            :key="i"
+          >
+            <v-list-item-icon>
+              <v-icon v-text="item.icon"></v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title v-text="item.text"></v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-item-group>
+      </v-list>
+    </v-card>
     </v-flex>
   </v-layout>
-
   <v-layout justify-center>
     <v-flex xs12 sm8 md6>
       <v-layout wrap justify-space-between>
@@ -36,7 +59,6 @@
       </v-layout>
     </v-flex>
   </v-layout>
-
   <v-layout justify-center>
     <v-flex xs12 sm8 md6>
       <markdown-editor v-model="portfolio.content" ref="markdownEditor"></markdown-editor>
@@ -62,7 +84,7 @@
   </v-layout><br>
   <v-layout wrap justify-center>
     <v-flex xs12 sm3 md2 mr-2>
-      <v-btn @click="PortfolioWriter()" block flat>작성하기</v-btn>
+      <v-btn @click="PortfolioWriter()" block text>작성하기</v-btn>
     </v-flex>
     <v-flex xs12 sm3 md2>
       <v-btn to="/" block flat>뒤로</v-btn>
@@ -78,11 +100,20 @@
 import markdownEditor from 'vue-simplemde/src/markdown-editor';
 import ImageComponent from '../components/ImageComponent.vue';
 import FirebaseService from '@/services/FirebaseService';
+import {
+    VListItemGroup,
+    VListItem,
+    VListItemIcon,
+    VListItemTitle,
+    VListItemContent
+} from 'vuetify/lib';
 
 export default {
+  
   name: 'portfoliowrite',
   data() {
     return {
+      showCard: false,
       portfolios : [],
       portfolio: {
         userID: this.$store.state.user.email, //this.$store.state.user
@@ -98,6 +129,12 @@ export default {
         // portfolioCnt: this.$store.state.user.portfolioCount,
         // postCnt: this.$store.state.user.postCount,
       },
+      item: 1,
+      items: [
+        { text: 'Real-Time', icon: 'mdi-clock' },
+        { text: 'Audience', icon: 'mdi-account' },
+        { text: 'Conversions', icon: 'mdi-flag' },
+      ],
     }
   },
   methods: {
@@ -107,11 +144,21 @@ export default {
       this.portfolios = await FirebaseService.getPortfolios();
       this.$store.commit('updatePortfolios', this.portfolios );
       this.$router.push('/');
+    },
+    up(){
+      console.log("hellododododod");
+      this.showCard = true;
     }
   },
   components: {
     markdownEditor,
-    ImageComponent
+    ImageComponent,
+    VListItemGroup,
+    VListItemGroup,
+    VListItem,
+    VListItemIcon,
+    VListItemTitle,
+    VListItemContent
   }
 }
 </script>

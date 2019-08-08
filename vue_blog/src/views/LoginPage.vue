@@ -31,7 +31,7 @@
         </v-form>
         <v-layout justify-center ma-2>
           <v-flex xs12 sm4>
-            <v-btn @click="signIn()" block flat class="dohyeon-font subheading">로그인</v-btn>
+            <v-btn @click="signIn()" block text class="dohyeon-font subheading">로그인</v-btn>
           </v-flex>
           <v-flex xs12 sm4>
             <v-btn
@@ -39,16 +39,16 @@
               @click="isLoginStage(false)"
               class="dohyeon-font subheading"
               block
-              flat
+              text
             >회원가입</v-btn>
           </v-flex>
         </v-layout>
         <v-layout justify-center ma-2>
           <v-flex xs12 sm8>
-            <v-btn round color="#df4a31" dark v-on:click="loginWithGoogle" style="width:100%;">
+            <v-btn rounded color="#df4a31" dark v-on:click="loginWithGoogle" style="width:100%;">
               <v-icon size="25" class="mr-2">fa-google</v-icon>Google 로그인
             </v-btn>
-            <v-btn round color="#4662b0" dark v-on:click="loginWithFacebook" style="width:100%;">
+            <v-btn rounded color="#4662b0" dark v-on:click="loginWithFacebook" style="width:100%;">
               <v-icon size="25" class="mr-2">fa-facebook</v-icon>Facebook 로그인
             </v-btn>
           </v-flex>
@@ -129,10 +129,10 @@
         </v-form>
         <v-layout justify-center ma-2>
           <v-flex xs12 sm4>
-            <v-btn class="dohyeon-font subheading" @click="signUp()" block flat>회원가입</v-btn>
+            <v-btn class="dohyeon-font headline" @click="signUp()" block text>회원가입</v-btn>
           </v-flex>
           <v-flex xs12 sm4>
-            <v-btn color @click="isLoginStage(true)" class="dohyeon-font subheading" block flat>뒤로</v-btn>
+            <v-btn color @click="isLoginStage(true)" class="dohyeon-font subheading" block text>뒤로</v-btn>
           </v-flex>
         </v-layout>
       </v-container>
