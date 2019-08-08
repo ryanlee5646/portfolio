@@ -19,6 +19,8 @@
     <message-modal></message-modal>
     <!-- 크롬 브라우저가 아닐 시 최적화 메시지 띄워주는 스낵바-->
     <mSnackbar :snackbar="snackbar"></mSnackbar>
+    <!-- 푸시알림 스낵바 -->
+    
   </v-app>
 </template>
 
