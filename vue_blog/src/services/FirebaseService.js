@@ -29,7 +29,7 @@ messaging.usePublicVapidKey('BE71GiStXCZkedHmFGZLNsz7vP1bETIPB9Oiz8cd7s0aDepoiht
 
 // 화면을 보고 있을 때 푸쉬알림
 messaging.onMessage((payload) => {
-    alert('이거울리면 푸시알람 온거임! ' + payload.notification.title)
+    payload.notification.title;
 })
 
 export default {
