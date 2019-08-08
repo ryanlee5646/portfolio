@@ -1,6 +1,7 @@
 import Vue from 'vue';
-// Vuetify library
-import Vuetify from 'vuetify';
+
+import './plugins/vuetify';
+
 // Markdown editor
 import VueSimplemde from 'vue-simplemde';
 
@@ -27,6 +28,8 @@ import router from './router';
 import store from './store';
 import AnimateWhenVisible from './components/AnimateWhenVisible.vue';
 import './style/css/app.scss';
+import vuetify from './plugins/vuetify';
+
 // import addPolyfills from './polyfills';
 
 
@@ -34,7 +37,6 @@ const firebase = require('firebase/app');
 
 Vue.use(BootstrapVue);
 Vue.use(VueResource);
-Vue.use(Vuetify);
 Vue.use(VueSimplemde);
 Vue.use(VueNumber);
 Vue.use(VueDraggable);
@@ -54,5 +56,6 @@ new Vue({
             }
         });
     },
+    vuetify,
     render: h => h(App),
 }).$mount('#app');

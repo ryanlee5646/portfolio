@@ -13,10 +13,10 @@
     </v-layout>
     <v-layout wrap justify-center>
       <v-flex xs12 sm3 md2 mr-2>
-        <v-btn @click="PostWriter()" block flat>작성하기</v-btn>
+        <v-btn @click="PostWriter()" block text>작성하기</v-btn>
       </v-flex>
       <v-flex xs12 sm3 md2>
-        <v-btn to="/" block flat>뒤로</v-btn><br>
+        <v-btn to="/" block text>뒤로</v-btn><br>
       </v-flex>
     </v-layout>
     <!-- <div class="X">

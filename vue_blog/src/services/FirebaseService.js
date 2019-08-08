@@ -45,55 +45,55 @@ export default {
     //     })
     // },
     /* User */
-        addUser(email, name, auth, photoURL, gitlabID, gitlabToken, gitlabAllow) {
-            console.log('[info] start addUser func()');
-            const nickName = email.split('@')[0];
-            return firestore.collection(USERS).doc(email).set({
-                email,
-                nickName,
-                name,
-                auth,
-                photoURL,
-                gitlabID,
-                gitlabToken,
-                gitlabAllow,
-                created_at: firebase.firestore.FieldValue.serverTimestamp(),
-            });
-        },
-        getUserInfo() {
-            console.log('[info] start getUserInfo func()');
-            let user = firebase.auth().currentUser;
-            if (user === null) {
-                user = JSON.parse(localStorage.getItem('user') || '{}');
-            }
+    addUser(email, name, auth, photoURL, gitlabID, gitlabToken, gitlabAllow) {
+        console.log('[info] start addUser func()');
+        const nickName = email.split('@')[0];
+        return firestore.collection(USERS).doc(email).set({
+            email,
+            nickName,
+            name,
+            auth,
+            photoURL,
+            gitlabID,
+            gitlabToken,
+            gitlabAllow,
+            created_at: firebase.firestore.FieldValue.serverTimestamp(),
+        });
+    },
+    getUserInfo() {
+        console.log('[info] start getUserInfo func()');
+        let user = firebase.auth().currentUser;
+        if (user === null) {
+            user = JSON.parse(localStorage.getItem('user') || '{}');
+        }
 
-            return firestore.collection(USERS).doc(user.email)
-                .get()
-                .then((doc) => {
-                    let data = null;
-                    if (doc.exists) {
-                        data = doc.data();
-                    } else {
-                        console.log('[error] doc does not exist.');
-                    }
-                    return data;
-                })
-                .catch((error) => {
-                    const errorCode = error.code;
-                    const errorMessage = error.message;
-                    console.log(`[error] fail FirebaseLogoutLog : [CODE ${errorCode}] Error : ${errorMessage}`);
+        return firestore.collection(USERS).doc(user.email)
+            .get()
+            .then((doc) => {
+                let data = null;
+                if (doc.exists) {
+                    data = doc.data();
+                } else {
+                    console.log('[error] doc does not exist.');
+                }
+                return data;
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.log(`[error] fail FirebaseLogoutLog : [CODE ${errorCode}] Error : ${errorMessage}`);
+            });
+    },
+    getAllUserInfo() {
+        return firestore.collection(USERS).get()
+            .then(function(querySnapshot) { // eslint-disable-line
+                let users = []; // eslint-disable-line
+                querySnapshot.forEach(function(doc) { // eslint-disable-line
+                    users.push(doc.data());
                 });
-        },
-        getAllUserInfo() {
-            return firestore.collection(USERS).get()
-                .then(function(querySnapshot) { // eslint-disable-line
-                    let users = []; // eslint-disable-line
-                    querySnapshot.forEach(function(doc) { // eslint-disable-line
-                        users.push(doc.data());
-                    });
-                    return users;
-                });
-        },
+                return users;
+            });
+    },
 
     /* login & logout */
     signUp(signup) {
@@ -204,12 +204,12 @@ export default {
             });
     },
 
-  /* PortfolioReply
-    Create : PortfolioReply();
-    Update : editReply();
-    Read : getPortfolioReply();
-    Delete : deleteReply();
-  */
+    /* PortfolioReply
+      Create : PortfolioReply();
+      Update : editReply();
+      Read : getPortfolioReply();
+      Delete : deleteReply();
+    */
 
     PortfolioReply(portfolioReply, portfolioUID) {
         console.log('[info] start PortfolioReply func()');
@@ -230,53 +230,53 @@ export default {
         const portfolioCollection = firestore.collection(PORTFOLIOS);
         const replyCollection = portfolioCollection.doc(portfolioUID).collection(PORTFOLIO_REPLYS);
 
-    return replyCollection
-      .orderBy('created_at', 'desc')
-      .get()
-      .then((docSnapshots) => { // eslint-disable-line
-        return docSnapshots.docs.map((doc) => {
-          let data = doc.data(); // eslint-disable-line
-          data.created_at = new Date(data.created_at.toDate());
-          data.uid = doc.id;
-          return data;
+        return replyCollection
+            .orderBy('created_at', 'desc')
+            .get()
+            .then((docSnapshots) => { // eslint-disable-line
+                return docSnapshots.docs.map((doc) => {
+                    let data = doc.data(); // eslint-disable-line
+                    data.created_at = new Date(data.created_at.toDate());
+                    data.uid = doc.id;
+                    return data;
+                });
+            }).catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.log(`[error] getPortfolioReply func() : [CODE ${errorCode}] Error : ${errorMessage}`);
+            });
+    },
+    deleteReply(portfolioUID, replyUID) {
+        console.log('[info] start deleteReply func()');
+        const portfolioCollection = firestore.collection(PORTFOLIOS);
+        const replyCollection = portfolioCollection.doc(portfolioUID).collection(PORTFOLIO_REPLYS);
+        replyCollection.doc(replyUID)
+            .delete()
+            .then(() => {
+                console.log('[info] Reply successfully deleted.');
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.log(`[error] deleteReply func() : [CODE ${errorCode}] Error : ${errorMessage}`);
+            });
+    },
+    editReply(portfolioUID, replyUID, editReplyContent, nickName) {
+        console.log('[info] start editReply func()');
+        console.log(nickName);
+        const portfolioRef = firestore.collection(PORTFOLIOS).doc(portfolioUID);
+        const replyCollection = portfolioRef.collection(PORTFOLIO_REPLYS);
+        replyCollection.doc(replyUID).update({
+            portfolioReply: {
+                content: editReplyContent,
+                email: nickName,
+            },
+        }).catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.log(`[error] editReply func() : [CODE ${errorCode}] Error : ${errorMessage}`);
         });
-      }).catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(`[error] getPortfolioReply func() : [CODE ${errorCode}] Error : ${errorMessage}`);
-      });
-  },
-  deleteReply(portfolioUID, replyUID) {
-    console.log('[info] start deleteReply func()');
-    const portfolioCollection = firestore.collection(PORTFOLIOS);
-    const replyCollection = portfolioCollection.doc(portfolioUID).collection(PORTFOLIO_REPLYS);
-    replyCollection.doc(replyUID)
-      .delete()
-      .then(() => {
-        console.log('[info] Reply successfully deleted.');
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(`[error] deleteReply func() : [CODE ${errorCode}] Error : ${errorMessage}`);
-      });
-  },
-  editReply(portfolioUID, replyUID, editReplyContent, nickName) {
-    console.log('[info] start editReply func()');
-    console.log(nickName);
-    const portfolioRef = firestore.collection(PORTFOLIOS).doc(portfolioUID);
-    const replyCollection = portfolioRef.collection(PORTFOLIO_REPLYS);
-    replyCollection.doc(replyUID).update({
-      portfolioReply: {
-        content: editReplyContent,
-        email : nickName,
-      },
-    }).catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      console.log(`[error] editReply func() : [CODE ${errorCode}] Error : ${errorMessage}`);
-    });
-  },
+    },
 
     /* Portfolio
       Create : PortfolioWriter();
@@ -322,6 +322,9 @@ export default {
     getPortfolios() {
         console.log('[info] start getPortfolios func()');
         const portfolioCollection = firestore.collection(PORTFOLIOS);
+        console.log('firebase.auth().currentUser');
+        console.log(firebase.auth());
+        console.log(firebase.auth().currentUser);
         return portfolioCollection
             .orderBy('created_at', 'desc')
             .get()
@@ -368,149 +371,149 @@ export default {
         });
     },
 
-  editPost(postUID, post) {
-    console.log('[info] start editPost func()');
+    editPost(postUID, post) {
+        console.log('[info] start editPost func()');
 
-    firestore.collection(POSTS).doc(postUID)
-      .update({
-        post,
-      }).catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(`[error] editPost func() : [CODE ${errorCode}] Error : ${errorMessage}`);
-      });
-  },
+        firestore.collection(POSTS).doc(postUID)
+            .update({
+                post,
+            }).catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.log(`[error] editPost func() : [CODE ${errorCode}] Error : ${errorMessage}`);
+            });
+    },
 
     getPosts() {
         console.log('[info] start getPosts func()');
         const postsCollection = firestore.collection(POSTS);
         console.log(postsCollection);
 
-    return postsCollection
-      .orderBy('created_at', 'desc')
-      .get()
-      .then((docSnapshots) => {
-        return docSnapshots.docs.map((doc) => {
-          let data = doc.data()
-          data.created_at = new Date(data.created_at.toDate())
-          data.uid = doc.id; // Post uid
-          return data
-        })
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(`[error] getPosts func() : [CODE ${errorCode}] Error : ${errorMessage}`);
-      });
-  },
+        return postsCollection
+            .orderBy('created_at', 'desc')
+            .get()
+            .then((docSnapshots) => {
+                return docSnapshots.docs.map((doc) => {
+                    let data = doc.data()
+                    data.created_at = new Date(data.created_at.toDate())
+                    data.uid = doc.id; // Post uid
+                    return data
+                })
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.log(`[error] getPosts func() : [CODE ${errorCode}] Error : ${errorMessage}`);
+            });
+    },
 
-  deletePost(postUID) {
-    console.log('[info] start deletePost func()');
-    const postCollection = firestore.collection(POSTS).doc(postUID);
+    deletePost(postUID) {
+        console.log('[info] start deletePost func()');
+        const postCollection = firestore.collection(POSTS).doc(postUID);
 
-    postCollection.delete()
-      .then(() => {
-        console.log('[info] Document successfully deleted.');
-      }).catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(`[error] postCollection func() : [CODE ${errorCode}] Error : ${errorMessage}`);
-      });
+        postCollection.delete()
+            .then(() => {
+                console.log('[info] Document successfully deleted.');
+            }).catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.log(`[error] postCollection func() : [CODE ${errorCode}] Error : ${errorMessage}`);
+            });
 
-  },
+    },
 
-  addPostViews(postID) {
-    console.log('[info] start addPostViews func()');
-    const postCollection = firestore.collection(POSTS).doc(postID);
+    addPostViews(postID) {
+        console.log('[info] start addPostViews func()');
+        const postCollection = firestore.collection(POSTS).doc(postID);
 
-    postCollection.update({
-      views: firebase.firestore.FieldValue.increment(1),
-    }).catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      console.log(`[error] addPostViews func() : [CODE ${errorCode}] Error : ${errorMessage}`);
-    });
-  },
-
-
-  /* PostReply
-    Create : PostReplyWriter();
-    Update : editPostReply();
-    Read : getPostReplys();
-    Delete : deletePostReply();
-  */
-
-  PostReplyWriter(postReply, postUID){
-    console.log('[info] start PostReplyWriter func()');
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    const postCollection = firestore.collection(POSTS);
-    postReply.email = user.nickName; // eslint-disable-line
-
-    return postCollection.doc(postUID).collection(POST_REPLYS).add({
-      postReply,
-      created_at: firebase.firestore.FieldValue.serverTimestamp(),
-    }).catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      console.log(`[error] PostReplyWriter func() : [CODE ${errorCode}] Error : ${errorMessage}`);
-    });
-
-  },
-  editPostReply(postUID, replyUID, editReplyContent, email){
-    console.log('[info] start editPostReply func()');
-
-    const postRef = firestore.collection(POSTS).doc(postUID);
-    const replyCollection = postRef.collection(POST_REPLYS);
-    replyCollection.doc(replyUID).update({
-      postReply: {
-        content: editReplyContent,
-        email,
-      },
-    }).catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      console.log(`[error] editReply func() : [CODE ${errorCode}] Error : ${errorMessage}`);
-    });
-  },
-
-  getPostReplys(postUID){
-    console.log('[info] start getPostReplys func()');
-
-    const postCollection = firestore.collection(POSTS);
-    const replyCollection = postCollection.doc(postUID).collection(POST_REPLYS);
-
-    return replyCollection
-      .orderBy('created_at', 'desc')
-      .get()
-      .then((docSnapshots) => {
-        return docSnapshots.docs.map((doc) => {
-          let data = doc.data();
-          data.created_at = new Date(data.created_at.toDate());
-          data.uid = doc.id;
-          return data;
+        postCollection.update({
+            views: firebase.firestore.FieldValue.increment(1),
+        }).catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.log(`[error] addPostViews func() : [CODE ${errorCode}] Error : ${errorMessage}`);
         });
-      }).catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(`[error] getPostReplys func() : [CODE ${errorCode}] Error : ${errorMessage}`);
-      });
+    },
 
-  },
-  deletePostReply(postUID, replyUID){
-    console.log('[info] start deletePostReply func()');
-    const postCollection = firestore.collection(POSTS);
-    const replyCollection = postCollection.doc(postUID).collection(POST_REPLYS);
-    replyCollection.doc(replyUID)
-      .delete()
-      .then(() => {
-        console.log('[info] Reply successfully deleted.');
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(`[error] deletePostReply func() : [CODE ${errorCode}] Error : ${errorMessage}`);
-      });
-  },
+
+    /* PostReply
+      Create : PostReplyWriter();
+      Update : editPostReply();
+      Read : getPostReplys();
+      Delete : deletePostReply();
+    */
+
+    PostReplyWriter(postReply, postUID) {
+        console.log('[info] start PostReplyWriter func()');
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        const postCollection = firestore.collection(POSTS);
+        postReply.email = user.nickName; // eslint-disable-line
+
+        return postCollection.doc(postUID).collection(POST_REPLYS).add({
+            postReply,
+            created_at: firebase.firestore.FieldValue.serverTimestamp(),
+        }).catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.log(`[error] PostReplyWriter func() : [CODE ${errorCode}] Error : ${errorMessage}`);
+        });
+
+    },
+    editPostReply(postUID, replyUID, editReplyContent, email) {
+        console.log('[info] start editPostReply func()');
+
+        const postRef = firestore.collection(POSTS).doc(postUID);
+        const replyCollection = postRef.collection(POST_REPLYS);
+        replyCollection.doc(replyUID).update({
+            postReply: {
+                content: editReplyContent,
+                email,
+            },
+        }).catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.log(`[error] editReply func() : [CODE ${errorCode}] Error : ${errorMessage}`);
+        });
+    },
+
+    getPostReplys(postUID) {
+        console.log('[info] start getPostReplys func()');
+
+        const postCollection = firestore.collection(POSTS);
+        const replyCollection = postCollection.doc(postUID).collection(POST_REPLYS);
+
+        return replyCollection
+            .orderBy('created_at', 'desc')
+            .get()
+            .then((docSnapshots) => {
+                return docSnapshots.docs.map((doc) => {
+                    let data = doc.data();
+                    data.created_at = new Date(data.created_at.toDate());
+                    data.uid = doc.id;
+                    return data;
+                });
+            }).catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.log(`[error] getPostReplys func() : [CODE ${errorCode}] Error : ${errorMessage}`);
+            });
+
+    },
+    deletePostReply(postUID, replyUID) {
+        console.log('[info] start deletePostReply func()');
+        const postCollection = firestore.collection(POSTS);
+        const replyCollection = postCollection.doc(postUID).collection(POST_REPLYS);
+        replyCollection.doc(replyUID)
+            .delete()
+            .then(() => {
+                console.log('[info] Reply successfully deleted.');
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.log(`[error] deletePostReply func() : [CODE ${errorCode}] Error : ${errorMessage}`);
+            });
+    },
 
     /* Log */
     FirebaseLoginLog() {
@@ -560,9 +563,9 @@ export default {
     },
 
     /* Views */
-    getUserPortfolioNumber(nickName) {
+    getUserPortfolioNumber(email) {
         console.log('[info] start getUserPortfolioNumber func()');
-        return firestore.collection(PORTFOLIOS).where('portfolio.userID', '==', nickName).get()
+        return firestore.collection(PORTFOLIOS).where('portfolio.email', '==', email).get()
             .then(function(querySnapshot) { // eslint-disable-line
                 return querySnapshot.size;
             })
@@ -572,9 +575,9 @@ export default {
                 console.log(`[error] fail getUserPortfolioNumber : [CODE ${errorCode}] Error : ${errorMessage}`);
             });
     },
-    getUSerPostNumber(nickName) {
+    getUSerPostNumber(email) {
         console.log('[info] start getUSerPostNumber func()');
-        return firestore.collection(POSTS).where('post.userID', '==', nickName).get()
+        return firestore.collection(POSTS).where('post.email', '==', email).get()
             .then(function(querySnapshot) { // eslint-disable-line
                 return querySnapshot.size;
             })
@@ -584,13 +587,13 @@ export default {
                 console.log(`[error] fail getUSerPostNumber : [CODE ${errorCode}] Error : ${errorMessage}`);
             });
     },
-    getUserReplyNumber(nickName) {
+    getUserReplyNumber(email) {
         console.log('[info] start getUSerReplyNumber func()'); // .where('post.userID', '==', nickName)
         return firestore.collection(PORTFOLIOS).get()
             .then(async(querySnapshot) => { // eslint-disable-line
                 let replySum = 0;
                 for (let i = 0; i < querySnapshot.size; i += 1) {
-                    replySum += await this.getUserReplyCountByPortfolio(querySnapshot.docs[i].id, nickName); // eslint-disable-line
+                    replySum += await this.getUserReplyCountByPortfolio(querySnapshot.docs[i].id, email); // eslint-disable-line
                 }
                 return replySum;
             })
@@ -600,13 +603,13 @@ export default {
                 console.log(`[error] fail getUSerReplyNumber : [CODE ${errorCode}] Error : ${errorMessage}`);
             });
     },
-    getUserReplyCountByPortfolio(portfolioID, nickName) {
+    getUserReplyCountByPortfolio(portfolioID, email) {
         // console.log('[info] start getUserReplyCountByPortfolio func()');
         return firestore.collection(PORTFOLIOS).doc(portfolioID).collection(PORTFOLIO_REPLYS).get()
             .then(function(querySnapshot) { // eslint-disable-line
                 let cnt = 0;
                 for (let j = 0; j < querySnapshot.size; j += 1) {
-                    if (querySnapshot.docs[j].data().portfolioReply.email === nickName) {
+                    if (querySnapshot.docs[j].data().portfolioReply.email === email) {
                         cnt += 1;
                     }
                 }
