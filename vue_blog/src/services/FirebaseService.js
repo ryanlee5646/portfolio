@@ -733,12 +733,11 @@ export default {
 
     // push_notification check
     notificationCheck() {
-        alert("노티피케이션")
         Notification.requestPermission().then(function(permission) {
             if (permission === 'granted') {
-                console.log("알림이 허용됨")
+                console.log("[info] 알림이 허용됨")
             } else {
-                console.log("알림이 거부됨")
+                console.log("[info] 알림이 거부됨")
             }
         })
     },
@@ -748,8 +747,7 @@ export default {
             const Email = firebase.auth().currentUser.email;
             if (currentToken) {
                 var test_token = currentToken
-                alert(test_token)
-                alert(Email)
+                console.log(`[info] gettingToken func() [token : ${test_token}]`)
                 firestore.collection(USERS).doc(Email).update({
                     token: test_token
                 })
