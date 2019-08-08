@@ -1,16 +1,16 @@
 <template>
   <div>
-    <AnimateWhenVisible name="bounce">
+    <AnimateWhenVisible name="bounce" :updatedFlag="updatedFlag">
       <h3>Photo</h3>
       <div class="person">
         <a @click.prevent="isModalVisible = true" class="me-photo">
-          <img src="img/lee.jpg" alt="Personal Photo"/>
+          <img :src="src" alt="Personal Photo"/>
         </a>
       </div>
     </AnimateWhenVisible>
 
     <ModalView v-if="isModalVisible" @close="isModalVisible = false">
-      <img src="img/lee.jpg" alt="Personal Photo"/>
+      <img :src="src" alt="Personal Photo"/>
     </ModalView>
   </div>
 </template>
@@ -23,6 +23,7 @@ import ModalView from './ModalView'
     components: {
       ModalView
     },
+    props: ['src', 'updatedFlag'],
     data: () => ({
       isModalVisible: false
     })

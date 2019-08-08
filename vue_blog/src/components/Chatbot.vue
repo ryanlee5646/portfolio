@@ -49,7 +49,7 @@
         dark
         small
         color="green"
-        @click="routePage('/post/write')"
+        @click="routePage('/post/write#postWriter')"
       >
         <v-icon>edit</v-icon>
       </v-btn>
@@ -58,7 +58,7 @@
         dark
         small
         color="indigo"
-        @click="routePage('/portfolio/write')"
+        @click="routePage('/portfolio/write#portfolioWriter')"
       >
         <v-icon>add</v-icon>
       </v-btn>
@@ -102,7 +102,7 @@ export default {
     showDialog(flag) {
       this.dialogShow = flag;
     },
-    routePage(target) {
+    routePage(target, event) {
       this.$router.push({ path: target });
     },
     dialogScrollDown() {
