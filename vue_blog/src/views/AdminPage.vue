@@ -98,9 +98,9 @@
             </v-layout>
             
             <!-- draggable -->
-                <v-container class="drag-container" v-drag-and-drop:options="options">
+                <v-container class="drag-container" v-drag-and-drop:options="options" hidden-sm-and-down>
                     <h1>User Authentication</h1>
-                    <v-flex class="drag-list" hidden-sm-and-down>
+                    <v-flex class="drag-list">
                         <v-card class="drag-column" v-for="group in groups" :key="group.id">
                             <v-flex class="drag-column-header">
                                 {{ group.name }}
@@ -137,7 +137,15 @@
                         </v-card>
                     </v-flex>
                 </v-container>
-
+                <p class="red white--text">Eleates de ferox quadra, promissio onus!Cur elevatus studere?Cur abactus tolerare?Cum extum studere, omnes vitaes magicae pius, castus amores.Eheu, luna!</p>
+<p class="pink lighten-4 red--text text--darken-4">Audax agripetas ducunt ad poeta.Nunquam imitari fluctui.Cobaltums sunt armariums de placidus poeta.Ubi est pius olla?Lanista experimentums, tanquam lotus hibrida.</p>
+<h1 class="display-1">Brevis gallus hic imperiums racana est.</h1>
+<h4 class="display-4">Nunquam attrahendam bulla.Caesium de bi-color lumen, resuscitabo parma!</h4>
+<p class="headline">Fuga, axona, et mortem.Superbus mensa nunquam tractares tumultumque est.Heu.</p>
+<p class="headline">Sunt plasmatores transferre salvus, emeritis mensaes.</p>
+<p class="caption">Sunt rectores transferre castus, germanus fermiumes.</p>
+<p>hello</p>
+<v-btn rounded color="primary" dark>Rounded Button</v-btn>
                 <v-dialog v-model="dialog" persistent max-width="290">
                   <v-card>
                     <v-card-title class="headline" style="color:red;">Cuation</v-card-title>
