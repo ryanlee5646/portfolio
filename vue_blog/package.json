@@ -28,6 +28,7 @@
         "vue-gitlab-api": "^0.1.8",
         "vue-google-charts": "^0.3.2",
         "vue-light-timeline": "^1.0.3",
+        "vue-material": "^1.0.0-beta-11",
         "vue-number-animation": "^1.0.5",
         "vue-resource": "^1.5.1",
         "vue-router": "^3.0.1",
