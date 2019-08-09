@@ -3,7 +3,6 @@ const functions = require('firebase-functions');
 const serviceAccount = require('./serviceAccountKey.json');
 
 
-
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
     databaseURL: "https://vue-blog-f1b07.firebaseio.com"
@@ -82,7 +81,6 @@ exports.postReplyPush = functions.firestore.document('posts/{any}/post_replys/{a
                 if (doc.data()['auth'] === 'manager') {
                     admin.messaging().sendToDevice(doc.data()['token'], payload)
                 }
-
             }
         })
     })

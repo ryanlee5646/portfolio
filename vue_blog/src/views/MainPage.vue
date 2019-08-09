@@ -217,10 +217,10 @@ export default {
             }],
             design: [{
               name: 'Photoshop',
-              level: 20,
+              level: 25,
             }, {
               name: 'Adobe Primere',
-              level: 15,
+              level: 25,
             }],
             productivity: [{
               name: 'Github + Jira',

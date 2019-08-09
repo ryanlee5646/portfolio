@@ -1,5 +1,5 @@
 <template>
-  <div id="mainDiv">
+  <div id="mainDiv" @click="siteMove('/#toolbar')">
       <div id="boxDiv">
           <div id="front"></div>
           <div id="back"></div>
@@ -13,7 +13,11 @@
 
 <script>
 export default {
-
+  methods: {
+    siteMove(target) {
+      this.$router.push({ path: target });
+    },
+  },
 };
 </script>
 
