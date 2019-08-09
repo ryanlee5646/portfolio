@@ -302,17 +302,17 @@ export default{
         }else{
           store.commit('setError', { type: 'error', code: '접근권한 오류', message: '접근권한이 없습니다. 관리자에게 문의하세요.' });
           next({
-            path: '/',
+            path: '/#toolbar',
           })
         }
       }
       else{
         store.commit('setError', { type: 'error', code: '로그인 오류', message: '로그인이 필요한 페이지입니다. 로그인 후 접속해 주세요.' });
         next({
-          path: '/',
+          path: '/#toolbar',
         })
       }
-      
+  
     },
 }
 </script>

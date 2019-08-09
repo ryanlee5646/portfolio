@@ -42,9 +42,7 @@
                      <div id="markdownP" style="font-size : 1.5vw !important;" v-html="compiledMarkdown">  {{$store.state.portfolios[i -1].portfolio.content}} </div>
                 </div>
                 <div class="cardDiv slideDown " v-else-if="clickDiv === 'git'">
-                  <h2>HI</h2>
-                  <repository></repository>
-                  <h2>HI</h2>
+                  <repository :gitlabToken="$store.state.portfolios[i -1].gitlabToken" :teams="$store.state.portfolios[i -1].teams"></repository>
                 </div>
                 <br>
                 <button class="button" v-if="$store.state.portfolios[i -1].portfolio.userID === nowUser.email"  @click="deletePortfolio()">Delete</button>

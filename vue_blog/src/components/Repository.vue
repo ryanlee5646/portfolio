@@ -1,98 +1,194 @@
 <template>
-  <div class="py-3">
-    <v-layout wrap>
-      <v-flex xs11 sm8>
-        <h2 class="font-weight-regular yeonsung-font git-repository-url text-truncate"><a :href="url" class="hvr-grow hvr-icon-pulse">h2</a></h2>
-        <p class="subheading mb-1 text--darken-1 font-weight-light"><span class="yeonsung-font">h2</span></p>
-        <!-- <h2 class="font-weight-regular yeonsung-font git-repository-url text-truncate"><a :href="url" class="hvr-grow hvr-icon-pulse">{{repos.path_with_namespace}}</a></h2> -->
-        <!-- <p class="subheading mb-1 text--darken-1 font-weight-light"><span class="yeonsung-font">{{repos.namespace.name}}</span></p> -->
-      </v-flex>
-      <v-flex xs1 sm1>
-        <i class="fa fa-chevron-circle-right hvr-icon"></i>
-      </v-flex>
-    </v-layout>
-    <v-layout>
-          <v-flex class=" hidden-sm-and-down">
-      <GChart
-        type="ColumnChart"
-        :data="chartData"
-        :options="chartOptions"
-      />
-    </v-flex>
-    </v-layout>
-  </div>
+    <div id="wrapper">
+      <div id="chart-line">
+        <h1>윤관웅</h1>
+        <apexchart type=line height=160 :options="chartOptionsLine1" :series="series1" />
+      </div>
+
+      <div id="chart-line2">
+        <h1>신은정</h1>
+        <apexchart type=line height=160 :options="chartOptionsLine2" :series="series2" />
+      </div>
+
+      <div id="chart-area">
+        <h1>이규진</h1>
+        <apexchart type=area height=160 :options="chartOptionsArea" :series="series3" />
+      </div>
+      <div id="chart-area">
+        <h1>문용성</h1>
+        <apexchart type=area height=160 :options="chartOptionsArea" :series="series4" />
+      </div>
+    </div>
 </template>
 
 <script>
-import GitlabService from '@/services/GitlabService'
-import { GChart } from "vue-google-charts";
+    import VueApexCharts from 'vue-apexcharts';
+    import GitlabService from '@/services/GitlabService';
+    function generateDayWiseTimeSeries(baseval, count, yrange) {
+      var i = 0;
+      var series = [];
+      while (i < count) {
+        var x = baseval;
+        var y = Math.floor(Math.random() * (yrange.max - yrange.min + 1)) + yrange.min;
 
-export default {
-	name: 'Repository',
-	props: {
-		repos: {type: null}
-  },
-	data() {
-		return {
-      items: [],
-      stats: {},
-      chartData: [
-        ["Name", "Commit"],
-        ["2014", 1000],
-        ["2015", 1170],
-        ["2016", 660],
-        ["2017", 1030]
-      ],
-      chartOptions:{
-        chart: {
-          title: "this proj commit",
-          subtitle: "wowwwwwwww"
+        series.push([x, y]);
+        baseval += 86400000;
+        i++;
+      }
+      return series;
+    }
+
+    // The global window.Apex variable below can be used to set common options for all charts on the page
+    Apex = {
+      dataLabels: {
+        enabled: false
+      },
+      stroke: {
+        curve: 'straight'
+      },
+      toolbar: {
+        tools: {
+          selection: false
         }
       },
-      url: '',
-      featuresOpen: false
-		}
-  },
-  components: {
-    GChart
-  },
-  mounted() {
-    //this.drawGraph()
-    //this.drawStatGraph()
-    //this.setURL()
-    this.drawChart()
-  },
-	methods: {
-    async drawChart(){
-       const response  = await GitlabService.getProjectCommits('6096');
-       console.log(response);
-    },
-    async drawGraph() {
-      const response  = await GitlabService.getCommits('Z-zxsvCm5KuBNpbkSxjx', '7096')
-
-      console.log("hihihihihihi"+JSON.stringify(response))
-      for(var i = 0; i < response.data.length; i++){
-          this.date = response.data[i].committed_date.substr(0,10);
-          this.content = "["+response.data[i].committer_email+"] : " + response.data[i].message;
-          this.items =  this.items.concat({'tag' : this.date, 'content' : this.content});
-      }
-    },
-		async drawStatGraph() {
-      const response  = await GitlabService.getCommits('Z-zxsvCm5KuBNpbkSxjx', '7096')
-      for(var i = 0; i < response.data.length; i++){
-          this.date = response.data[i].committed_date.substr(0,10);
-          this.content = "["+response.data[i].committer_email+"] : " + response.data[i].message;
-          this.items =  this.items.concat({'tag' : this.date, 'content' : this.content});
-      }
-    },
-    setURL(){
-      this.url = 'https://lab.ssafy.com/'+this.repos.path_with_namespace
-    },
-    toggleFeatures () {
-      this.featuresOpen = !this.featuresOpen
+      markers: {
+        size: 6,
+        hover: {
+          size: 10
+        }
+      },
+      tooltip: {
+        followCursor: false,
+        theme: 'dark',
+        x: {
+          show: false
+        },
+        marker: {
+          show: false
+        },
+        y: {
+          title: {
+            formatter: function () {
+              return ''
+            }
+          }
+        }
+      },
+      grid: {
+        clipMarkers: false
+      },
+      yaxis: {
+        tickAmount: 2
+      },
+      xaxis: {
+        type: 'datetime'
+      },
     }
-	}
-}
+
+    export default({
+      name: 'Repository',
+      props: {
+        gitlabToken: {type: String},
+        teams: {type: Array}
+      },
+      components: {
+        apexchart: VueApexCharts,
+      },
+      data() {
+        return {
+          series1: [{
+          data: [],
+        }],
+        series2: [{
+          data: [],
+        }],
+        series3: [{
+          data: [],
+        }],
+        series4: [{
+          data: [],
+        }],
+        chartOptionsLine1: {
+          chart: {
+            id: 'fb',
+            group: 'social',
+          },
+          colors: ['#008FFB'],
+          yaxis: {
+            min: 0,
+            max: 6,
+          }
+        },
+        chartOptionsLine2: {
+          chart: {
+            id: 'tw',
+            group: 'social',
+          },
+          colors: ['#546E7A'],
+          yaxis: {
+            min: 0,
+            max: 6,
+          }
+
+        },
+        chartOptionsArea: {
+          chart: {
+            id: 'yt',
+            group: 'social',
+          },
+          colors: ['#00E396'],
+          yaxis: {
+            min: 0,
+            max: 6,
+          }
+
+        }
+        }
+      },
+      mounted() {
+        this.drawChart()
+      },
+      methods: {
+        async drawChart(){
+          const response  = await GitlabService.getProjectCommits('6096', '');
+           for(let i = response.data.length-1; i >= 0 ; --i){
+             var time = new Date(response.data[i].committed_date.split("T")[0].replace(/-/gi,"/")).getTime();
+              // 중복체크
+              let index = this.series1[0].data.findIndex((date) =>{return (date[0] === time);});
+
+              if(index == -1){
+                this.series1[0].data.push([time, 0]);
+                this.series2[0].data.push([time, 0]);
+                this.series3[0].data.push([time, 0]);
+                this.series4[0].data.push([time, 0]);
+              }
+           }
+          for(let i = response.data.length-1; i >= 0 ; --i){
+            if(response.data[i].committer_email === 'forever9882@gmail.com'){
+              var time = new Date(response.data[i].committed_date.split("T")[0].replace(/-/gi,"/")).getTime();
+              let index = this.series4[0].data.findIndex((date) =>{return (date[0] === time);});
+              this.series4[0].data[index][1] += 1;
+            }
+            else if(response.data[i].committer_email === 'ryanlee5646@gmail.com'){
+              var time = new Date(response.data[i].committed_date.split("T")[0].replace(/-/gi,"/")).getTime();
+              let index = this.series3[0].data.findIndex((date) =>{return (date[0] === time);});
+              this.series3[0].data[index][1] += 1;
+            }
+            else if(response.data[i].committer_email === 'sej96226@gmail.com'){
+              var time = new Date(response.data[i].committed_date.split("T")[0].replace(/-/gi,"/")).getTime();
+              let index = this.series2[0].data.findIndex((date) =>{return (date[0] === time);});
+              this.series2[0].data[index][1] += 1;
+            }
+            else if(response.data[i].committer_email === 'dbsrhksdnd@gmail.com'){
+              var time = new Date(response.data[i].committed_date.split("T")[0].replace(/-/gi,"/")).getTime();
+              let index = this.series1[0].data.findIndex((date) =>{return (date[0] === time);});
+              this.series1[0].data[index][1] += 1;
+            }
+          }
+        },
+      },
+    })
+  
 </script>
 
 <style>
