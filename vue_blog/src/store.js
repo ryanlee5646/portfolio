@@ -4,30 +4,31 @@ import Vuex from 'vuex';
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-    state: {
-        accessToken: '',
-        user: '',
-        loginDialogShow: false,
-        ImageLink: '',
-        ImageURL: '',
-        portfolios: [],
-        portfolioReplys: [],
-        posts: [],
-        postReplys: [],
-        nowUser: '',
-        error: {
-            type: '',
-            state: false,
-            code: '',
-            message: '',
-        },
-        push: {
-            type: '',
-            state: false,
-            title: '',
-            message: '',
-        }
+  state: {
+    accessToken: '',
+    user: '',
+    loginDialogShow: false,
+    ImageLink: '',
+    ImageURL: '',
+    portfolios: [],
+    portfolioReplys: [],
+    posts: [],
+    postReplys: [],
+    nowUser: '',
+    error: {
+      type: '',
+      state: false,
+      code: '',
+      message: '',
     },
+    push: {
+      state: false,
+      title: '',
+      message: '',
+      link: '',
+      email: '',
+    },
+  },
     mutations: {
         displayDrawer(state, flag) {
             state.drawerVisibility = flag;
@@ -62,8 +63,8 @@ export default new Vuex.Store({
         updatePosts(state, data) {
             state.posts = data;
         },
-        updatePostReplys(state, data){
-          state.postReplys = data;
+        updatePostReplys(state, data) {
+            state.postReplys = data;
         },
         setError(state, data) {
             state.error.state = true;
@@ -80,16 +81,19 @@ export default new Vuex.Store({
 
         setPush(state, data) {
             state.push.state = true;
-            state.push.type = data.type;
             state.push.title = data.title;
-            state.error.message = data.message;
+            state.push.message = data.message;
+            state.push.link = data.link;
+            state.push.email = data.email;
         },
 
         setPushState(state) {
             state.push.state = false;
-            state.push.type = '';
             state.push.title = '';
-            state.error.message = '';
+            state.push.message = '';
+            state.push.link = '';
+            state.push.email = '';
+            
         }
     },
     getters: {

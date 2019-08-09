@@ -21,6 +21,8 @@
     <mSnackbar :snackbar="snackbar"></mSnackbar>
     <!-- 푸시알림 스낵바 -->
     <PushSnackbar></PushSnackbar>
+    <PushSnackbar></PushSnackbar>
+
 
   </v-app>
 </template>
