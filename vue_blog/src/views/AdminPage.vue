@@ -96,7 +96,7 @@
                 </v-card>
             </v-flex>
             </v-layout>
-            
+
             <!-- draggable -->
                 <v-container class="drag-container" v-drag-and-drop:options="options" hidden-sm-and-down>
                     <h1>User Authentication</h1>
@@ -111,6 +111,7 @@
                                 :groups="groups"
                                 :data-id="group.id"
                                 @change="onGroupsChange"
+                                class="scrollbar"
                             >
                             <v-flex class="drag-inner-list" :data-id="group.id">
                               <v-card class="drag-item" v-for="item in group.items" :key="item.id" :data-id="item.id">
@@ -124,7 +125,7 @@
                                     <v-container grid-list-lg pa-0>
                                       <v-layout column>
                                         <v-flex class="drag-item-text">
-                                          <h1><b>{{item.name}}</b></h1> 
+                                          <h1><b>{{item.name}}</b></h1>
                                           {{item.email}}
                                         </v-flex>
                                       </v-layout>
@@ -149,7 +150,7 @@
                   </v-card>
                 </v-dialog>
                 <UserTable></UserTable>
- 
+
         </v-layout>
     </v-container>
 </template>
@@ -165,7 +166,7 @@ export default{
     store,
     data(){
         return{
-            category: { 
+            category: {
               name : "Dashboard",
               description : "This is Admin Page. Thank you :)"
             },
@@ -199,7 +200,7 @@ export default{
         onDrop(event) {
           var email = '';
           var auth = event.droptarget.previousSibling.innerText.toLowerCase();
-          
+
           this.groups.forEach(function(group){
             if(group.id == event.droptarget.dataset.id){
               group.items.forEach(function(item){
@@ -268,7 +269,7 @@ export default{
             this.playAnimation();
         },
         async getPostNumber(){
-            
+
             console.log(this.NumberOfPortfolios);
             this.playAnimation();
         },
@@ -285,18 +286,18 @@ export default{
             this.$refs.number2.play();
         },
         onGroupsChange(e) {
-          
+
           console.log({ e });
         }
     },
     mounted(){
         this.getDocumentsNumber();
         this.getAllUserInfo(this.users, this.groups);
-       
+
     },
     beforeRouteEnter (to, from, next) {
       const user = JSON.parse(localStorage.getItem('user') || '{}');
-      if(user.email != undefined){ 
+      if(user.email != undefined){
         if(user.auth === 'manager'){
           next();
         }else{
@@ -312,7 +313,7 @@ export default{
           path: '/',
         })
       }
-      
+
     },
 }
 </script>
@@ -467,5 +468,18 @@ ul {
   animation-name: nodeInserted;
   margin-left: 0.6rem;
   margin-right: 0.6rem;
+}
+.scrollbar {
+  &::-webkit-scrollbar {
+    width: 3px;
+    background: none;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #f8f7fb;
+    opacity: .4;
+  }
+  &::-webkit-scrollbar-track {
+    background: none;
+  }
 }
 </style>
