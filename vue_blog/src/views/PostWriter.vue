@@ -27,9 +27,11 @@
   import markdownEditor from 'vue-simplemde/src/markdown-editor';
   import ImageComponent from '../components/ImageComponent.vue';
   import FirebaseService from '@/services/FirebaseService';
+  import store from '../store';
 
   export default {
     name : 'portfoliowrite',
+    store,
     data(){
       return{
         post:{
@@ -50,7 +52,19 @@
     components: {
       markdownEditor,
       ImageComponent
-    }
+    },
+    beforeRouteEnter (to, from, next) {
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      if(user.email != undefined){ 
+          next();
+      }
+      else{
+        store.commit('setError', { type: 'error', code: '로그인 오류', message: '로그인이 필요한 페이지입니다. 로그인 후 접속해 주세요.' });
+        next({
+          path: '/#toolbar',
+        })
+      }
+    },
   }
 </script>
 

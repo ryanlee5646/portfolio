@@ -104,6 +104,18 @@ export default {
                 return users;
             });
     },
+    getMemberUser() {
+        return firestore.collection(USERS).get()
+            .then(function(querySnapshot) { // eslint-disable-line
+                let users = []; // eslint-disable-line
+                querySnapshot.forEach(function(doc) { // eslint-disable-line
+                    if (doc.data().auth === 'team' || doc.data().auth === 'manager') {
+                        users.push(doc.data());
+                    }
+                });
+                return users;
+            });
+    },
 
     /* login & logout */
     signUp(signup) {
