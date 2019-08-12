@@ -32,6 +32,7 @@
                       <p id="viewsPortfolio" style="font-size : 1.3vw !important;" >   작성자 :  {{$store.state.portfolios[i -1].portfolio.nickName}}  </p>
                       <p id="viewsPortfolio" style="font-size : 1.3vw !important;">{{$store.state.portfolios[i -1].portfolio.sdate}} ~ {{$store.state.portfolios[i -1].portfolio.edate}}</p>
                         <p id="viewsPortfolio" style="font-size : 1.3vw !important;"># {{$store.state.portfolios[i -1].portfolio.teams}}</p>
+                        <p id="viewsPortfolio" style="font-size : 1.3vw !important;"># {{$store.state.portfolios[i -1].portfolio.gitlabToken}}</p>
                       <hr>
                       <!-- <div  id="markdownP" style="font-size : 1.5vw !important;" v-html="compiledMarkdown">  {{$store.state.portfolios[i -1].portfolio.content}} </div>
                     <br>
@@ -42,7 +43,7 @@
                      <div id="markdownP" style="font-size : 1.5vw !important;" v-html="compiledMarkdown">  {{$store.state.portfolios[i -1].portfolio.content}} </div>
                 </div>
                 <div class="cardDiv slideDown " v-else-if="clickDiv === 'git'">
-                  <repository :gitlabToken="$store.state.portfolios[i -1].gitlabToken" :teams="$store.state.portfolios[i -1].teams"></repository>
+                  <repository :gitlabToken="gitlabToken" :teams="$store.state.portfolios[i -1].portfolio.teams"></repository>
                 </div>
                 <br>
                 <button class="button" v-if="$store.state.portfolios[i -1].portfolio.userID === nowUser.email"  @click="deletePortfolio()">Delete</button>
@@ -82,7 +83,56 @@
           <!-- 수정 폼 -->
           <div v-else>
               <v-text-field label="제목" v-model="portfolioTemp.title"></v-text-field>
-              <v-text-field label="프로젝트 참여 팀원" v-model="portfolioTemp.teams"></v-text-field>
+              <v-layout justify-center pt-5>
+                <v-flex xs12>
+                  <v-combobox
+                  v-model="model"
+                  :filter="filter"
+                  :hide-no-data="!search"
+                  :items="items"
+                  :search-input.sync="search"
+                  hide-selected
+                  label="프로젝트 참여 인원"
+                  multiple
+                  small-chips
+                  :auto-select-first="focus"
+                >
+                  <template v-slot:no-data>
+                    <v-list-item>
+                      <span class="subheading">No matches found</span>
+                    </v-list-item>
+                  </template>
+                  
+                  <template v-slot:selection="{ attrs, item, parent, selected }">
+                    <v-chip
+                      v-if="item === Object(item)"
+                      v-bind="attrs"
+                      :input-value="selected"
+                      label
+                      small
+                    >
+                      <span class="pr-2">
+                        {{ item.name }}
+                      </span>
+                      <v-icon
+                        small
+                        @click="parent.selectItem(item)"
+                      >close</v-icon>
+                    </v-chip>
+                  </template>
+                  <template v-slot:item="{ index, item }">
+                      <v-list-item-avatar>
+                        <v-img :src="item.img"></v-img>
+                      </v-list-item-avatar>
+              
+                      <v-list-item-content>
+                        <v-list-item-title v-text="item.name" style="font-size:16px; font-weight:bold;"></v-list-item-title>
+                        <v-list-item-subtitle v-text="item.ID" style="font-size:12px;"></v-list-item-subtitle>
+                      </v-list-item-content>
+                  </template>
+                </v-combobox>
+                </v-flex>
+              </v-layout>
               <v-layout wrap justify-space-between>
                 <v-flex xs12 sm5>
                   <v-menu v-model="portfolioTemp.startdate" :close-on-content-click="false" :nudge-right="40" lazy transition="scale-transition" offset-y full-width min-width="290px">
@@ -115,7 +165,7 @@
 
 
               <hr><button class="button"  @click="editPortfolio()">Edit</button>
-              <button  class="button" to="/" block flat>뒤로</button>
+              <button  class="button" @click="flag2 = false" block flat>뒤로</button>
           </div>
         </div>
       </div>
@@ -218,6 +268,19 @@ export default {
         thumbnail: "",
       },
       clickDiv : "intro",
+      gitlabToken : "2KybhN5CUPV7pWSqYEXb",
+      activator: null,
+      index: -1,
+      items: [
+        { header: 'Select an User' },
+      ],
+      nonce: 1,
+      menu: false,
+      model: [],
+      x: 0,
+      search: null,
+      y: 0,
+      focus: true,
       // replyPhotoURL : "",
     }
   },
@@ -287,6 +350,7 @@ export default {
       this.portfolioTemp.title = this.$store.state.portfolios[this.portfolioIdx].portfolio.title;
       this.portfolioTemp.content = this.$store.state.portfolios[this.portfolioIdx].portfolio.content;
       this.portfolioTemp.teams = this.$store.state.portfolios[this.portfolioIdx].portfolio.teams;
+      this.model = this.$store.state.portfolios[this.portfolioIdx].portfolio.teams;
       this.portfolioTemp.thumbnail = this.$store.state.portfolios[this.portfolioIdx].portfolio.thumbnail;
     },
     async deletePortfolio() {
@@ -302,6 +366,22 @@ export default {
       this.$store.commit('updatePortfolios', this.portfolios);
       this.$router.replace('/portfolio/view/' + this.id);
     },
+    filter (item, queryText, itemText) {
+      if (item.header) return false
+
+      const hasValue = val => val != null ? val : ''
+      const text = hasValue(itemText)
+      const query = hasValue(queryText)
+      return text.toString()
+        .toLowerCase()
+        .indexOf(query.toString().toLowerCase()) > -1
+    },
+    async getMemberUser(){
+      const result = await FirebaseService.getMemberUser();
+      result.forEach(user => {
+          this.items.push({img: user.photoURL, name: user.name, ID: `@${user.nickName}`, text: `${user.name} ${user.nickName}`, gitlabID: user.gitlabID});
+      });
+    },
     // async getUserInfoByEmail(byEmail){
     //   console.log(byEmail + " byEmail?????");
     //   const result = await FirebaseService.getUserInfoByEmail(byEmail);
@@ -311,6 +391,7 @@ export default {
     // },
   },
   mounted() {
+    this.getMemberUser();
     this.getPortfolioReply();
   }
 };
