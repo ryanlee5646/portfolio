@@ -1,7 +1,10 @@
 <template>
   <div id="postWriter">
+    <v-flex xs12>
+      <Title :title="category.name" :description="category.description"/>
+    </v-flex>
     <v-layout justify-center pt-5>
-      <v-flex xs12 sm5 md4>
+      <v-flex xs12 sm8 md6>
         <v-text-field label="제목" v-model="post.title">
         </v-text-field>
       </v-flex>
@@ -16,7 +19,7 @@
         <v-btn @click="PostWriter()" block text>작성하기</v-btn>
       </v-flex>
       <v-flex xs12 sm3 md2>
-        <v-btn to="/" block text>뒤로</v-btn><br>
+        <v-btn to="/#toolbar" block text>뒤로</v-btn><br>
       </v-flex>
     </v-layout>
   </div>
@@ -26,11 +29,12 @@
 <script>
   import markdownEditor from 'vue-simplemde/src/markdown-editor';
   import ImageComponent from '../components/ImageComponent.vue';
+  import Title from '../components/Title.vue';
   import FirebaseService from '@/services/FirebaseService';
   import store from '../store';
 
   export default {
-    name : 'portfoliowrite',
+    name : 'postwriter',
     store,
     data(){
       return{
@@ -39,7 +43,11 @@
           nickName : this.$store.state.user.nickName,
           title : "",
           content: "",
-        }
+        },
+        category: { 
+              name : "Post Writer",
+              description : "This is PostWriter Page. Thank you :)"
+        },
       }
     },
     methods:{
@@ -51,7 +59,8 @@
     },
     components: {
       markdownEditor,
-      ImageComponent
+      ImageComponent,
+      Title,
     },
     beforeRouteEnter (to, from, next) {
       const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -69,6 +78,8 @@
 </script>
 
 <style>
-
-
+#postWriter{
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
 </style>

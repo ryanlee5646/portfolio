@@ -1,5 +1,5 @@
 <template>
-    <v-container grid-list-md text-center>
+    <v-container grid-list-md text-center id="admin">
         <v-layout wrap>
             <v-flex xs12>
               <Title :title="category.name" :description="category.description"/>
@@ -318,6 +318,10 @@ export default{
 </script>
 
 <style>
+#admin{
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
 .bold {
   font-weight: bold;
   font-size: 25px;

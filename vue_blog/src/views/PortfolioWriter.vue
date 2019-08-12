@@ -1,14 +1,22 @@
 <template>
 <div id="portfolioWriter">
+  <v-flex xs12>
+    <Title :title="category.name" :description="category.description"/>
+  </v-flex>
   <v-layout justify-center pt-5>
-    <v-flex xs12 sm5 md4>
+    <v-flex xs12 sm8 md6>
       <v-text-field label="제목" v-model="portfolio.title">
       </v-text-field>
     </v-flex>
   </v-layout>
-
   <v-layout justify-center pt-5>
-    <v-flex xs12 sm5 md4>
+    <v-flex xs12 sm8 md6>
+      <v-text-field label="프로젝트 ID" v-model="portfolio.projectID" hint="gitlab 안의 프로젝트 ID를 입력해 주세요.">
+      </v-text-field>
+    </v-flex>
+  </v-layout>
+  <v-layout justify-center pt-5>
+    <v-flex xs12 sm8 md6>
       <v-combobox
       v-model="model"
       :filter="filter"
@@ -109,7 +117,7 @@
       <v-btn @click="PortfolioWriter()" block text>작성하기</v-btn>
     </v-flex>
     <v-flex xs12 sm3 md2>
-      <v-btn to="/" block text>뒤로</v-btn>
+      <v-btn to="/#toolbar" block text>뒤로</v-btn>
     </v-flex>
   </v-layout>
   <br>
@@ -121,6 +129,7 @@
 <script>
 import markdownEditor from 'vue-simplemde/src/markdown-editor';
 import ImageComponent from '../components/ImageComponent.vue';
+import Title from '../components/Title.vue';
 import FirebaseService from '@/services/FirebaseService';
 import store from '../store';
 
@@ -130,10 +139,15 @@ export default {
   store,
   data() {
     return {
+      category: { 
+              name : "Portfolio Writer",
+              description : "This is PortfolioWriter Page. Thank you :)"
+      },
       portfolios : [],
       portfolio: {
         userID: this.$store.state.user.email, //this.$store.state.user
         nickName : this.$store.state.user.nickName,
+        projectID: "",
         startdate: "",
         enddate: "",
         sdate: "",
@@ -141,9 +155,7 @@ export default {
         title: "",
         content: "",
         teams: [],
-        views : 0,
-        // portfolioCnt: this.$store.state.user.portfolioCount,
-        // postCnt: this.$store.state.user.postCount,
+        thumbnail: "",
       },
     activator: null,
     index: -1,
@@ -159,6 +171,10 @@ export default {
     focus: true,
     } 
   },
+  components: {
+    ImageComponent,
+    Title,
+  },
   mounted(){
     this.getMemberUser();
   },
@@ -170,10 +186,18 @@ export default {
       });
     },
     async PortfolioWriter() {
-      // console.log(this.$store.state.user.mail + " 카운트??");
+      
+      // defualt imageURL .... No image
+      console.log("ddd");
+      console.log(this.portfolio.thumbnail);
+      if(this.portfolio.thumbnail == ""){
+        this.portfolio.thumbnail = 'https://www.sylff.org/wp-content/uploads/2016/04/noImage.jpg';
+      }
+
       this.model.forEach((user)=>{
         this.portfolio.teams.push(user);
       })
+
       const result = await FirebaseService.PortfolioWriter(this.portfolio);
       this.portfolios = await FirebaseService.getPortfolios();
       this.$store.commit('updatePortfolios', this.portfolios );
@@ -208,6 +232,10 @@ export default {
 <style>
 @import '~simplemde/dist/simplemde.min.css';
 
+#portfolioWriter{
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
 .form-control-lg {
   width: 500px !important;
 }

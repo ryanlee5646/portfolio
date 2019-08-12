@@ -1,13 +1,16 @@
 <template>
 <!-- style="font-size : 3vw !important ;" -->
-<v-container justify-center py-5>
+<v-container justify-center py-5 id="portfolioView">
+  <v-flex xs12>
+    <Title :title="category.name" :description="category.description"/>
+  </v-flex>
   <v-layout justify-center>
     <v-flex xs12 class="text-xs-center">
       <div class="stretchRight" v-for="i in $store.state.portfolios.length" :key="i">
         <div v-if="$store.state.portfolios[i -1].uid === id">
           <div class="portfolioDiv" v-if="flag2 === false">
             <a style="display: none !important;">{{index = i-1}}</a>
-            <hr><br>
+            <hr>
             <AnimateWhenVisible name="fadeLeft" class="col-12 col-md">
             <div>
               <!--content inner-->
@@ -31,7 +34,7 @@
                       &nbsp;&nbsp; [  조회수 :  {{$store.state.portfolios[i -1].views}}  ]</span><br><br>
                       <p id="viewsPortfolio" style="font-size : 1.3vw !important;" >   작성자 :  {{$store.state.portfolios[i -1].portfolio.nickName}}  </p>
                       <p id="viewsPortfolio" style="font-size : 1.3vw !important;">{{$store.state.portfolios[i -1].portfolio.sdate}} ~ {{$store.state.portfolios[i -1].portfolio.edate}}</p>
-                      <p id="viewsPortfolio" style="font-size : 1.3vw !important;"># {{$store.state.portfolios[i -1].portfolio.teams}}</p>  <hr>
+                      <p id="viewsPortfolio" style="font-size : 1.3vw !important;" > 팀원 : {{getTeamName($store.state.portfolios[i -1].portfolio.teams)}}</p><hr>
                 </div>
                 <div class="cardDiv slideDown content " v-else-if="clickDiv === 'content'">
                   <br>
@@ -229,11 +232,16 @@ import marked from 'marked';
 import FirebaseService from '@/services/FirebaseService'
 import markdownEditor from 'vue-simplemde/src/markdown-editor';
 import ImageComponent from '../components/ImageComponent.vue';
+import Title from '../components/Title.vue';
 import Repository from '../components/Repository.vue';
 
 export default {
   data() {
     return {
+      category: { 
+              name : "Portfolio",
+              description : "This is Portfolio Page. Thank you :)"
+      },
       portfolios: [],
       portfolioReplys: [],
       portfolioReply: {
@@ -284,6 +292,7 @@ export default {
     markdownEditor,
     ImageComponent,
     Repository,
+    Title,
   },
   props: {
     id: {
@@ -378,6 +387,14 @@ export default {
           this.items.push({img: user.photoURL, name: user.name, ID: `@${user.nickName}`, text: `${user.name} ${user.nickName}`, gitlabID: user.gitlabID});
       });
     },
+    getTeamName(teams){
+      console.log(teams);
+      let teamName = '';
+      for(let i = 0; i < teams.length; ++i){
+        teamName += teams[i].name+" ";
+      }
+      return teamName;
+    },
     // async getUserInfoByEmail(byEmail){
     //   console.log(byEmail + " byEmail?????");
     //   const result = await FirebaseService.getUserInfoByEmail(byEmail);
@@ -400,6 +417,10 @@ export default {
 <style>
 /* @import '/style/css/portfolio.css'; */
 @import "/vuelendar/scss/vuelendar.scss";
+
+#portfolioView{
+  margin-top: 50px;
+}
 
 .img-responsive{
   /* 댓글 작성자 이미지 */
@@ -749,5 +770,4 @@ stretchRight
  bottom: auto;
  top: 0;
 }
-
 </style>

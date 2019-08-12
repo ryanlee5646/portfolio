@@ -1,5 +1,8 @@
 <template>
 <v-container justify-center py-5>
+  <v-flex xs12>
+    <Title :title="category.name" :description="category.description"/>
+  </v-flex>
   <v-layout justify-center>
     <v-flex xs12 class="notranslate text-xs-center">
       <div class="stretchRight" v-for="i in $store.state.posts.length">
@@ -11,7 +14,7 @@
               <AnimateWhenVisible name="fadeLeft" class="col-12 col-md">
                 <div class="cardDiv slideDown ">
                   <!-- <div class="px-6 py-4 portfolioDiv2"> -->
-                    <br><p class="font-bold text-xl mb-2 title" style="font-size : 2.2vw !important;">  <b> {{$store.state.posts[i -1].post.title}}</b> </p><hr>
+                    <br><p class="font-bold text-xl mb-2 title" style="font-size : 2.2vw !important;">  <b> {{$store.state.posts[i -1].post.title}}</b> </p>
                     <hr><p id="views" style="font-size : 1.0vw !important;" > [  조회수 :  {{$store.state.posts[i -1].views}}  ]</p>
                     <p id="views" style="font-size : 1.2vw !important;" >   작성자 :  {{$store.state.posts[i -1].post.nickName}}  </p>
                     <hr>
@@ -28,7 +31,7 @@
             <v-text-field label="제목" v-model="postTemp.title"></v-text-field>
             <markdown-editor v-model="postTemp.content" ref="markdownEditor"></markdown-editor>
             <hr><button class="button" @click="editPost()">Edit</button>
-            <button class="button" to="/" block text>뒤로</button>
+            <button class="button" @click="flag2 = false" block text>뒤로</button>
           </div>
 
         </div>
@@ -97,10 +100,15 @@ import marked from 'marked';
 import FirebaseService from '@/services/FirebaseService'
 import markdownEditor from 'vue-simplemde/src/markdown-editor';
 import ImageComponent from '../components/ImageComponent.vue';
+import Title from '../components/Title.vue';
 
 export default {
   data() {
     return {
+      category: { 
+              name : "Post",
+              description : "This is Post Page. Thank you :)"
+      },
       posts: [],
       postReplys: [],
       postReply: {
@@ -130,6 +138,7 @@ export default {
   components: {
     markdownEditor,
     ImageComponent,
+    Title,
   },
   props: {
     id: {
@@ -265,7 +274,7 @@ const factor = (elemA, elemB, prop) => {
 }
 
 .cardDiv{
-  width: 90% !important;
+  width: 100% !important;
 }
 #content{
   text-align: left;
