@@ -404,7 +404,7 @@ export default {
             post,
             views: 0,
             created_at: firebase.firestore.FieldValue.serverTimestamp(),
-            writerTime : new Date().toLocaleString(),
+            writerTime: new Date().toLocaleString(),
             // writerTime : firebase.firestore.FieldValue.serverTimestamp().split(" ")[0]
             //firebase.firestore.Timestamp.fromDate(new Date());
             //firebase.firestore.FieldValue.serverTimestamp(),
@@ -479,45 +479,48 @@ export default {
         });
     },
 
-    searchPost(selected, inputStr){
-      console.log('[info] start searchPost func()');
-      const postsCollection = firestore.collection(POSTS).doc();
-      const searchedPost = new Array;
+    searchPost(selected, inputStr) {
+        console.log('[info] start searchPost func()');
+        const postsCollection = firestore.collection(POSTS).doc();
+        const searchedPost = new Array;
 
-      if(selected == 'title'){
-        // console.log("title!!");
-        firestore.collection(POSTS)
-        .get()
-        .then(function(querySnapshot) {
-            querySnapshot.forEach(function(doc) {
-                // console.log(doc.id, " => ", doc.data());
-                if(doc.data().post.title.includes(inputStr)){
-                  // console.log("in if" + doc.data().post.nickName);
-                  searchedPost.push(doc.data());
-                }
-            });
-        })
-        .catch(function(error) {
-            console.log("Error getting documents: ", error);
-        });
+        if (selected == 'title') {
+            // console.log("title!!");
+            firestore.collection(POSTS)
+                .get()
+                .then(function(querySnapshot) {
+                    querySnapshot.forEach(function(doc) {
+                        // console.log(doc.id, " => ", doc.data());
+                        if (doc.data().post.title.includes(inputStr)) {
+                            const data = doc.data();
+                            data.created_at = new Date(data.created_at.toDate());
+                            data.uid = doc.id;
 
-      }else if(selected == 'id'){
-        // console.log('search ID!!');
-        firestore.collection(POSTS)
-        .get()
-        .then(function(querySnapshot) {
-            querySnapshot.forEach(function(doc) {
-                if(doc.data().post.userID.includes(inputStr)){
-                  searchedPost.push(doc.data());
-                }
-            });
-        })
-        .catch(function(error) {
-            console.log("Error getting documents: ", error);
-        });
-      }
+                            searchedPost.push(data);
+                        }
+                    });
+                })
+                .catch(function(error) {
+                    console.log("Error getting documents: ", error);
+                });
 
-      return searchedPost;
+        } else if (selected == 'id') {
+            // console.log('search ID!!');
+            firestore.collection(POSTS)
+                .get()
+                .then(function(querySnapshot) {
+                    querySnapshot.forEach(function(doc) {
+                        if (doc.data().post.userID.includes(inputStr)) {
+                            searchedPost.push(doc.data());
+                        }
+                    });
+                })
+                .catch(function(error) {
+                    console.log("Error getting documents: ", error);
+                });
+        }
+
+        return searchedPost;
     },
 
 

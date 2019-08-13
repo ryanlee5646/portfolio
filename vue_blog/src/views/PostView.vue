@@ -20,8 +20,8 @@
                     <hr>
                     <div id="content" style="font-size : 1.5vw !important;" v-html="compiledMarkdown">  {{$store.state.posts[i -1].post.content}} </div>
                   <br>
-                  <button class="button" v-show=" $store.state.posts[i -1].post.userID === nowUser.email || manager === nowUser.auth "  @click="deletePost()">Delete</button>
-                  <button class="button" v-show="$store.state.posts[i -1].post.userID === nowUser.email || manager === nowUser.auth"  @click="editPostClick(i)">Edit</button>
+                  <button class="button" v-show=" $store.state.posts[i -1].post.userID ===  $store.state.user.email || 'manager' ===  $store.state.user.auth "  @click="deletePost()">Delete</button>
+                  <button class="button" v-show="$store.state.posts[i -1].post.userID ===  $store.state.user.email || 'manager' ===  $store.state.user.auth"  @click="editPostClick(i)">Edit</button>
                 </div>
               </AnimateWhenVisible>
             <!-- </div> -->
@@ -74,10 +74,10 @@
                   </header>
                   <div class="comment-post" v-if="flag === false">
                     <p> {{r.postReply.content}} </p>
-                    <button v-show="r.postReply.email === nowUser.email  || manager === nowUser.auth " class="button" @click="editClick(index)">수 정</button>
-                    <button v-show="r.postReply.email === nowUser.email  || manager === nowUser.auth " class="button" @click="deletePostReply(index)">삭 제</button>
+                    <button v-show="r.postReply.email ===  $store.state.user.email  || 'manager' ===  $store.state.user.auth " class="button" @click="editClick(index)">수 정</button>
+                    <button v-show="r.postReply.email ===  $store.state.user.email  || 'manager' ===  $store.state.user.auth " class="button" @click="deletePostReply(index)">삭 제</button>
                   </div>
-                  <div class="comment-post" v-else-if="r.postReply.email === nowUser.email  || manager === nowUser.auth">
+                  <div class="comment-post" v-else-if="r.postReply.email ===  $store.state.user.email  || manager ===  $store.state.user.auth">
                     <p v-if="editIdx === index">
                       <input type="text" v-model="editReplyContent" :placeholder="r.postReply.content"></input> </p>
                     <button class="button" @click="editPostReply(index)">O K</button>
@@ -117,7 +117,6 @@ export default {
         content: "",
         photoURL : ""
       },
-      nowUser: this.$store.state.user,
       // emailArr: this.$store.state.user.email.split('@'),
       // nowEmail: this.$store.state.user.nickName,
       index: "",
@@ -184,7 +183,8 @@ export default {
     editPostClick(idx) {
       this.flag2 = true;
       this.postIdx = idx - 1;
-      this.postTemp.userID = this.$store.state.user.nickName;
+      this.postTemp.nickName = this.$store.state.user.nickName;
+      this.postTemp.userID = this.$store.state.user.email;
       this.postTemp.title = this.$store.state.posts[this.postIdx].post.title;
       this.postTemp.content = this.$store.state.posts[this.postIdx].post.content;
     },
@@ -203,9 +203,6 @@ export default {
     },
   },
   mounted() {
-    console.log(this.nowUser.email + " 접속한 유저 정보");
-    // this.nowEmail = this.emailArr[0]; //유저의 이메일에서 아이디만 저장
-
     this.getPostReplys();
     document.querySelectorAll('.card').forEach((elem) => {
       const head = elem.querySelector('.card__head')

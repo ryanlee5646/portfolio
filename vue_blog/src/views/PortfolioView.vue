@@ -44,8 +44,8 @@
                   <repository :gitlabToken="gitlabToken" :teams="$store.state.portfolios[i -1].portfolio.teams"></repository>
                 </div>
                 <br>
-                <button class="button" v-if="$store.state.portfolios[i -1].portfolio.userID === nowUser.email || manager === nowUser.auth "  @click="deletePortfolio()">Delete</button>
-                <button class="button" v-if="$store.state.portfolios[i -1].portfolio.userID === nowUser.email || manager === nowUser.auth "  @click="editPortfolioClick(i)">Edit</button>
+                <button class="button" v-if="$store.state.portfolios[i -1].portfolio.userID === $store.state.user.email || 'manager' === $store.state.user.auth "  @click="deletePortfolio()">Delete</button>
+                <button class="button" v-if="$store.state.portfolios[i -1].portfolio.userID === $store.state.user.email || 'manager' === $store.state.user.auth "  @click="editPortfolioClick(i)">Edit</button>
                 </div>
               <!-- </div> -->
             </div>
@@ -208,10 +208,10 @@
                   </header>
                   <div class="comment-post" v-if="flag === false">
                     <p> {{r.portfolioReply.content}} </p>
-                    <button v-if="r.portfolioReply.email === nowUser.email || manager === nowUser.auth " class="button" @click="editClick(index)">수 정</button>
-                    <button v-if="r.portfolioReply.email === nowUser.email || manager === nowUser.auth " class="button" @click="deleteReply(index)">삭 제</button>
+                    <button v-if="r.portfolioReply.email === $store.state.user.email || 'manager' === $store.state.user.auth " class="button" @click="editClick(index)">수 정</button>
+                    <button v-if="r.portfolioReply.email === $store.state.user.email || 'manager' === $store.state.user.auth " class="button" @click="deleteReply(index)">삭 제</button>
                   </div>
-                  <div class="comment-post" v-else-if="r.portfolioReply.email === nowUser.email || manager === nowUser.auth ">
+                  <div class="comment-post" v-else-if="r.portfolioReply.email === $store.state.user.email || 'manager' ===  $store.state.user.auth ">
                     <p v-if="editIdx === index">
                       <input type="text" v-model="editReplyContent" :placeholder="r.portfolioReply.content">
                     </p>
@@ -250,8 +250,6 @@ export default {
         content: "",
         photoURL : ""
       },
-      nowUser: this.$store.state.user,
-      // emailArr: this.$store.state.user.email ? this.$store.state.user.email.split('@') : '',
       nowEmail: "",
       index: "",
       portfolioIdx: 0,
@@ -335,6 +333,7 @@ export default {
       this.flag = true;
       const result = await FirebaseService.editReply(this.id, this.$store.state.portfolioReplys[index].uid, this.editReplyContent);
       // this.$store.state.portfolioReplys.splice(index, 1);
+      this.editReplyContent = '';
       this.flag = false;
       this.getPortfolioReply();
     },

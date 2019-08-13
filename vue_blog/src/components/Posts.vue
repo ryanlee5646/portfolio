@@ -26,7 +26,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(p, index) in this.sortedPosts" :uid="p.uid">
+          <tr v-for="(p, index) in this.sortedPosts"  :uid="p.uid">
             <td>{{index + 1}}</td>
             <td><a @click="routePath(p.uid)">{{p.post.userID | capitalize}}</a></td>
             <td><b><a @click="routePath(p.uid)" style="font-size:1.5vw;">{{p.post.title}}</a></b></td>
@@ -156,11 +156,14 @@ export default {
     async searchPost() {
       // console.log(this.selectPost + " " +  this.inputSearch);
       const result = await FirebaseService.searchPost(this.selectPost, this.inputSearch);
+      // console.log("ddddddddddddddddddddddddddddddddddddddddddddd");
+      // console.log(result );
+      // this.post. - doc.data().dfa\
+
+      // this,post.uid = doc.id;''
       this.posts = result;
+      
     },
-    // toDate(created_at){
-    //   toDate(created_at)
-    // }
   },
 
   computed: {
@@ -199,13 +202,6 @@ export default {
   },
 };
 
-// var searchBox = document.querySelectorAll('.search-box input[type="text"] + span');
-//
-// searchBox.forEach(elm => {
-//  elm.addEventListener('click', () => {
-//    elm.previousElementSibling.value = '';
-//  });
-// });
 </script>
 
 <style scoped lang="scss">
