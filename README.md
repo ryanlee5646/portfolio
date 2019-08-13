@@ -63,7 +63,7 @@ root(/)는 git repository 최상위 폴더를 의미합니다.
 
 ## 개요
 
-![](./img/project_structure.png)
+![](./img/project_structure.PNG)
 
 **팀 단위로 주로 움직이는 개발자들을 위한 포트폴리오 사이트**입니다. 주 사용 프레임워크는 `Vue.js` 와 `Vuetify` 이며, 사이트의 모든 기능을 사용하기 위해서는 `Firebase`, `Gitlab/Github` 연동이 필요합니다. 
 
@@ -73,7 +73,7 @@ root(/)는 git repository 최상위 폴더를 의미합니다.
 
 프로젝트는 **Vue-cli 3.0** 과 **Express** 서버를 합쳐 통합개발환경을 만들었기 때문에, `vue-cli/` 내에 express 폴더인 `backend/`가 존재합니다. 
 
-![](./img/repository_structure.png)
+![](./img/repository_structure.PNG)
 
 ## 화면 정의서
 
