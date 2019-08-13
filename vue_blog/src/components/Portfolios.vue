@@ -17,18 +17,17 @@
               @click="filter('이규진')">규진</li>
           </ul>
         </div>
-        <transition-group name="filter" tag="div" class="row justify-content-center">
-          <div class="col-md-4 col-lg-auto portfolio-item"
-          v-for="index in filteredPosts.length > limits ? limits : filteredPosts.length"
-           :key="filteredPosts[index-1].created_at" :uid="filteredPosts[index-1].uid" :idx="index-1">
-            <img :src="filteredPosts[index-1].portfolio.thumbnail" alt="Alt" style="width : 100%; height: 100%;"/>
-            <div class="portfolio-link">
-              <!-- <a>{{post.uid}}</a> -->
-              <a @click="routePath(filteredPosts[index-1].uid)" class="popup_content"  target="_blank">See</a>
-              <!-- <a href="/portfolio/view/acrKqb3TuKTJz9h4Dnkp"  class="popup_content" target="_blank">Detail</a> -->
-            </div>
-          </div>
-        </transition-group>
+          <template v-for="row in getRows">
+            <transition-group name="filter" tag="div" class="row justify-content-center" :key="`${row}th_row`">
+              <div class="col-md-3 col-lg-auto portfolio-item"
+                v-for="index in getIndices(row)" :key="`${index}th_element`" :uid="filteredPosts[index].uid" :idx="index">
+                  <img :src="filteredPosts[index].portfolio.thumbnail" alt="Alt" style="width : 100%; height: 100%;"/>
+                  <div class="portfolio-link">
+                    <a @click="routePath(filteredPosts[index].uid)" class="popup_content"  target="_blank">See</a>
+                  </div>
+              </div>
+            </transition-group>
+          </template>
         <div style="height: 25px;">
         </div>
         <div v-show="!loaded">
@@ -62,7 +61,7 @@ export default {
     };
   },
   props: {
-    limits: { type: Number, default: 6 },
+    limits: { type: Number, default: 4 },
     loadMore: { type: Boolean, default: true },
     column: { type: Number, default: 1 },
     portfolios: { type: Array },
@@ -113,7 +112,7 @@ export default {
     loadMorePortfolios() {
       this.loaded = false;
       setTimeout(() => {
-        this.limits += 2;
+        this.limits += 4;
         this.loaded = true;
       }, 1000);
     },
@@ -127,13 +126,35 @@ export default {
       console.log(uid + " routePath 넘어옴?");
       this.$router.push({path: '/portfolio/view/' + uid })
     },
+    getIndices(row) {
+      let result = [];
+      for (let i = ((row - 1) * 4); i < row * 4; i += 1) {
+        if (i >= this.getTotalPosts) break;
+        result.push(i);
+      }
+      return result;
+    }
   },
   computed: {
     filteredPosts() {
       if (this.currentFilter === 'all') {
         return this.portfolios;
       }
-      return this.portfolios.filter(portfolio => portfolio.portfolio.teams && portfolio.portfolio.teams.includes(this.currentFilter));
+      return this.portfolios.filter((portfolio) => {
+        let flag = false;
+        for (let i = 0; i < portfolio.portfolio.teams.length; i++) {
+          if (portfolio.portfolio.teams[i].name === this.currentFilter) {
+            flag = true;
+          }
+        }
+        return flag;
+      });
+    },
+    getRows() {
+      return Math.ceil(this.getTotalPosts / 4);
+    },
+    getTotalPosts() {
+      return (this.filteredPosts.length < this.limits ? this.filteredPosts.length : this.limits);
     },
   },
 };
@@ -191,7 +212,7 @@ export default {
 
   .portfolio-item {
     width: 300px;
-    max-height: 250px;
+    height: 300px;
     overflow: hidden;
     margin-bottom: 20px;
 

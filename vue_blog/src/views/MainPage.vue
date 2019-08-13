@@ -165,9 +165,6 @@ export default {
               level: 85,
             }],
             design: [{
-              name: 'Photoshop',
-              level: 0,
-            }, {
               name: 'Illustrator',
               level: 10,
             }, {
@@ -217,10 +214,10 @@ export default {
             }],
             design: [{
               name: 'Photoshop',
-              level: 20,
+              level: 25,
             }, {
               name: 'Adobe Primere',
-              level: 15,
+              level: 25,
             }],
             productivity: [{
               name: 'Github + Jira',
