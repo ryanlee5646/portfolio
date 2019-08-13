@@ -13,6 +13,8 @@ import AboutMe from '../components/AboutMe.vue';
 
 export default {
   data() {
+
+
     return {
       categories: [{
         name: 'Portfolio',
@@ -35,9 +37,9 @@ export default {
           profile: '/img/lee.jpg',
           content: '<p>I have no idea of this paragraph. Indeed, i just type any words to fill out this whitespace. damnnnnn.</p>',
           meta: {
-            email: 'dbsrhksdnd@gmail.com',
-            skype: 'dbsrhksdnd@gmail.com',
-            phone: '010-2414-0528',
+            email: 'ryanlee5646@gmail.com',
+            skype: 'ryanlee5646@gmail.com',
+            phone: '010-4511-5646',
             city: 'Gumi, Repulic of Korea',
             font_awesome: [
               'fa-apple, #',

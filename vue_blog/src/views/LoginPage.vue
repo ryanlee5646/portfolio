@@ -197,7 +197,130 @@
         </v-container>
       </v-card>
     </v-dialog>
-  
+    <!-- Skills 정보 입력창 -->
+    <v-dialog v-model="skillsInfo" max-width="500px">
+      <v-card style="z-index: 100;">
+        <v-container fluid >
+          <v-form>
+            <v-layout justify-center ma-2> <!-- 1. HTML -->
+              <v-flex xs12 sm8>
+                <v-text-field
+                  v-model="skills.development.HTML"
+                  :rules="SkillsRules"
+                  label="HTML5"
+                  class="dohyeon-font"
+                  required
+                ></v-text-field>
+              </v-flex>
+            </v-layout>
+            <v-layout justify-center ma-2> <!-- 2. Javascript -->
+              <v-flex xs12 sm8>
+                <v-text-field
+                  v-model="skills.development.JavaScript"
+                  :rules="SkillsRules"
+                  label="Javascript"
+                  class="dohyeon-font"
+                  required
+                ></v-text-field>
+              </v-flex>
+            </v-layout>
+            <v-layout justify-center ma-2> <!-- 3. Vue -->
+              <v-flex xs12 sm8>
+                <v-text-field
+                  v-model="skills.development.VUE"
+                  :rules="SkillsRules"
+                  label="Vue"
+                  class="dohyeon-font"
+                  required
+                ></v-text-field>
+              </v-flex>
+            </v-layout>
+            <v-layout justify-center ma-2> <!-- 4. CSS -->
+              <v-flex xs12 sm8>
+                <v-text-field
+                  v-model="skills.development.CSS"
+                  :rules="SkillsRules"
+                  label="CSS"
+                  class="dohyeon-font"
+                  required
+                ></v-text-field>
+              </v-flex>
+            </v-layout>
+            <v-layout justify-center ma-2>  <!-- 5. c++ -->
+              <v-flex xs12 sm8>
+                <v-text-field
+                  v-model="skills.development.Cpp"
+                  :rules="SkillsRules"
+                  label="C++"
+                  class="dohyeon-font"
+                  required
+                ></v-text-field>
+              </v-flex>
+            </v-layout>
+            <v-layout justify-center ma-2> <!-- 6. photoshop -->
+              <v-flex xs12 sm8>
+                <v-text-field
+                  v-model="skills.design.PHOTOSHOP"
+                  :rules="SkillsRules"
+                  label="Photoshop"
+                  class="dohyeon-font"
+                  required
+                ></v-text-field>
+              </v-flex>
+            </v-layout>
+            <v-layout justify-center ma-2> <!-- 7. illustrator -->
+              <v-flex xs12 sm8>
+                <v-text-field
+                  v-model="skills.design.ILLUSTRATOR"
+                  :rules="SkillsRules"
+                  label="Illustrator"
+                  class="dohyeon-font"
+                  required
+                ></v-text-field>
+              </v-flex>
+            </v-layout>
+            <v-layout justify-center ma-2> <!-- 8. userExperience -->
+              <v-flex xs12 sm8>
+                <v-text-field
+                  v-model="skills.design.UX"
+                  :rules="SkillsRules"
+                  label="UX/UI"
+                  class="dohyeon-font"
+                  required
+                ></v-text-field>
+              </v-flex>
+            </v-layout>
+            <v-layout justify-center ma-2> <!-- 9. git -->
+              <v-flex xs12 sm8>
+                <v-text-field
+                  v-model="skills.productivity.GIT"
+                  :rules="SkillsRules"
+                  label="Git"
+                  class="dohyeon-font"
+                  required
+                ></v-text-field>
+              </v-flex>
+            </v-layout>
+            <v-layout justify-center ma-2> <!-- 10. msoffice -->
+              <v-flex xs12 sm8>
+                <v-text-field
+                  v-model="skills.productivity.MSoffice"
+                  :rules="SkillsRules"
+                  label="MS Office"
+                  class="dohyeon-font"
+                  required
+                ></v-text-field>
+              </v-flex>
+            </v-layout>
+          </v-form>
+          <v-layout justify-center ma-2>
+            <v-flex xs12 sm4>
+              <v-btn @click="addSkillsInfo()" block flat class="dohyeon-font subheading">등록</v-btn>
+            </v-flex>
+          </v-layout>
+        </v-container>
+      </v-card>
+    </v-dialog>
   </div>
 
 
@@ -219,6 +342,7 @@ export default {
       isLogin: true,
       gitlabQuestion: false,
       gitlabInfo : false,
+      skillsInfo : false,
 
       login: {
         password: "",
@@ -235,6 +359,24 @@ export default {
       gitlab: {
         gitlabID: "",
         gitlabToken: ""
+      },
+      skills: {
+        development : {
+          HTML : "",
+          JavaScript : "",
+          VUE : "",
+          CSS : "",
+          Cpp : ""
+        },
+        design : {
+          PHOTOSHOP : "",
+          ILLUSTRATOR : "",
+          UX : ""
+        },
+        productivity : {
+          GIT : "",
+          MSoffice : ""
+        }
       },
       NameRules: [v => !!v || "이름이 필요합니다"],
       PasswordRules: [
@@ -254,6 +396,10 @@ export default {
       GithubRules: [
         v => !!v || "Github 이메일을 입력해주세요",
         v => /.+@.+/.test(v) || "유효한 이메일을 입력해주세요"
+      ],
+      SkillsRules: [
+        v => !!v || "스킬포인트를 제대로 입력해주세요",
+        v => (v > 0 && v <= 100) || "스킬포인트는 0~100점을 입력해주세요"
       ]
     };
   },
@@ -293,6 +439,12 @@ export default {
         if(user !== null){
           this.$store.state.user = user;
           localStorage.setItem("user", JSON.stringify(user));
+      }
+      // Check SkillsInfo
+      if(data !== null){
+        if ((data.auth !== "visitor" ) && data.skills === undefined){
+          this.skillsInfo = true;
+        }
       }
 
       this.$store.commit("loginDialog", false);
@@ -334,6 +486,14 @@ export default {
           this.gitlabQuestion = true;
         }
       }
+
+      // Check SkillsInfo
+      if(data !== null){
+        if ((data.auth !== "visitor" ) && data.skills === undefined){
+          this.skillsInfo = true;
+        }
+      }
+
       this.$store.commit("loginDialog", false);
       this.$router.push("/");
 
@@ -358,6 +518,22 @@ export default {
         console.log(`[error] addGitlabInfo func() : ${error}`)
       }
     },
+    async addSkillsInfo(){
+      try {
+        await FirebaseService.addSkillsInfo(this.skills);
+
+        this.skillsInfo = false
+
+        const user = await FirebaseService.getUserInfo();
+        if(user !== null){
+          this.$store.state.user = user;
+          localStorage.setItem("user", JSON.stringify(user));
+        }
+      } catch (error) {
+        console.log(`[error] addSkillsInfo func() : ${error}`)
+      }
+    },
+
     closeDialog() {
       this.gitlabQuestion = false
       this.gitlabInfo = true
@@ -383,10 +559,17 @@ export default {
           this.$store.state.user = user;
           localStorage.setItem("user", JSON.stringify(user));
         }
-
-        this.isLoginStage(true);
-        this.$store.commit("loginDialog", false);
-        this.$router.push("/");
+      
+      this.isLoginStage(true);
+      this.$store.commit("loginDialog", false);
+      this.$router.push("/");
+      // Check SkillsInfo
+      if(user !== null){
+        if ((user.auth !== "visitor" ) && user.skills === undefined){
+          this.skillsInfo = true;
+        }
+      }
+        
       }
       FirebaseService.gettingToken();
     }

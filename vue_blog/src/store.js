@@ -26,8 +26,8 @@ export default new Vuex.Store({
       title: '',
       message: '',
       link: '',
-      email: '',
-    },
+      nickName: ''
+    }
   },
     mutations: {
         displayDrawer(state, flag) {
@@ -84,7 +84,8 @@ export default new Vuex.Store({
             state.push.title = data.title;
             state.push.message = data.message;
             state.push.link = data.link;
-            state.push.email = data.email;
+            state.push.nickName = data.nickName;
+            console.log("[setpush 222]", state.push.nickName);
         },
 
         setPushState(state) {
@@ -92,7 +93,7 @@ export default new Vuex.Store({
             state.push.title = '';
             state.push.message = '';
             state.push.link = '';
-            state.push.email = '';
+            state.push.nickName = '';
             
         }
     },
@@ -104,6 +105,7 @@ export default new Vuex.Store({
             return state.error;
         },
         getPush: (state) => {
+            console.log("[getpush 111]", state.push.nickName);
             return state.push;
         },
     },
