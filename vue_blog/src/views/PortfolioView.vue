@@ -41,7 +41,7 @@
                    <div id="markdownP" style="font-size : 1.5vw !important;" v-html="compiledMarkdown">  {{$store.state.portfolios[i -1].portfolio.content}} </div>
                 </div>
                 <div class="cardDiv slideDown " v-else-if="clickDiv === 'git'">
-                  <repository :gitlabToken="gitlabToken" :teams="$store.state.portfolios[i -1].portfolio.teams"></repository>
+                  <repository :userID="$store.state.portfolios[i -1].portfolio.userID" :teams="$store.state.portfolios[i -1].portfolio.teams" :projectID="$store.state.portfolios[i -1].portfolio.projectID"></repository>
                 </div>
                 <br>
                 <button class="button" v-if="$store.state.portfolios[i -1].portfolio.userID === $store.state.user.email || 'manager' === $store.state.user.auth "  @click="deletePortfolio()">Delete</button>
@@ -183,7 +183,7 @@
           <textarea v-model="portfolioReply.content" class="form-control noresize" placeholder="댓글을 입력하세요." maxlength="3000"></textarea>
         </div>
         <div class="bnts ">
-          <v-btn @click="PortfolioReply() " block text>Add</v-btn>
+          <v-btn @click="PortfolioReply() " class="headline" block text>Add</v-btn>
         </div>
       </div>
     </div>
@@ -270,7 +270,6 @@ export default {
         thumbnail: "",
       },
       clickDiv : "intro",
-      gitlabToken : "2KybhN5CUPV7pWSqYEXb",
       activator: null,
       index: -1,
       items: [
@@ -387,7 +386,6 @@ export default {
       });
     },
     getTeamName(teams){
-      console.log(teams);
       let teamName = '';
       for(let i = 0; i < teams.length; ++i){
         teamName += teams[i].name+" ";

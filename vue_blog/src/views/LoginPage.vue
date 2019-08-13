@@ -10,7 +10,6 @@
                 v-model="login.email"
                 :rules="EmailRules"
                 label="이메일"
-                class="dohyeon-font"
                 required
               ></v-text-field>
             </v-flex>
@@ -22,7 +21,6 @@
                 :rules="PasswordRules"
                 :counter="20"
                 label="비밀번호"
-                class="dohyeon-font"
                 type="password"
                 required
               ></v-text-field>
@@ -31,13 +29,13 @@
         </v-form>
         <v-layout justify-center ma-2>
           <v-flex xs12 sm4>
-            <v-btn @click="signIn()" block text class="dohyeon-font subheading">로그인</v-btn>
+            <v-btn @click="signIn()" block text  class="headline">로그인</v-btn>
           </v-flex>
           <v-flex xs12 sm4>
             <v-btn
               color
               @click="isLoginStage(false)"
-              class="dohyeon-font subheading"
+              class="headline"
               block
               text
             >회원가입</v-btn>
@@ -45,10 +43,10 @@
         </v-layout>
         <v-layout justify-center ma-2>
           <v-flex xs12 sm8>
-            <v-btn rounded color="#df4a31" dark v-on:click="loginWithGoogle" style="width:100%;">
+            <v-btn rounded color="#df4a31" dark v-on:click="loginWithGoogle" class="headline" style="width:100%; margin-bottom:10px; ">
               <v-icon size="25" class="mr-2">fa-google</v-icon>Google 로그인
             </v-btn>
-            <v-btn rounded color="#4662b0" dark v-on:click="loginWithFacebook" style="width:100%;">
+            <v-btn rounded color="#4662b0" dark v-on:click="loginWithFacebook" class="headline" style="width:100%;">
               <v-icon size="25" class="mr-2">fa-facebook</v-icon>Facebook 로그인
             </v-btn>
           </v-flex>
@@ -62,7 +60,6 @@
                 v-model="signup.email"
                 :rules="EmailRules"
                 label="이메일"
-                class="dohyeon-font"
                 required
               ></v-text-field>
             </v-flex>
@@ -73,7 +70,6 @@
                 v-model="signup.name"
                 :rules="NameRules"
                 label="이름"
-                class="dohyeon-font"
                 required
               ></v-text-field>
             </v-flex>
@@ -85,7 +81,6 @@
                 :rules="PasswordRules"
                 :counter="20"
                 label="패스워드"
-                class="dohyeon-font"
                 type="password"
                 required
               ></v-text-field>
@@ -97,7 +92,6 @@
                 v-model="signup.passwordConfirmed"
                 :rules="passwordConfirmedRules"
                 label="패스워드 확인"
-                class="dohyeon-font"
                 type="password"
                 required
               ></v-text-field>
@@ -109,7 +103,6 @@
                 v-model="signup.gitlabID"
                 :rules="EmailRules"
                 label="Gitlab ID"
-                class="dohyeon-font"
                 required
               ></v-text-field>
             </v-flex>
@@ -120,7 +113,6 @@
                 v-model="signup.gitlabToken"
                 :rules="PasswordRules"
                 label="Gitlab Token"
-                class="dohyeon-font"
                 type="password"
                 required
               ></v-text-field>
@@ -129,10 +121,10 @@
         </v-form>
         <v-layout justify-center ma-2>
           <v-flex xs12 sm4>
-            <v-btn class="dohyeon-font headline" @click="signUp()" block text>회원가입</v-btn>
+            <v-btn class="headline" @click="signUp()" block text>회원가입</v-btn>
           </v-flex>
           <v-flex xs12 sm4>
-            <v-btn color @click="isLoginStage(true)" class="dohyeon-font subheading" block text>뒤로</v-btn>
+            <v-btn color @click="isLoginStage(true)" class="headline" block text>뒤로</v-btn>
           </v-flex>
         </v-layout>
       </v-container>
@@ -142,20 +134,23 @@
   <v-dialog v-model="gitlabQuestion" width="500">
     <v-card>
       <v-card-title class="headline grey lighten-2" primary-title>
-        첫 로그인
+        <v-icon>person</v-icon> 첫 로그인
       </v-card-title>
-      <v-card-text>
+      <v-card-text style="font-size:20px; margin-top: 20px;">
         Gitlab 정보를 입력하시겠습니까?
       </v-card-text>
       <v-divider></v-divider>
       <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn text @click="closeDialog()">
+        <v-flex xs6>
+          <v-btn class="headline" text style="margin-right:0px;" @click="closeDialog()">
           네
         </v-btn>
-        <v-btn text @click="addGitlabInfo()">
+         </v-flex>
+        <v-flex xs6>
+        <v-btn class="headline" text style="margin-right:0px;" @click="addGitlabInfo()">
           아니오
         </v-btn>
+        </v-flex>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -170,7 +165,6 @@
                   v-model="gitlab.gitlabID"
                   :rules="EmailRules"
                   label="Gitlab ID"
-                  class="dohyeon-font"
                   required
                 ></v-text-field>
               </v-flex>
@@ -182,7 +176,6 @@
                   :rules="PasswordRules"
                   :counter="10"
                   label="Gitlab Token"
-                  class="dohyeon-font"
                   type="password"
                   required
                 ></v-text-field>
@@ -191,7 +184,7 @@
           </v-form>
           <v-layout justify-center ma-2>
             <v-flex xs12 sm4>
-              <v-btn @click="addGitlabInfo()" block flat class="dohyeon-font subheading">등록</v-btn>
+              <v-btn @click="addGitlabInfo()" block text class="headline">등록</v-btn>
             </v-flex>
           </v-layout>
         </v-container>
@@ -334,6 +327,13 @@ export default {
           this.gitlabQuestion = true;
         }
       }
+
+      const user = await FirebaseService.getUserInfo();
+        if(user !== null){
+          this.$store.state.user = user;
+          localStorage.setItem("user", JSON.stringify(user));
+      }
+
       this.$store.commit("loginDialog", false);
       this.$router.push("/");
 
@@ -369,7 +369,17 @@ export default {
       // 이메일 검증
       const result = await FirebaseService.signUp(this.signup);
 
-      this.$store.commit("loginDialog", false);
+      this.signup = {
+        name: "",
+        email: "",
+        password: "",
+        passwordConfirmed: "",
+        gitlabID: "",
+        gitlabToken: ""
+      };
+
+      this.isLoginStage(true);
+      this.$store.commit('setError', { type: 'success', code: '회원가입 성공', message: '회원가입에 성공했습니다. ' });
       this.$router.push("/");
     },
     // 일반로그인
