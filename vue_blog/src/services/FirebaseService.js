@@ -40,7 +40,7 @@ messaging.onMessage((payload) => {
     title: `${payload.notification.title}`,
     message: `${payload.notification.body}`,
     email: `${payload.data.email}님이 `,
-    link: `portfolio/${payload.data.link}`,
+    link: `${payload.data.link}`,
   });
 });
 

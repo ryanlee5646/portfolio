@@ -2,7 +2,7 @@
       <v-snackbar v-model="getPush.state">
           <v-icon dark right>check_circle</v-icon>
               &nbsp; {{getPush.email}} {{getPush.message}}
-          <v-btn color="pink" text @click="$store.commit('setPushState')">
+          <v-btn color="pink" text @click="siteMove()">
               Go
           </v-btn>
           <v-btn color="pink" text @click="$store.commit('setPushState')">
@@ -20,12 +20,12 @@ export default {
     ...mapGetters([
       'getPush',
     ]),
-    // methods: {
-    //   siteMove() {
-    //     let target = this.getPush();
-    //     this.$router.push({path: })
-    //   }
-    // },
+    methods: {
+      siteMove() {
+        let target = this.getPush();
+        this.$router.push({path: target.link })
+      }
+    },
   }
 }
 </script>
