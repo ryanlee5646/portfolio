@@ -1,5 +1,8 @@
 <template>
 <v-container justify-center py-5>
+  <v-flex xs12>
+    <Title :title="category.name" :description="category.description"/>
+  </v-flex>
   <v-layout justify-center>
     <v-flex xs12 class="notranslate text-xs-center">
       <div class="stretchRight" v-for="i in $store.state.posts.length">
@@ -9,18 +12,18 @@
             <!-- <div  > -->
               <!-- class="max-w-sm rounded overflow-hidden shadow-lg" -->
               <AnimateWhenVisible name="fadeLeft" class="col-12 col-md">
-              <div class="cardDiv slideDown ">
-                <!-- <div class="px-6 py-4 portfolioDiv2"> -->
-                  <br><p class="font-bold text-xl mb-2 title" style="font-size : 2.2vw !important;">  <b> {{$store.state.posts[i -1].post.title}}</b> </p><hr>
-                  <hr><p id="views" style="font-size : 1.0vw !important;" > [  조회수 :  {{$store.state.posts[i -1].views}}  ]</p>
-                  <p id="views" style="font-size : 1.2vw !important;" >   작성자 :  {{$store.state.posts[i -1].post.nickName}}  </p>
-                  <hr>
-                  <div id="content" style="font-size : 1.5vw !important;" v-html="compiledMarkdown">  {{$store.state.posts[i -1].post.content}} </div>
-                <br>
-                <button class="button" v-if="$store.state.posts[i -1].post.userID === nowUser.email"  @click="deletePost()">Delete</button>
-                <button class="button" v-if="$store.state.posts[i -1].post.userID === nowUser.email"  @click="editPostClick(i)">Edit</button>
-              </div>
-            </AnimateWhenVisible>
+                <div class="cardDiv slideDown ">
+                  <!-- <div class="px-6 py-4 portfolioDiv2"> -->
+                    <br><p class="font-bold text-xl mb-2 title" style="font-size : 2.2vw !important;">  <b> {{$store.state.posts[i -1].post.title}}</b> </p>
+                    <hr><p id="views" style="font-size : 1.0vw !important;" > [  조회수 :  {{$store.state.posts[i -1].views}}  ]</p>
+                    <p id="views" style="font-size : 1.2vw !important;" >   작성자 :  {{$store.state.posts[i -1].post.nickName}}  </p>
+                    <hr>
+                    <div id="content" style="font-size : 1.5vw !important;" v-html="compiledMarkdown">  {{$store.state.posts[i -1].post.content}} </div>
+                  <br>
+                  <button class="button" v-show=" $store.state.posts[i -1].post.userID === nowUser.email || manager === nowUser.auth "  @click="deletePost()">Delete</button>
+                  <button class="button" v-show="$store.state.posts[i -1].post.userID === nowUser.email || manager === nowUser.auth"  @click="editPostClick(i)">Edit</button>
+                </div>
+              </AnimateWhenVisible>
             <!-- </div> -->
           </div>
           <!-- 수정 폼 -->
@@ -28,7 +31,7 @@
             <v-text-field label="제목" v-model="postTemp.title"></v-text-field>
             <markdown-editor v-model="postTemp.content" ref="markdownEditor"></markdown-editor>
             <hr><button class="button" @click="editPost()">Edit</button>
-            <button class="button" to="/" block flat>뒤로</button>
+            <button class="button" @click="flag2 = false" block text>뒤로</button>
           </div>
 
         </div>
@@ -46,7 +49,7 @@
           <textarea v-model="postReply.content" class="form-control" placeholder="댓글을 입력하세요." maxlength="6000"></textarea>
         </div>
         <div class="bnts ">
-          <v-btn @click="PostReplyWriter() " block flat>Add</v-btn>
+          <v-btn @click="PostReplyWriter() " block text>Add</v-btn>
         </div>
       </div>
     </div>
@@ -71,10 +74,10 @@
                   </header>
                   <div class="comment-post" v-if="flag === false">
                     <p> {{r.postReply.content}} </p>
-                    <button v-if="r.postReply.email === nowUser.email" class="button" @click="editClick(index)">수 정</button>
-                    <button v-if="r.postReply.email === nowUser.email" class="button" @click="deletePostReply(index)">삭 제</button>
+                    <button v-show="r.postReply.email === nowUser.email  || manager === nowUser.auth " class="button" @click="editClick(index)">수 정</button>
+                    <button v-show="r.postReply.email === nowUser.email  || manager === nowUser.auth " class="button" @click="deletePostReply(index)">삭 제</button>
                   </div>
-                  <div class="comment-post" v-else-if="r.postReply.email === nowUser.email">
+                  <div class="comment-post" v-else-if="r.postReply.email === nowUser.email  || manager === nowUser.auth">
                     <p v-if="editIdx === index">
                       <input type="text" v-model="editReplyContent" :placeholder="r.postReply.content"></input> </p>
                     <button class="button" @click="editPostReply(index)">O K</button>
@@ -97,10 +100,15 @@ import marked from 'marked';
 import FirebaseService from '@/services/FirebaseService'
 import markdownEditor from 'vue-simplemde/src/markdown-editor';
 import ImageComponent from '../components/ImageComponent.vue';
+import Title from '../components/Title.vue';
 
 export default {
   data() {
     return {
+      category: { 
+              name : "Post",
+              description : "This is Post Page. Thank you :)"
+      },
       posts: [],
       postReplys: [],
       postReply: {
@@ -130,6 +138,7 @@ export default {
   components: {
     markdownEditor,
     ImageComponent,
+    Title,
   },
   props: {
     id: {
@@ -246,13 +255,12 @@ const factor = (elemA, elemB, prop) => {
 
 
 <style>
-
 .textarea{
-  height: 200px;
+  height: 150px;
 }
 .form-control{
-  height: 150px !important;
-  font-size: 2.5rem !important;
+  height: 120px !important;
+  font-size: 1.5rem !important;
 }
 .userPhoto{
   border-radius: 50px;
@@ -260,12 +268,13 @@ const factor = (elemA, elemB, prop) => {
 .title{
   font-size: 2vw;
 }
+
 #views{
   text-align: right;
 }
 
 .cardDiv{
-  width: 90% !important;
+  width: 100% !important;
 }
 #content{
   text-align: left;

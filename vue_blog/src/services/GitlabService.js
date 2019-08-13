@@ -15,9 +15,9 @@ export default {
     getProjects(accessToken, userName, page) {
         return Api(BASE_URL, accessToken).get(`/users/${userName}/events?per_page=100&page=${page}`);
     },
-    getProjectCommits(projectId) {
+    getProjectCommits(projectId, accessToken) {
         const d = new Date();
         d.setMonth(d.getMonth() - 1);
-        return Api(BASE_URL).get(`/projects/${projectId}`);
+        return Api(BASE_URL, accessToken).get(`/projects/${projectId}/repository/commits?per_page=100`);
     },
 };

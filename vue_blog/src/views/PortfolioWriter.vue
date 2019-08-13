@@ -1,42 +1,72 @@
 <template>
 <div id="portfolioWriter">
+  <v-flex xs12>
+    <Title :title="category.name" :description="category.description"/>
+  </v-flex>
   <v-layout justify-center pt-5>
-    <v-flex xs12 sm5 md4>
+    <v-flex xs12 sm8 md6>
       <v-text-field label="제목" v-model="portfolio.title">
       </v-text-field>
     </v-flex>
   </v-layout>
-
   <v-layout justify-center pt-5>
-    <v-flex xs12 sm5 md4>
-      <v-text-field label="프로젝트 참여 팀원" v-model="portfolio.teams" 
-      @click="up">
+    <v-flex xs12 sm8 md6>
+      <v-text-field label="프로젝트 ID" v-model="portfolio.projectID" hint="gitlab 안의 프로젝트 ID를 입력해 주세요.">
       </v-text-field>
-        <v-card
-      class="mx-auto"
-      max-width="300"
-      tile
-      v-if="showCard"
-    >
-      <v-list dense>
-        <v-subheader>REPORTS</v-subheader>
-        <v-list-item-group v-model="item" color="primary">
-          <v-list-item
-            v-for="(item, i) in items"
-            :key="i"
-          >
-            <v-list-item-icon>
-              <v-icon v-text="item.icon"></v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title v-text="item.text"></v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list-item-group>
-      </v-list>
-    </v-card>
     </v-flex>
   </v-layout>
+  <v-layout justify-center pt-5>
+    <v-flex xs12 sm8 md6>
+      <v-combobox
+      v-model="model"
+      :filter="filter"
+      :hide-no-data="!search"
+      :items="items"
+      :search-input.sync="search"
+      hide-selected
+      label="프로젝트 참여 인원"
+      multiple
+      small-chips
+      :auto-select-first="focus"
+    >
+      <template v-slot:no-data>
+        <v-list-item>
+          <span class="subheading">No matches found</span>
+        </v-list-item>
+      </template>
+      
+      <template v-slot:selection="{ attrs, item, parent, selected }">
+        <v-chip
+          v-if="item === Object(item)"
+          v-bind="attrs"
+          :input-value="selected"
+          label
+          small
+        >
+          <span class="pr-2">
+            {{ item.name }}
+          </span>
+          <v-icon
+            small
+            @click="parent.selectItem(item)"
+          >close</v-icon>
+        </v-chip>
+      </template>
+      <template v-slot:item="{ index, item }">
+          <v-list-item-avatar>
+            <v-img :src="item.img"></v-img>
+          </v-list-item-avatar>
+  
+          <v-list-item-content>
+            <v-list-item-title v-text="item.name" style="font-size:16px; font-weight:bold;"></v-list-item-title>
+            <v-list-item-subtitle v-text="item.ID" style="font-size:12px;"></v-list-item-subtitle>
+          </v-list-item-content>
+      </template>
+    </v-combobox>
+      
+    </v-flex>
+  </v-layout>
+
   <v-layout justify-center>
     <v-flex xs12 sm8 md6>
       <v-layout wrap justify-space-between>
@@ -87,7 +117,7 @@
       <v-btn @click="PortfolioWriter()" block text>작성하기</v-btn>
     </v-flex>
     <v-flex xs12 sm3 md2>
-      <v-btn to="/" block flat>뒤로</v-btn>
+      <v-btn to="/#toolbar" block text>뒤로</v-btn>
     </v-flex>
   </v-layout>
   <br>
@@ -99,73 +129,113 @@
 <script>
 import markdownEditor from 'vue-simplemde/src/markdown-editor';
 import ImageComponent from '../components/ImageComponent.vue';
+import Title from '../components/Title.vue';
 import FirebaseService from '@/services/FirebaseService';
-import {
-    VListItemGroup,
-    VListItem,
-    VListItemIcon,
-    VListItemTitle,
-    VListItemContent
-} from 'vuetify/lib';
+import store from '../store';
 
 export default {
   
   name: 'portfoliowrite',
+  store,
   data() {
     return {
-      showCard: false,
+      category: { 
+              name : "Portfolio Writer",
+              description : "This is PortfolioWriter Page. Thank you :)"
+      },
       portfolios : [],
       portfolio: {
         userID: this.$store.state.user.email, //this.$store.state.user
         nickName : this.$store.state.user.nickName,
+        projectID: "",
         startdate: "",
         enddate: "",
         sdate: "",
         edate: "",
         title: "",
         content: "",
-        teams: "",
-        views : 0,
-        // portfolioCnt: this.$store.state.user.portfolioCount,
-        // postCnt: this.$store.state.user.postCount,
+        teams: [],
+        thumbnail: "",
       },
-      item: 1,
-      items: [
-        { text: 'Real-Time', icon: 'mdi-clock' },
-        { text: 'Audience', icon: 'mdi-account' },
-        { text: 'Conversions', icon: 'mdi-flag' },
-      ],
-    }
+    activator: null,
+    index: -1,
+    items: [
+      { header: 'Select an User' },
+    ],
+    nonce: 1,
+    menu: false,
+    model: [],
+    x: 0,
+    search: null,
+    y: 0,
+    focus: true,
+    } 
+  },
+  components: {
+    ImageComponent,
+    Title,
+  },
+  mounted(){
+    this.getMemberUser();
   },
   methods: {
+    async getMemberUser(){
+      const result = await FirebaseService.getMemberUser();
+      result.forEach(user => {
+          this.items.push({img: user.photoURL, name: user.name, ID: `@${user.nickName}`, text: `${user.name} ${user.nickName}`, gitlabID: user.gitlabID});
+      });
+    },
     async PortfolioWriter() {
-      // console.log(this.$store.state.user.mail + " 카운트??");
+      
+      // defualt imageURL .... No image
+      console.log("ddd");
+      console.log(this.portfolio.thumbnail);
+      if(this.portfolio.thumbnail == ""){
+        this.portfolio.thumbnail = 'https://www.sylff.org/wp-content/uploads/2016/04/noImage.jpg';
+      }
+
+      this.model.forEach((user)=>{
+        this.portfolio.teams.push(user);
+      })
+
       const result = await FirebaseService.PortfolioWriter(this.portfolio);
       this.portfolios = await FirebaseService.getPortfolios();
       this.$store.commit('updatePortfolios', this.portfolios );
       this.$router.push('/');
     },
-    up(){
-      console.log("hellododododod");
-      this.showCard = true;
-    }
+    filter (item, queryText, itemText) {
+      if (item.header) return false
+
+      const hasValue = val => val != null ? val : ''
+      const text = hasValue(itemText)
+      const query = hasValue(queryText)
+      return text.toString()
+        .toLowerCase()
+        .indexOf(query.toString().toLowerCase()) > -1
+    },
   },
-  components: {
-    markdownEditor,
-    ImageComponent,
-    VListItemGroup,
-    VListItemGroup,
-    VListItem,
-    VListItemIcon,
-    VListItemTitle,
-    VListItemContent
-  }
+  beforeRouteEnter (to, from, next) {
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      if(user.email != undefined){ 
+          next();
+      }
+      else{
+        store.commit('setError', { type: 'error', code: '로그인 오류', message: '로그인이 필요한 페이지입니다. 로그인 후 접속해 주세요.' });
+        next({
+          path: '/#toolbar',
+        })
+      }
+    },
 }
 </script>
 
 <style>
 @import '~simplemde/dist/simplemde.min.css';
 
+#portfolioWriter{
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
 .form-control-lg {
   width: 500px !important;
 }
@@ -208,5 +278,9 @@ li,ol,ul {
 
 .name {
   padding-right: 0;
+}
+
+.position {
+  z-index: 9999;
 }
 </style>

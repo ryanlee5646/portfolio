@@ -116,6 +116,18 @@ export default {
                 return users;
             });
     },
+    getMemberUser() {
+        return firestore.collection(USERS).get()
+            .then(function(querySnapshot) { // eslint-disable-line
+                let users = []; // eslint-disable-line
+                querySnapshot.forEach(function(doc) { // eslint-disable-line
+                    if (doc.data().auth === 'team' || doc.data().auth === 'manager') {
+                        users.push(doc.data());
+                    }
+                });
+                return users;
+            });
+    },
 
     /* login & logout */
     signUp(signup) {
@@ -396,10 +408,18 @@ export default {
     PostWriter(post) {
         console.log('[info] start PostoWriter func()');
         console.log(post);
+        var d = new Date().getMonth();
+        // console.log(d);
+        console.log("time!!");
+        console.log(new Date().toLocaleString());
         return firestore.collection(POSTS).add({
             post,
             views: 0,
             created_at: firebase.firestore.FieldValue.serverTimestamp(),
+            writerTime : new Date().toLocaleString(),
+            // writerTime : firebase.firestore.FieldValue.serverTimestamp().split(" ")[0]
+            //firebase.firestore.Timestamp.fromDate(new Date());
+            //firebase.firestore.FieldValue.serverTimestamp(),
         }).catch((error) => {
             const errorCode = error.code;
             const errorMessage = error.message;
@@ -469,6 +489,47 @@ export default {
             const errorMessage = error.message;
             console.log(`[error] addPostViews func() : [CODE ${errorCode}] Error : ${errorMessage}`);
         });
+    },
+
+    searchPost(selected, inputStr){
+      console.log('[info] start searchPost func()');
+      const postsCollection = firestore.collection(POSTS).doc();
+      const searchedPost = new Array;
+
+      if(selected == 'title'){
+        // console.log("title!!");
+        firestore.collection(POSTS)
+        .get()
+        .then(function(querySnapshot) {
+            querySnapshot.forEach(function(doc) {
+                // console.log(doc.id, " => ", doc.data());
+                if(doc.data().post.title.includes(inputStr)){
+                  // console.log("in if" + doc.data().post.nickName);
+                  searchedPost.push(doc.data());
+                }
+            });
+        })
+        .catch(function(error) {
+            console.log("Error getting documents: ", error);
+        });
+
+      }else if(selected == 'id'){
+        // console.log('search ID!!');
+        firestore.collection(POSTS)
+        .get()
+        .then(function(querySnapshot) {
+            querySnapshot.forEach(function(doc) {
+                if(doc.data().post.userID.includes(inputStr)){
+                  searchedPost.push(doc.data());
+                }
+            });
+        })
+        .catch(function(error) {
+            console.log("Error getting documents: ", error);
+        });
+      }
+
+      return searchedPost;
     },
 
 

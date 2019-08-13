@@ -1,35 +1,41 @@
 <!--포트폴리오 페이지 부분 포트폴리오 카드 리스트를 출력해줌(Portfolio.vue를 for문으로 랜더링해줌)-->
 <template>
 <section id="post" class="my-portfolio position">
-  <Title title=" Post Table 📄" description="자유롭게 작성해주세요 :)" />
-  <!-- <table >
-            <tr>
-              <th>Content</th>
-              <th>NickName</th>
-              <th>Views</th>
-            </tr>
-            <tr v-for="(p, index) in this.posts" :key="p.created_at" :uid="p.uid" >
-              <td><a @click="routePath(p.uid)" >{{p.post.title}}</a></td>
-              <td>{{p.post.userID}}</td>
-              <td>{{p.views}}</td>
-            </tr>
-          </table> -->
+  <Title title=" Post Table" description="Please write freely :)" />
   <AnimateWhenVisible name="fadeLeft" class="col-12 col-md">
     <div id="app" class="grid bigEntrance">
+      <div class="search__container">
+        <!-- <p class="search__title">   Search   </p> -->
+        <select class="selectPost" v-model="selectPost">
+          <option value="title">TITLE</option>
+          <option value="id">userID</option>
+          <option value="date">Date</option>
+        </select>
+        <input class="search__input" type="text" placeholder="Search" v-model="inputSearch" @input="searchPost">
+      </div>
+      <hr>
+
       <table>
         <thead>
           <tr>
-            <th @click="sortBy('title')"> Title </th>
+            <th></th>
             <th @click="sortBy('userID')"> UserID </th>
+            <th @click="sortBy('title')"> <b>Title</b> </th>
             <th @click="sortBy('views')"> views </th>
+            <th @click="sortBy('date')"> date </th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="p in this.sortedPosts" :uid="p.uid">
-            <td><a @click="routePath(p.uid)">{{p.post.title}}</a></td>
-            <td>{{p.post.userID | capitalize}}</td>
-            <td>{{p.views | capitalize}}</td>
+          <tr v-for="(p, index) in this.sortedPosts" :uid="p.uid">
+            <td>{{index + 1}}</td>
+            <td><a @click="routePath(p.uid)">{{p.post.userID | capitalize}}</a></td>
+            <td><b><a @click="routePath(p.uid)" style="font-size:1.5vw;">{{p.post.title}}</a></b></td>
+            <td>{{p.views }}</td>
+            <td>{{p.writerTime}}</td>
+            <!--  -->
+            <!-- response.data[i].committed_date.split("T")[0].replace(/-/gi,"/"))`` -->
           </tr>
+
         </tbody>
       </table>
 
@@ -37,11 +43,12 @@
         <button class="btn btn-sm" :disabled="!hasPage(-1)" @click="prevPage">←</button>
         <button class="btn btn-sm" :disabled="!hasPage(1)" @click="nextPage">→</button>
         <select class="selectPage" v-model="pageSizeModel">
-          <option value="3">3</option>
-          <option value="5">6</option>
-          <option value="10">9</option>
+          <option value="5">5</option>
+          <option value="10">10</option>
+          <option value="15">15</option>
         </select>
       </div>
+
     </div>
   </AnimateWhenVisible>
   <!--  -->
@@ -59,13 +66,15 @@ export default {
     return {
       loaded: true,
       currentFilter: 'all',
-
       //
       sort: 'title',
       sortDir: 'asc',
       page: 0,
-      pageSize: 3,
+      pageSize: 5,
       posts: [],
+      selectPost: 'title',
+      inputSearch: '',
+
     };
   },
   props: {
@@ -107,12 +116,12 @@ export default {
         this.loaded = true;
       }, 1000);
     },
-    isFiltered(name) {
-      return this.currentFilter === name;
-    },
-    filter(name) {
-      this.currentFilter = name;
-    },
+    // isFiltered(name) {
+    //   return this.currentFilter === name;
+    // },
+    // filter(name) {
+    //   this.currentFilter = name;
+    // },
     routePath(uid) {
       console.log(uid + " routePath 넘어옴?");
       this.$router.push({
@@ -121,18 +130,18 @@ export default {
     },
 
     sortBy(s) {
-      console.log("sortBy" + "IN!@!");
-      if (s === this.sort) {
-        this.sortDir = (this.sortDir === 'asc') ? 'desc' : 'asc';
-      } else {
-        this.sortDir = 'asc';
-      }
+      // console.log("sortBy" + "IN!@!");
+      this.sortDir = (this.sortDir === 'asc') ? 'desc' : 'asc';
+      // if (s === this.sort) {
+      //   this.sortDir = (this.sortDir === 'asc') ? 'desc' : 'asc';
+      // } else {
+      //   this.sortDir = 'asc';
+      // }
       this.sort = s;
     },
-
-    isActiveSort(s) {
-      return this.sort === s;
-    },
+    // isActiveSort(s) {
+    //   return this.sort === s;
+    // },
     hasPage(dir) {
       if (dir === -1 && (this.page > 0)) return true;
       if (dir === 1 && (((this.page + 1) * this.pageSize) < this.posts.length)) return true;
@@ -143,7 +152,15 @@ export default {
     },
     nextPage() {
       if (this.hasPage(1)) this.page++;
-    }
+    },
+    async searchPost() {
+      // console.log(this.selectPost + " " +  this.inputSearch);
+      const result = await FirebaseService.searchPost(this.selectPost, this.inputSearch);
+      this.posts = result;
+    },
+    // toDate(created_at){
+    //   toDate(created_at)
+    // }
   },
 
   computed: {
@@ -179,8 +196,16 @@ export default {
       v = v.toString()
       return v.charAt(0).toUpperCase() + v.slice(1)
     }
-  }
+  },
 };
+
+// var searchBox = document.querySelectorAll('.search-box input[type="text"] + span');
+//
+// searchBox.forEach(elm => {
+//  elm.addEventListener('click', () => {
+//    elm.previousElementSibling.value = '';
+//  });
+// });
 </script>
 
 <style scoped lang="scss">
@@ -189,6 +214,58 @@ export default {
 $bg-post: map-get($colors, dark) !default;
 $btn: map-get($colors, secondary) !default;
 
+.search__container {
+    // padding-top: 64px;
+    width: 90%;
+}
+
+.search__title {
+    font-size: 22px;
+    font-weight: 900;
+    text-align: center;
+    color: #ff8b88;
+}
+
+.search__input {
+    width: 100%;
+    padding: 12px 24px;
+
+    background-color: transparent;
+    transition: transform 250ms ease-in-out;
+    font-size: 14px;
+    line-height: 18px;
+
+    color: #575756;
+    background-color: transparent;
+
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z'/%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-size: 18px 18px;
+    background-position: 95% center;
+    border-radius: 50px;
+    border: 1px solid #575756;
+    transition: all 250ms ease-in-out;
+    backface-visibility: hidden;
+    transform-style: preserve-3d;
+}
+
+.search__input::placeholder {
+    color: rgba(87, 87, 86, 0.8);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+}
+
+.search__input:focus,
+.search__input:hover {
+    padding: 12px 0;
+    outline: 0;
+    border: 1px solid transparent;
+    border-bottom: 1px solid #575756;
+    border-radius: 0;
+    background-position: 100% center;
+}
+
+//
 .my-portfolio {
     background-color: lighten($bg-post, 84.6%);
     // color: map-get($colors, light);
@@ -262,14 +339,16 @@ table {
 
 td,
 th {
-    padding: 8px;
+    // padding: 8px;
     text-align: left;
     border-bottom: 1px solid #ddd;
     font-size: 1vw;
+    // margin-top: 10px;
+
 }
 
 tr:hover {
-    background-color: #f5f5f5;
+    background-color: #f3f4f7;
 }
 
 .selectPage {
@@ -278,11 +357,17 @@ tr:hover {
     width: 0 !important;
     min-width: 10% !important;
     max-width: 0 !important;
-    min-height: 4rem !important;
-    // font: inherit;
-    // font-size: 1.6rem;
-
+    min-height: 3rem !important;
 }
+.selectPost {
+    min-width: 10% !important;
+    width: 0 !important;
+    min-width: 15% !important;
+    max-width: 0 !important;
+    min-height: 4rem !important;
+    border-radius: 30px;
+}
+
 b {
     font-weight: bold;
 }
@@ -341,7 +426,7 @@ table {
         }
     }
     td {
-        padding: 0.5rem 1.0rem;
+        padding: 1.5rem 1.0rem;
         transition: all 0.3s ease;
     }
     tr:hover td {

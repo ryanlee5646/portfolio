@@ -17,6 +17,9 @@ import VueNumber from 'vue-number-animation';
 // draggable library
 import VueDraggable from 'vue-draggable';
 
+// VueApexCharts library
+import VueApexCharts from 'vue-apexcharts';
+
 // FirebaseService
 import FirebaseService from '@/services/FirebaseService';
 
@@ -30,9 +33,6 @@ import AnimateWhenVisible from './components/AnimateWhenVisible.vue';
 import './style/css/app.scss';
 import vuetify from './plugins/vuetify';
 
-// import addPolyfills from './polyfills';
-
-
 const firebase = require('firebase/app');
 
 Vue.use(BootstrapVue);
@@ -40,7 +40,9 @@ Vue.use(VueResource);
 Vue.use(VueSimplemde);
 Vue.use(VueNumber);
 Vue.use(VueDraggable);
+Vue.use(VueApexCharts);
 Vue.component('AnimateWhenVisible', AnimateWhenVisible);
+Vue.component('apexchart', VueApexCharts);
 
 Vue.config.productionTip = false;
 

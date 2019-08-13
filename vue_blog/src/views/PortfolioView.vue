@@ -1,13 +1,16 @@
 <template>
 <!-- style="font-size : 3vw !important ;" -->
-<v-container justify-center py-5>
+<v-container justify-center py-5 id="portfolioView">
+  <v-flex xs12>
+    <Title :title="category.name" :description="category.description"/>
+  </v-flex>
   <v-layout justify-center>
     <v-flex xs12 class="text-xs-center">
-      <div class="stretchRight" v-for="i in $store.state.portfolios.length">
+      <div class="stretchRight" v-for="i in $store.state.portfolios.length" :key="i">
         <div v-if="$store.state.portfolios[i -1].uid === id">
           <div class="portfolioDiv" v-if="flag2 === false">
             <a style="display: none !important;">{{index = i-1}}</a>
-            <hr><br>
+            <hr>
             <AnimateWhenVisible name="fadeLeft" class="col-12 col-md">
             <div>
               <!--content inner-->
@@ -27,28 +30,22 @@
                   <!-- {{clickDiv}} -->
                   <div class="cardDiv slideDown intro " v-if="clickDiv === 'intro'">
                     <!-- <div class="px-6 py-4 portfolioDiv2"> -->
-                      <br><a class="font-bold text-xl mb-2 title" style="font-size : 2.2vw !important;">  <b> {{$store.state.portfolios[i -1].portfolio.title}}</b> </a><hr>
-                      <p id="viewsPortfolio" style="font-size : 1.0vw !important;" > [  조회수 :  {{$store.state.portfolios[i -1].views}}  ]</p>
+                      <br><a class="font-bold text-xl mb-2 title" style="font-size : 2.0vw !important;">  <b> {{$store.state.portfolios[i -1].portfolio.title}}</b></a> <span id="viewsPortfolio" style="font-size : 1.0vw !important;" >
+                      &nbsp;&nbsp; [  조회수 :  {{$store.state.portfolios[i -1].views}}  ]</span><br><br>
                       <p id="viewsPortfolio" style="font-size : 1.3vw !important;" >   작성자 :  {{$store.state.portfolios[i -1].portfolio.nickName}}  </p>
                       <p id="viewsPortfolio" style="font-size : 1.3vw !important;">{{$store.state.portfolios[i -1].portfolio.sdate}} ~ {{$store.state.portfolios[i -1].portfolio.edate}}</p>
-                        <p id="viewsPortfolio" style="font-size : 1.3vw !important;"># {{$store.state.portfolios[i -1].portfolio.teams}}</p>
-                      <hr>
-                      <!-- <div  id="markdownP" style="font-size : 1.5vw !important;" v-html="compiledMarkdown">  {{$store.state.portfolios[i -1].portfolio.content}} </div>
-                    <br>
-                    <button class="button" v-if="$store.state.portfolios[i -1].portfolio.userID === nowUser.email"  @click="deletePortfolio()">Delete</button>
-                    <button class="button" v-if="$store.state.portfolios[i -1].portfolio.userID === nowUser.email"  @click="editPortfolioClick(i)">Edit</button> -->
+                      <p id="viewsPortfolio" style="font-size : 1.3vw !important;" > 팀원 : {{getTeamName($store.state.portfolios[i -1].portfolio.teams)}}</p><hr>
                 </div>
                 <div class="cardDiv slideDown content " v-else-if="clickDiv === 'content'">
-                     <div id="markdownP" style="font-size : 1.5vw !important;" v-html="compiledMarkdown">  {{$store.state.portfolios[i -1].portfolio.content}} </div>
+                  <br>
+                   <div id="markdownP" style="font-size : 1.5vw !important;" v-html="compiledMarkdown">  {{$store.state.portfolios[i -1].portfolio.content}} </div>
                 </div>
                 <div class="cardDiv slideDown " v-else-if="clickDiv === 'git'">
-                  <h2>HI</h2>
-                  <repository></repository>
-                  <h2>HI</h2>
+                  <repository :gitlabToken="gitlabToken" :teams="$store.state.portfolios[i -1].portfolio.teams"></repository>
                 </div>
                 <br>
-                <button class="button" v-if="$store.state.portfolios[i -1].portfolio.userID === nowUser.email"  @click="deletePortfolio()">Delete</button>
-                <button class="button" v-if="$store.state.portfolios[i -1].portfolio.userID === nowUser.email"  @click="editPortfolioClick(i)">Edit</button>
+                <button class="button" v-if="$store.state.portfolios[i -1].portfolio.userID === nowUser.email || manager === nowUser.auth "  @click="deletePortfolio()">Delete</button>
+                <button class="button" v-if="$store.state.portfolios[i -1].portfolio.userID === nowUser.email || manager === nowUser.auth "  @click="editPortfolioClick(i)">Edit</button>
                 </div>
               <!-- </div> -->
             </div>
@@ -84,7 +81,56 @@
           <!-- 수정 폼 -->
           <div v-else>
               <v-text-field label="제목" v-model="portfolioTemp.title"></v-text-field>
-              <v-text-field label="프로젝트 참여 팀원" v-model="portfolioTemp.teams"></v-text-field>
+              <v-layout justify-center pt-5>
+                <v-flex xs12>
+                  <v-combobox
+                  v-model="model"
+                  :filter="filter"
+                  :hide-no-data="!search"
+                  :items="items"
+                  :search-input.sync="search"
+                  hide-selected
+                  label="프로젝트 참여 인원"
+                  multiple
+                  small-chips
+                  :auto-select-first="focus"
+                >
+                  <template v-slot:no-data>
+                    <v-list-item>
+                      <span class="subheading">No matches found</span>
+                    </v-list-item>
+                  </template>
+                  
+                  <template v-slot:selection="{ attrs, item, parent, selected }">
+                    <v-chip
+                      v-if="item === Object(item)"
+                      v-bind="attrs"
+                      :input-value="selected"
+                      label
+                      small
+                    >
+                      <span class="pr-2">
+                        {{ item.name }}
+                      </span>
+                      <v-icon
+                        small
+                        @click="parent.selectItem(item)"
+                      >close</v-icon>
+                    </v-chip>
+                  </template>
+                  <template v-slot:item="{ index, item }">
+                      <v-list-item-avatar>
+                        <v-img :src="item.img"></v-img>
+                      </v-list-item-avatar>
+              
+                      <v-list-item-content>
+                        <v-list-item-title v-text="item.name" style="font-size:16px; font-weight:bold;"></v-list-item-title>
+                        <v-list-item-subtitle v-text="item.ID" style="font-size:12px;"></v-list-item-subtitle>
+                      </v-list-item-content>
+                  </template>
+                </v-combobox>
+                </v-flex>
+              </v-layout>
               <v-layout wrap justify-space-between>
                 <v-flex xs12 sm5>
                   <v-menu v-model="portfolioTemp.startdate" :close-on-content-click="false" :nudge-right="40" lazy transition="scale-transition" offset-y full-width min-width="290px">
@@ -117,7 +163,7 @@
 
 
               <hr><button class="button"  @click="editPortfolio()">Edit</button>
-              <button  class="button" to="/" block flat>뒤로</button>
+              <button  class="button" @click="flag2 = false" block flat>뒤로</button>
           </div>
         </div>
       </div>
@@ -137,7 +183,7 @@
           <textarea v-model="portfolioReply.content" class="form-control noresize" placeholder="댓글을 입력하세요." maxlength="3000"></textarea>
         </div>
         <div class="bnts ">
-          <v-btn @click="PortfolioReply() " block flat>Add</v-btn>
+          <v-btn @click="PortfolioReply() " block text>Add</v-btn>
         </div>
       </div>
     </div>
@@ -145,7 +191,7 @@
     <v-flex xs12>
          <hr><br><h1>Comments 😊</h1>
         <section class="comment-list">
-          <article v-for="(r, index) in this.portfolioReplys" class="row">
+          <article v-for="(r, index) in this.portfolioReplys" class="row" :key="index">
 
             <div class="col-md-2 col-xs-6s hidden-xs">
               <figure class="profile">
@@ -162,12 +208,13 @@
                   </header>
                   <div class="comment-post" v-if="flag === false">
                     <p> {{r.portfolioReply.content}} </p>
-                    <button v-if="r.portfolioReply.email === nowUser.email" class="button" @click="editClick(index)">수 정</button>
-                    <button v-if="r.portfolioReply.email === nowUser.email" class="button" @click="deleteReply(index)">삭 제</button>
+                    <button v-if="r.portfolioReply.email === nowUser.email || manager === nowUser.auth " class="button" @click="editClick(index)">수 정</button>
+                    <button v-if="r.portfolioReply.email === nowUser.email || manager === nowUser.auth " class="button" @click="deleteReply(index)">삭 제</button>
                   </div>
-                  <div class="comment-post" v-else-if="r.portfolioReply.email === nowUser.email">
+                  <div class="comment-post" v-else-if="r.portfolioReply.email === nowUser.email || manager === nowUser.auth ">
                     <p v-if="editIdx === index">
-                      <input type="text" v-model="editReplyContent" :placeholder="r.portfolioReply.content"></input> </p>
+                      <input type="text" v-model="editReplyContent" :placeholder="r.portfolioReply.content">
+                    </p>
                     <button class="button" @click="editReply(index)">O K</button>
                   </div>
                 </div>
@@ -185,11 +232,16 @@ import marked from 'marked';
 import FirebaseService from '@/services/FirebaseService'
 import markdownEditor from 'vue-simplemde/src/markdown-editor';
 import ImageComponent from '../components/ImageComponent.vue';
+import Title from '../components/Title.vue';
 import Repository from '../components/Repository.vue';
 
 export default {
   data() {
     return {
+      category: { 
+              name : "Portfolio",
+              description : "This is Portfolio Page. Thank you :)"
+      },
       portfolios: [],
       portfolioReplys: [],
       portfolioReply: {
@@ -220,6 +272,19 @@ export default {
         thumbnail: "",
       },
       clickDiv : "intro",
+      gitlabToken : "2KybhN5CUPV7pWSqYEXb",
+      activator: null,
+      index: -1,
+      items: [
+        { header: 'Select an User' },
+      ],
+      nonce: 1,
+      menu: false,
+      model: [],
+      x: 0,
+      search: null,
+      y: 0,
+      focus: true,
       // replyPhotoURL : "",
     }
   },
@@ -227,6 +292,7 @@ export default {
     markdownEditor,
     ImageComponent,
     Repository,
+    Title,
   },
   props: {
     id: {
@@ -289,6 +355,7 @@ export default {
       this.portfolioTemp.title = this.$store.state.portfolios[this.portfolioIdx].portfolio.title;
       this.portfolioTemp.content = this.$store.state.portfolios[this.portfolioIdx].portfolio.content;
       this.portfolioTemp.teams = this.$store.state.portfolios[this.portfolioIdx].portfolio.teams;
+      this.model = this.$store.state.portfolios[this.portfolioIdx].portfolio.teams;
       this.portfolioTemp.thumbnail = this.$store.state.portfolios[this.portfolioIdx].portfolio.thumbnail;
     },
     async deletePortfolio() {
@@ -304,6 +371,30 @@ export default {
       this.$store.commit('updatePortfolios', this.portfolios);
       this.$router.replace('/portfolio/view/' + this.id);
     },
+    filter (item, queryText, itemText) {
+      if (item.header) return false
+
+      const hasValue = val => val != null ? val : ''
+      const text = hasValue(itemText)
+      const query = hasValue(queryText)
+      return text.toString()
+        .toLowerCase()
+        .indexOf(query.toString().toLowerCase()) > -1
+    },
+    async getMemberUser(){
+      const result = await FirebaseService.getMemberUser();
+      result.forEach(user => {
+          this.items.push({img: user.photoURL, name: user.name, ID: `@${user.nickName}`, text: `${user.name} ${user.nickName}`, gitlabID: user.gitlabID});
+      });
+    },
+    getTeamName(teams){
+      console.log(teams);
+      let teamName = '';
+      for(let i = 0; i < teams.length; ++i){
+        teamName += teams[i].name+" ";
+      }
+      return teamName;
+    },
     // async getUserInfoByEmail(byEmail){
     //   console.log(byEmail + " byEmail?????");
     //   const result = await FirebaseService.getUserInfoByEmail(byEmail);
@@ -313,6 +404,7 @@ export default {
     // },
   },
   mounted() {
+    this.getMemberUser();
     this.getPortfolioReply();
   }
 };
@@ -325,11 +417,17 @@ export default {
 <style>
 /* @import '/style/css/portfolio.css'; */
 @import "/vuelendar/scss/vuelendar.scss";
+
+#portfolioView{
+  margin-top: 50px;
+}
+
 .img-responsive{
   /* 댓글 작성자 이미지 */
  border-radius: 55px;
  width: 80px;
 }
+
 #viewsPortfolio{
   text-align: left;
 }
@@ -349,17 +447,6 @@ background-image: url(images/next_btn_click.png);
   padding: 15px;
   margin-bottom: 10px;
 }
-
-.portfolioDiv {
-  /* padding: 100px; */
-  /* width: 100% */
-  /* font-size: 4vw !important ; */
-  /* border: 1px solid ; */
-}
-/*
-.content{
-  text-align: center;
-} */
 
 .editor {
   display: inline-block;
@@ -384,6 +471,7 @@ img[alt=image] {
 #markdownP img {
   width: 80%;
   text-align: center;
+  margin: 10%;
 }
 
 .button {
@@ -629,8 +717,6 @@ stretchRight
 }
 
 /*  */
-\
-
 
 [class*="btn-"] {
  position: relative;
@@ -684,5 +770,4 @@ stretchRight
  bottom: auto;
  top: 0;
 }
-
 </style>
