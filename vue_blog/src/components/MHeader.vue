@@ -8,7 +8,7 @@
         <ul @click="isMenuVisible = !isMenuVisible">
           <li @click="scrolling">
             <AnimateWhenVisible name="fadeUp" :duration="1.9">
-              <a @click="siteMove('/#toolbar')">
+              <a @click="siteMove('/')" href="#toolbar">
                 Home
                 <span></span>
               </a>
@@ -16,7 +16,7 @@
           </li>
           <li @click="scrolling">
             <AnimateWhenVisible name="fadeUp" :duration="1.9">
-              <a href="#about">
+              <a @click="siteMove('/')" href="#about">
                 About Us
                 <span></span>
               </a>
@@ -24,7 +24,7 @@
           </li>
           <li @click="scrolling">
             <AnimateWhenVisible name="fadeUp" :duration="1.9">
-              <a href="#portfolio">
+              <a @click="siteMove('/')" href="#portfolio">
                 Portfolio
                 <span></span>
               </a>
@@ -32,7 +32,7 @@
           </li>
           <li @click="scrolling">
             <AnimateWhenVisible name="fadeUp" :duration="1.9">
-              <a href="#post">
+              <a @click="siteMove('/')" href="#post">
                 Post
                 <span></span>
               </a>
@@ -56,7 +56,7 @@
           </li>
           <li @click="scrolling" v-if="isAuth">
             <AnimateWhenVisible name="fadeUp" :duration="1.9">
-              <a @click="siteMove('/admin')">
+              <a @click="siteMove('/admin')" href="#admin">
                 DashBoard
                 <span></span>
               </a>

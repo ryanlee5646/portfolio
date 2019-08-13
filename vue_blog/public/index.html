@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Material+Icons">
   </head>
-  <body>
+  <body class="scrollbar">
     <noscript>
       <strong>We're sorry but ssafy doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>
@@ -26,5 +26,19 @@
   body {
     position: static !important;
     top: 0px !important;
+  }
+
+  .scrollbar {
+    &::-webkit-scrollbar {
+      width: 3px;
+      background: none;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: #f8f7fb;
+      opacity: .4;
+    }
+    &::-webkit-scrollbar-track {
+      background: none;
+    }
   }
   </style>

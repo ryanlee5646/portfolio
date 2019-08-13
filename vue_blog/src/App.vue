@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <transition name="fade" tag="div">
-      <div class="wrapper" v-if="isLoaded" key="app">
+      <div class="wrapper" v-if="isLoaded">
         <mHeader></mHeader>
         <!-- <ImgBanner imgSrc="https://source.unsplash.com/random">
           <div style="line-height:1.2em;font-size:1.2em;" slot="text">Portfolio</div>
@@ -11,8 +11,8 @@
         <Chatbot></Chatbot>
         <mFooter></mFooter>
       </div>
-      <div class="loader wrapper" style="overflow:hidden;" v-else key="loader">
-        <div class="spinner-loader"></div>
+      <div class="loader wrapper scrollbar" v-else>
+        <div class="spinner-loader scrollbar"></div>
       </div>
     </transition>
     <!-- <writePage></writePage> -->
@@ -31,14 +31,12 @@
 import $ from 'jquery';
 import axios from 'axios';
 import store from './store';
-import ImgBanner from './components/ImgBanner.vue';
 import HomeBanner from './components/homeBanner.vue';
 import mSnackbar from './components/MSnackbar.vue';
 import mHeader from './components/MHeader.vue';
 import FirebaseService from '@/services/FirebaseService';
 import Chatbot from './components/Chatbot.vue';
 import mFooter from './components/Mfooter.vue';
-import writePage from './components/WritePage.vue';
 import MessageModal from './components/MessageModal.vue';
 import PushSnackbar from './components/PushSnackbar.vue';
 
@@ -59,18 +57,13 @@ export default {
         console.log('response ', response);
       });
     window.vueStore = this.$store;
-    document.body.classList.add('loading');
-    FirebaseService.getPortfolios().then((data) => {
-      this.$store.commit('updatePortfolios', data);
+    Promise.all([
+      FirebaseService.getPortfolios(),
+      FirebaseService.getPosts(),
+    ]).then(([portfolios, posts]) => {
+      this.$store.commit('updatePortfolios', portfolios);
+      this.$store.commit('updatePosts', posts);
       this.isLoaded = true;
-      this.$nextTick(() => document.body.classList.remove('loading'));
-    });
-
-    FirebaseService.getPosts().then((data) => {
-      this.$store.commit('updatePosts', data);
-      //this.$store.commit('logout');
-      this.isLoaded = true;
-      this.$nextTick(() => document.body.classList.remove('loading'));
     });
 
     // 조회수
@@ -89,7 +82,6 @@ export default {
     this.check() // 알림허용할지 확인
   },
   components: {
-    ImgBanner,
     HomeBanner,
     mSnackbar,
     mHeader,
@@ -97,7 +89,6 @@ export default {
     mFooter,
     MessageModal,
     PushSnackbar,
-    // writePage,
   },
 };
 </script>
@@ -117,6 +108,7 @@ export default {
     left: 0;
     top: 0;
     width: 100%;
+    overflow: hidden;
   }
   @keyframes spinner-loader {
     0%   {
@@ -145,4 +137,5 @@ export default {
     overflow: hidden;
     text-indent: 100%;
   }
+
 </style>

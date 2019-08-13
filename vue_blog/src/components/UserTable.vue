@@ -33,7 +33,7 @@
           </td>
       </template>
         </v-data-table>
-        
+
   </v-container>
 </template>
 
@@ -64,7 +64,7 @@ import { maxHeaderSize } from 'http';
     }
   },
   mounted(){
-    this.getUserData();   
+    this.getUserData();
   },
   methods:{
     async getUserData(){

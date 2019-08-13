@@ -1,9 +1,15 @@
+/**
+  * Service Worker
+*/
+
+const _version = 'v1';
 const CACHE_NAME = 'abdie-cache-v1';
 const urlsToCache = [
   '/',
 ];
 
 self.addEventListener('install', (event) => {
+  console.log('Install step for service worker');
   event.waitUntill(
     caches.open(CACHE_NAME)
       .then((cache) => {
@@ -13,8 +19,12 @@ self.addEventListener('install', (event) => {
   );
 });
 
+self.addEventListener('activate', (event) => {
+  console.log('Active step for service worker');
+});
+
 self.addEventListener('fetch', (event) => {
-  console.log('fetch active'); // eslint-disable-line
+  console.log('fetch ', event.request.url); // eslint-disable-line
   event.respondWith(
     caches.match(event.request)
       .then((response) => {

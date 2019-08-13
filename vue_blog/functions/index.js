@@ -3,7 +3,6 @@ const functions = require('firebase-functions');
 const serviceAccount = require('./serviceAccountKey.json');
 
 
-
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
     databaseURL: "https://vue-blog-f1b07.firebaseio.com"
@@ -134,7 +133,6 @@ exports.postReplyPush = functions
                         console.log('Error sending message:', error)
                     })
                 }
-
             }
         })
     })
