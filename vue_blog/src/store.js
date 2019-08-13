@@ -4,24 +4,31 @@ import Vuex from 'vuex';
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-    state: {
-        accessToken: '',
-        user: '',
-        loginDialogShow: false,
-        ImageLink: '',
-        ImageURL: '',
-        portfolios: [],
-        portfolioReplys: [],
-        posts: [],
-        postReplys: [],
-        nowUser: '',
-        error: {
-            type: '',
-            state: false,
-            code: '',
-            message: '',
-        },
+  state: {
+    accessToken: '',
+    user: '',
+    loginDialogShow: false,
+    ImageLink: '',
+    ImageURL: '',
+    portfolios: [],
+    portfolioReplys: [],
+    posts: [],
+    postReplys: [],
+    nowUser: '',
+    error: {
+      type: '',
+      state: false,
+      code: '',
+      message: '',
     },
+    push: {
+      state: false,
+      title: '',
+      message: '',
+      link: '',
+      email: '',
+    },
+  },
     mutations: {
         displayDrawer(state, flag) {
             state.drawerVisibility = flag;
@@ -56,8 +63,8 @@ export default new Vuex.Store({
         updatePosts(state, data) {
             state.posts = data;
         },
-        updatePostReplys(state, data){
-          state.postReplys = data;
+        updatePostReplys(state, data) {
+            state.postReplys = data;
         },
         setError(state, data) {
             state.error.state = true;
@@ -71,6 +78,23 @@ export default new Vuex.Store({
             state.error.code = '';
             state.error.message = '';
         },
+
+        setPush(state, data) {
+            state.push.state = true;
+            state.push.title = data.title;
+            state.push.message = data.message;
+            state.push.link = data.link;
+            state.push.email = data.email;
+        },
+
+        setPushState(state) {
+            state.push.state = false;
+            state.push.title = '';
+            state.push.message = '';
+            state.push.link = '';
+            state.push.email = '';
+            
+        }
     },
     getters: {
         getUserInfo: (state) => {
@@ -78,6 +102,9 @@ export default new Vuex.Store({
         },
         getError: (state) => {
             return state.error;
+        },
+        getPush: (state) => {
+            return state.push;
         },
     },
 });
