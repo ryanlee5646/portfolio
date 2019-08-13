@@ -40,13 +40,12 @@ export default {
     bottom: true,
     transition: "slide-y-transition"
   }),
-
   methods: {
     reload: function() {
       setTimeout(function() {
         window.location.reload(0.3);
       }, 600);
-    },
+    }
   }
 };
 </script>

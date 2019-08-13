@@ -41,7 +41,7 @@ export default {
   data() {
     return {
       currentFilter: '이규진',
-      updatedFlag: true,
+      updatedFlag: true
     };
   },
   props: ['category', 'aboutus'],
@@ -49,7 +49,7 @@ export default {
     Title,
     Photo,
     SkillChart,
-    PersonalInfo,
+    PersonalInfo
   },
   methods: {
     isFiltered(name) {
@@ -61,8 +61,8 @@ export default {
       setTimeout(() => {
         this.updatedFlag = true;
       }, 500);
-    },
-  },
+    }
+  }
 };
 </script>
 

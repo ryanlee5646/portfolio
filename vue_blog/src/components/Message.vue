@@ -16,7 +16,7 @@
           <div class="message">
             <ul>
               <li class="template-head">{{cover.data.description}}</li>
-              <li v-for="(obj, idx) in text" :key="idx" class="template-list">
+              <li v-for="(obj, idx) in text" :key="idx" @click="templateDialog" class="template-list">
                 {{obj[0].data.title}}
               </li>
             </ul>
@@ -39,12 +39,28 @@
 
 <script>
 export default {
-  props: ['speaker', 'text', 'type', 'cover'],
+  props: ['speaker', 'text', 'type', 'cover', 'dialogScrollDown'],
   computed: {
     isUser() {
       return this.speaker === 'user';
-    },
+    }
   },
+  methods: {
+    templateDialog(event) {
+      let params = {
+        message: event.target.innerHTML,
+        action: 'send',
+        userid: 'dbsrhksdnd@gmail.com'
+      };
+      this.$parent.$data.dialogs.push({
+        speaker: 'user',
+        type: 'text',
+        text: event.target.innerHTML
+      });
+      this.$parent.sendMessage(params);
+      this.$parent.dialogScrollDown();
+    }
+  }
 };
 </script>
 

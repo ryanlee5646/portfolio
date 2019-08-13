@@ -57,7 +57,7 @@ export default {
   data() {
     return {
       loaded: true,
-      currentFilter: 'all',
+      currentFilter: 'all'
     };
   },
   props: {
@@ -65,47 +65,13 @@ export default {
     loadMore: { type: Boolean, default: true },
     column: { type: Number, default: 1 },
     portfolios: { type: Array },
-    category: { type: Object },
+    category: { type: Object }
   },
   components: {
-    Title,
+    Title
   },
   mounted() {
     console.log(this.filteredPosts.length);
-    // $(() => {
-    //   const Page = ((() => {
-    //     const $navArrows = $('#nav-arrows').hide();
-    //     const $shadow = $('#shadow').hide();
-    //     const slicebox = $('#sb-slider').slicebox({
-    //       onReady() {
-    //         $navArrows.show();
-    //         $shadow.show();
-    //       },
-    //       orientation: 'r',
-    //       cuboidsRandom: true,
-    //       disperseFactor: 30,
-    //     });
-    //     const initEvents = () => {
-    //       // add navigation events
-    //       $navArrows.children(':first').on('click', () => {
-    //         slicebox.next();
-    //         return false;
-    //       });
-    //       $navArrows.children(':last').on('click', () => {
-    //         slicebox.previous();
-    //         return false;
-    //       });
-    //     };
-    //     const init = () => {
-    //       initEvents();
-    //     };
-    //     return { init };
-    //   })());
-    //   Page.init();
-    // });
-    //
-    // console.log("app mounted");
-    // this.$store.watch(() => this.$store.state.portfolios, portfolios => { console.log(""); this.portfolios = portfolios; })
   },
   methods: {
     // 더보기 클릭했을 때 실행되는 함수
@@ -122,9 +88,9 @@ export default {
     filter(name) {
       this.currentFilter = name;
     },
-    routePath(uid){
+    routePath(uid) {
       console.log(uid + " routePath 넘어옴?");
-      this.$router.push({path: '/portfolio/view/' + uid })
+      this.$router.push({path: '/portfolio/view/' + uid });
     },
     getIndices(row) {
       let result = [];
@@ -155,8 +121,8 @@ export default {
     },
     getTotalPosts() {
       return (this.filteredPosts.length < this.limits ? this.filteredPosts.length : this.limits);
-    },
-  },
+    }
+  }
 };
 </script>
 <style scoped lang="scss">

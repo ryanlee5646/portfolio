@@ -164,8 +164,8 @@ import Vuex from 'vuex'
 export default{
     name: 'ManagePage',
     store,
-    data(){
-        return{
+    data() {
+        return {
             category: {
               name : "Dashboard",
               description : "This is Admin Page. Thank you :)"
@@ -217,13 +217,13 @@ export default{
           if(event.owner.dataset.id == 1 && event.owner.childElementCount == 1){
              this.dialog = true;
           }
-        },
-      }
         }
+      }
+    };
     },
     components: {
       Title,
-      UserTable,
+      UserTable
     },
     methods:{
         async getAllUserInfo(users, groups){
@@ -286,7 +286,6 @@ export default{
             this.$refs.number2.play();
         },
         onGroupsChange(e) {
-
           console.log({ e });
         }
     },
@@ -303,18 +302,18 @@ export default{
         }else{
           store.commit('setError', { type: 'error', code: '접근권한 오류', message: '접근권한이 없습니다. 관리자에게 문의하세요.' });
           next({
-            path: '/#toolbar',
+            path: '/#toolbar'
           })
         }
       }
       else{
         store.commit('setError', { type: 'error', code: '로그인 오류', message: '로그인이 필요한 페이지입니다. 로그인 후 접속해 주세요.' });
         next({
-          path: '/#toolbar',
+          path: '/#toolbar'
         })
       }
     }
-}
+};
 </script>
 
 <style>

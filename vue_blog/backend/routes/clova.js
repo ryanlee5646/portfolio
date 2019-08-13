@@ -21,11 +21,11 @@ router.post('/', (req, res) => {
       {
         type: 'text',
         data: {
-          description: message,
-        },
-      },
+          description: message
+        }
+      }
     ],
-    event: action,
+    event: action
   };
 
   let hmac = crypto.createHmac('sha256', 'cUJFVllPTWhvZFFLYXpYalVMdExSS01wcUxvSGpUemU=');
@@ -34,8 +34,8 @@ router.post('/', (req, res) => {
 
   const config = {
     headers: {
-      'X-NCP-CHATBOT_SIGNATURE': result,
-    },
+      'X-NCP-CHATBOT_SIGNATURE': result
+    }
   };
   curl.postJSON('https://muqjbqxwjk.apigw.ntruss.com/chatbot/beta/message',
     params, config, (err, response, data) => {

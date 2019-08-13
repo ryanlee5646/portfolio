@@ -100,7 +100,7 @@
                       <span class="subheading">No matches found</span>
                     </v-list-item>
                   </template>
-                  
+
                   <template v-slot:selection="{ attrs, item, parent, selected }">
                     <v-chip
                       v-if="item === Object(item)"
@@ -122,7 +122,7 @@
                       <v-list-item-avatar>
                         <v-img :src="item.img"></v-img>
                       </v-list-item-avatar>
-              
+
                       <v-list-item-content>
                         <v-list-item-title v-text="item.name" style="font-size:16px; font-weight:bold;"></v-list-item-title>
                         <v-list-item-subtitle v-text="item.ID" style="font-size:12px;"></v-list-item-subtitle>
@@ -150,7 +150,7 @@
                 </v-flex>
               </v-layout>
 
-              <markdown-editor v-model="portfolioTemp.content" ref="markdownEditor"></markdown-editor>
+              <vue-simplemde v-model="portfolioTemp.content" ref="markdownEditor"></vue-simplemde>
               <v-text-field solo name="input-7-4" label="썸네일 URL" v-model="portfolioTemp.thumbnail"></v-text-field>
               <ImageComponent></ImageComponent>
 
@@ -230,7 +230,7 @@
 <script>
 import marked from 'marked';
 import FirebaseService from '@/services/FirebaseService'
-import markdownEditor from 'vue-simplemde/src/markdown-editor';
+import VueSimplemde from 'vue-simplemde';
 import ImageComponent from '../components/ImageComponent.vue';
 import Title from '../components/Title.vue';
 import Repository from '../components/Repository.vue';
@@ -238,7 +238,7 @@ import Repository from '../components/Repository.vue';
 export default {
   data() {
     return {
-      category: { 
+      category: {
               name : "Portfolio",
               description : "This is Portfolio Page. Thank you :)"
       },
@@ -267,14 +267,14 @@ export default {
         title: "",
         content: "",
         teams: "",
-        thumbnail: "",
+        thumbnail: ""
       },
       clickDiv : "intro",
       gitlabToken : "2KybhN5CUPV7pWSqYEXb",
       activator: null,
       index: -1,
       items: [
-        { header: 'Select an User' },
+        { header: 'Select an User' }
       ],
       nonce: 1,
       menu: false,
@@ -282,28 +282,28 @@ export default {
       x: 0,
       search: null,
       y: 0,
-      focus: true,
+      focus: true
       // replyPhotoURL : "",
-    }
+    };
   },
   components: {
-    markdownEditor,
+    VueSimplemde,
     ImageComponent,
     Repository,
-    Title,
+    Title
   },
   props: {
     id: {
       type: String,
       default: '-1'
-    },
+    }
   },
   computed: {
     compiledMarkdown() {
       return marked(this.$store.state.portfolios[this.index].portfolio.content, {
         sanitize: true
       });
-    },
+    }
   },
   created() {
     console.log(this.id + "created??");
@@ -373,12 +373,12 @@ export default {
     filter (item, queryText, itemText) {
       if (item.header) return false
 
-      const hasValue = val => val != null ? val : ''
+      const hasValue = val => val != null ? val : '';
       const text = hasValue(itemText)
       const query = hasValue(queryText)
       return text.toString()
         .toLowerCase()
-        .indexOf(query.toString().toLowerCase()) > -1
+        .indexOf(query.toString().toLowerCase()) > -1;
     },
     async getMemberUser(){
       const result = await FirebaseService.getMemberUser();
@@ -393,7 +393,7 @@ export default {
         teamName += teams[i].name+" ";
       }
       return teamName;
-    },
+    }
     // async getUserInfoByEmail(byEmail){
     //   console.log(byEmail + " byEmail?????");
     //   const result = await FirebaseService.getUserInfoByEmail(byEmail);
@@ -407,11 +407,7 @@ export default {
     this.getPortfolioReply();
   }
 };
-
-
 </script>
-
-
 
 <style>
 /* @import '/style/css/portfolio.css'; */

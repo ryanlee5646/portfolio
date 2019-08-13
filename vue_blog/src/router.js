@@ -16,40 +16,40 @@ export default new Router({
     routes: [{
             path: '/',
             name: 'mainPage',
-            component: MainPage,
+            component: MainPage
         },
         {
             path: '/portfolio/write',
             name: 'portfoliowrite',
-            component: PortfolioWriter,
+            component: PortfolioWriter
         },
         {
             path: '/portfolio/view/:id',
             name: 'portfolioview',
             component: PortfolioView,
-            props: true,
+            props: true
         },
         {
             path: '/admin',
             name: 'AdminPage',
-            component: AdminPage,
+            component: AdminPage
         },
         {
             path: '/reply',
             name: 'Reply',
-            component: Reply,
+            component: Reply
         },
         {
             path: '/post/write',
             name: 'postwrite',
-            component: PostWriter,
+            component: PostWriter
         },
         {
             path: '/post/view/:id',
             name: 'postView',
             component: PostView,
-            props: true,
-        },
+            props: true
+        }
     ],
     scrollBehavior (to, from, savedPosition) {
       if (to.hash) {
@@ -57,5 +57,5 @@ export default new Router({
             selector: to.hash
           }
       }
-    },
+    }
 });

@@ -11,7 +11,7 @@
     </v-layout>
     <v-layout justify-center>
       <v-flex xs12 sm8 md6>
-        <markdown-editor v-model="post.content" ref="markdownEditor"></markdown-editor>
+        <vue-simplemde v-model="post.content" ref="markdownEditor"></vue-simplemde>
       </v-flex>
     </v-layout>
     <v-layout wrap justify-center>
@@ -27,7 +27,7 @@
 
 
 <script>
-  import markdownEditor from 'vue-simplemde/src/markdown-editor';
+  import VueSimplemde from 'vue-simplemde';
   import ImageComponent from '../components/ImageComponent.vue';
   import Title from '../components/Title.vue';
   import FirebaseService from '@/services/FirebaseService';
@@ -36,18 +36,18 @@
   export default {
     name : 'postwriter',
     store,
-    data(){
-      return{
-        post:{
+    data() {
+      return {
+        post: {
           userID : this.$store.state.user.email,
           nickName : this.$store.state.user.nickName,
           title : "",
-          content: "",
+          content: ""
         },
-        category: { 
+        category: {
               name : "Post Writer",
               description : "This is PostWriter Page. Thank you :)"
-        },
+        }
       }
     },
     methods:{
@@ -58,23 +58,23 @@
       }
     },
     components: {
-      markdownEditor,
+      VueSimplemde,
       ImageComponent,
-      Title,
+      Title
     },
     beforeRouteEnter (to, from, next) {
       const user = JSON.parse(localStorage.getItem('user') || '{}');
-      if(user.email != undefined){ 
+      if(user.email != undefined){
           next();
       }
       else{
         store.commit('setError', { type: 'error', code: '로그인 오류', message: '로그인이 필요한 페이지입니다. 로그인 후 접속해 주세요.' });
         next({
-          path: '/#toolbar',
-        })
+          path: '/#toolbar'
+        });
       }
-    },
-  }
+    }
+  };
 </script>
 
 <style>

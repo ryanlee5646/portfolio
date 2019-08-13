@@ -1,5 +1,3 @@
-const path = require('path');
-
 module.exports = {
   outputDir: 'backend/public',
   assetsDir: 'assets',
@@ -9,13 +7,13 @@ module.exports = {
         target: 'http://localhost:3000/api',
         secure: true,
         pathRewrite: {
-          '^/api': '',
-        },
-      },
-    },
+          '^/api': ''
+        }
+      }
+    }
   },
   configureWebpack: {
-    devtool: 'source-map',
+    devtool: 'source-map'
   },
   pwa: {
     name: 'ssafy',
@@ -24,12 +22,12 @@ module.exports = {
     appleMobileWebAppStatusBarStyle: 'black',
     workboxPluginMode: 'InjectManifest',
     workboxOptions: {
-      swSrc: 'src/service-worker.js',
-    },
+      swSrc: 'src/service-worker.js'
+    }
   },
   pluginOptions: {
     'style-resources-loader': {
-      preProcessor: 'scss',
-    },
-  },
+      preProcessor: 'scss'
+    }
+  }
 };

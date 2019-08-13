@@ -71,8 +71,8 @@ setOptions({
         }
       };
       xmlHttpRequest.send(file);
-    },
-  },
+    }
+  }
 });
 
 export default {
@@ -86,11 +86,11 @@ export default {
       console.log('FilePond has initialized'); // eslint-disable-line no-console
       // this.$store.state.ImageTitle = '';
       this.$store.state.ImageLink = '';
-    },
+    }
   },
   components: {
-    FilePond,
-  },
+    FilePond
+  }
 };
 </script>
 

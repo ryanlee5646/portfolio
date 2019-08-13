@@ -19,15 +19,15 @@ export default new Vuex.Store({
       type: '',
       state: false,
       code: '',
-      message: '',
+      message: ''
     },
     push: {
       state: false,
       title: '',
       message: '',
       link: '',
-      email: '',
-    },
+      email: ''
+    }
   },
     mutations: {
         displayDrawer(state, flag) {
@@ -86,14 +86,12 @@ export default new Vuex.Store({
             state.push.link = data.link;
             state.push.email = data.email;
         },
-
         setPushState(state) {
             state.push.state = false;
             state.push.title = '';
             state.push.message = '';
             state.push.link = '';
             state.push.email = '';
-            
         }
     },
     getters: {
@@ -105,6 +103,6 @@ export default new Vuex.Store({
         },
         getPush: (state) => {
             return state.push;
-        },
-    },
+        }
+    }
 });

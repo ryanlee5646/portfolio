@@ -15,12 +15,11 @@
 import { mapGetters } from 'vuex';
 
 export default {
-    name : 'PushSnackbar',
-    computed: {
+  name: 'PushSnackbar',
+  computed: {
     ...mapGetters([
-      'getPush',
-    ]),
-
+      'getPush'
+    ])
   }
-}
+};
 </script>

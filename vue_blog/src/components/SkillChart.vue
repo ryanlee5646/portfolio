@@ -60,7 +60,7 @@ export default {
   name: 'SkillChart',
   data() {
     return {
-      currentFilter: 'development',
+      currentFilter: 'development'
     };
   },
   props: ['skills'],
@@ -70,9 +70,9 @@ export default {
         chart: true,
         'chart--dev': this.currentFilter === 'development',
         'chart--design': this.currentFilter === 'design',
-        'chart--prod': this.currentFilter === 'productivity',
+        'chart--prod': this.currentFilter === 'productivity'
       };
-    },
+    }
   },
   methods: {
     convertPercentage(percentage) {
@@ -83,8 +83,8 @@ export default {
     },
     filtering(filter) {
       this.currentFilter = filter;
-    },
-  },
+    }
+  }
 };
 </script>
 

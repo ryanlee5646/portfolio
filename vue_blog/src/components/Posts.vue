@@ -73,8 +73,7 @@ export default {
       pageSize: 5,
       posts: [],
       selectPost: 'title',
-      inputSearch: '',
-
+      inputSearch: ''
     };
   },
   props: {
@@ -89,12 +88,10 @@ export default {
     column: {
       type: Number,
       default: 1
-    },
-    // posts: { type: Array },
-    // category: { type: Object },
+    }
   },
   components: {
-    Title,
+    Title
   },
   mounted() {
     console.log("Post.vue  mounted");
@@ -116,32 +113,16 @@ export default {
         this.loaded = true;
       }, 1000);
     },
-    // isFiltered(name) {
-    //   return this.currentFilter === name;
-    // },
-    // filter(name) {
-    //   this.currentFilter = name;
-    // },
     routePath(uid) {
       console.log(uid + " routePath 넘어옴?");
       this.$router.push({
         path: '/post/view/' + uid
       });
     },
-
     sortBy(s) {
-      // console.log("sortBy" + "IN!@!");
       this.sortDir = (this.sortDir === 'asc') ? 'desc' : 'asc';
-      // if (s === this.sort) {
-      //   this.sortDir = (this.sortDir === 'asc') ? 'desc' : 'asc';
-      // } else {
-      //   this.sortDir = 'asc';
-      // }
       this.sort = s;
     },
-    // isActiveSort(s) {
-    //   return this.sort === s;
-    // },
     hasPage(dir) {
       if (dir === -1 && (this.page > 0)) return true;
       if (dir === 1 && (((this.page + 1) * this.pageSize) < this.posts.length)) return true;
@@ -162,10 +143,8 @@ export default {
 
       // this,post.uid = doc.id;''
       this.posts = result;
-      
-    },
+    }
   },
-
   computed: {
     sortedPosts() {
       return this.posts.sort((a, b) => {
@@ -199,7 +178,7 @@ export default {
       v = v.toString()
       return v.charAt(0).toUpperCase() + v.slice(1)
     }
-  },
+  }
 };
 
 </script>

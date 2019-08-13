@@ -15,16 +15,14 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
-
-  export default{
-    name : 'MessageModal',
-    computed: {
-    ...mapGetters([
-      'getError',
-    ])
+export default {
+  name: 'MessageModal',
+  computed: {
+    getError() {
+      return this.$store.state.error;
+    }
   }
-  }
+};
 </script>
 <style>
 .success-color{

@@ -5,7 +5,7 @@
 const _version = 'v1';
 const CACHE_NAME = 'abdie-cache-v1';
 const urlsToCache = [
-  '/',
+  '/'
 ];
 
 self.addEventListener('install', (event) => {

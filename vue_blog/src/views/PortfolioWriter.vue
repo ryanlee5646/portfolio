@@ -34,7 +34,7 @@
           <span class="subheading">No matches found</span>
         </v-list-item>
       </template>
-      
+
       <template v-slot:selection="{ attrs, item, parent, selected }">
         <v-chip
           v-if="item === Object(item)"
@@ -56,14 +56,14 @@
           <v-list-item-avatar>
             <v-img :src="item.img"></v-img>
           </v-list-item-avatar>
-  
+
           <v-list-item-content>
             <v-list-item-title v-text="item.name" style="font-size:16px; font-weight:bold;"></v-list-item-title>
             <v-list-item-subtitle v-text="item.ID" style="font-size:12px;"></v-list-item-subtitle>
           </v-list-item-content>
       </template>
     </v-combobox>
-      
+
     </v-flex>
   </v-layout>
 
@@ -91,7 +91,7 @@
   </v-layout>
   <v-layout justify-center>
     <v-flex xs12 sm8 md6>
-      <markdown-editor v-model="portfolio.content" ref="markdownEditor"></markdown-editor>
+      <vue-simplemde v-model="portfolio.content" ref="markdownEditor"></vue-simplemde>
     </v-flex>
   </v-layout>
   <v-layout justify-center>
@@ -127,26 +127,25 @@
 
 
 <script>
-import markdownEditor from 'vue-simplemde/src/markdown-editor';
+import VueSimplemde from 'vue-simplemde';
 import ImageComponent from '../components/ImageComponent.vue';
 import Title from '../components/Title.vue';
 import FirebaseService from '@/services/FirebaseService';
 import store from '../store';
 
 export default {
-  
   name: 'portfoliowrite',
   store,
   data() {
     return {
-      category: { 
+      category: {
               name : "Portfolio Writer",
               description : "This is PortfolioWriter Page. Thank you :)"
       },
-      portfolios : [],
+      portfolios: [],
       portfolio: {
         userID: this.$store.state.user.email, //this.$store.state.user
-        nickName : this.$store.state.user.nickName,
+        nickName: this.$store.state.user.nickName,
         projectID: "",
         startdate: "",
         enddate: "",
@@ -155,12 +154,12 @@ export default {
         title: "",
         content: "",
         teams: [],
-        thumbnail: "",
+        thumbnail: ""
       },
     activator: null,
     index: -1,
     items: [
-      { header: 'Select an User' },
+      { header: 'Select an User' }
     ],
     nonce: 1,
     menu: false,
@@ -168,14 +167,15 @@ export default {
     x: 0,
     search: null,
     y: 0,
-    focus: true,
-    } 
+    focus: true
+  };
   },
   components: {
     ImageComponent,
     Title,
+    VueSimplemde
   },
-  mounted(){
+  mounted() {
     this.getMemberUser();
   },
   methods: {
@@ -186,47 +186,43 @@ export default {
       });
     },
     async PortfolioWriter() {
-      
       // defualt imageURL .... No image
       console.log("ddd");
       console.log(this.portfolio.thumbnail);
       if(this.portfolio.thumbnail == ""){
         this.portfolio.thumbnail = 'https://www.sylff.org/wp-content/uploads/2016/04/noImage.jpg';
       }
-
       this.model.forEach((user)=>{
         this.portfolio.teams.push(user);
-      })
-
+      });
       const result = await FirebaseService.PortfolioWriter(this.portfolio);
       this.portfolios = await FirebaseService.getPortfolios();
-      this.$store.commit('updatePortfolios', this.portfolios );
+      this.$store.commit('updatePortfolios', this.portfolios);
       this.$router.push('/');
     },
     filter (item, queryText, itemText) {
-      if (item.header) return false
-
-      const hasValue = val => val != null ? val : ''
-      const text = hasValue(itemText)
-      const query = hasValue(queryText)
+      if (item.header) return false;
+      const hasValue = val => val != null ? val : '';
+      const text = hasValue(itemText);
+      const query = hasValue(queryText);
       return text.toString()
         .toLowerCase()
-        .indexOf(query.toString().toLowerCase()) > -1
-    },
+        .indexOf(query.toString().toLowerCase()) > -1;
+    }
   },
   beforeRouteEnter (to, from, next) {
       const user = JSON.parse(localStorage.getItem('user') || '{}');
-      if(user.email != undefined){ 
+      if(user.email != undefined){
           next();
       }
       else{
         store.commit('setError', { type: 'error', code: '로그인 오류', message: '로그인이 필요한 페이지입니다. 로그인 후 접속해 주세요.' });
         next({
-          path: '/#toolbar',
-        })
+          path: '/#toolbar'
+        });
       }
-    },
-}
+    }
+};
 </script>
 
 <style>
