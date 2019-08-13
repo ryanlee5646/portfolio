@@ -13,16 +13,16 @@ var db = admin.firestore();
 exports.portfolioPush = functions
   .region('asia-east2')
   .firestore.document('portfolios/{any}').onCreate((event, uid) => {   
-    console.log(event.data().portfolio.userID);
+    console.log("[portfolio nickname]", event.data().portfolio.nickName);
 
     const payload = {
         notification: {
             title: '푸쉬 알림',
-            body: '포트폴리오를 생성!',
+            body: '포트폴리오 작성',
         },
         data : {
             link: '/portfolio/view/'+ uid.params.any,
-            email: event.data().portfolio.userID
+            nickName: event.data().portfolio.nickName
         }
     }
     db.collection('users').get().then((snapshot) => {
@@ -43,16 +43,16 @@ exports.portfolioPush = functions
 exports.postPush = functions
   .region('asia-east2')
   .firestore.document('posts/{any}').onCreate((event, uid) => {
-    console.log(event.data());
+    console.log("[post nickname]",event.data().post.nickName);
 
     const payload = {
         notification: {
             title: '푸쉬 알림',
-            body: '포스트를 생성!',
+            body: '포스트 작성',
         },
         data : {
             link: '/post/view/'+ uid.params.any,
-            email: event.data().post.userID
+            nickName: event.data().post.nickName
         }
     }
     console.log('글변경')
@@ -74,15 +74,15 @@ exports.postPush = functions
 exports.portfolioReplyPush = functions
   .region('asia-east2')
   .firestore.document('portfolios/{any}/portfolio_replys/{anys}').onCreate((event, uid) => {
-    console.log(event.data())
+    console.log("[portfolioreply nickname]", event.data().portfolioReply.nickName);
     const payload = {
         notification: {
             title: '푸쉬 알림',
-            body: '포트폴리오에 댓글을 생성!',
+            body: '포트폴리오에 댓글 작성',
         },
         data : {
             link: '/portfolio/view/'+ uid.params.any,
-            email: event.data().portfolioReply.email
+            nickName: event.data().portfolioReply.nickName
         }
     }
     console.log('글변경')
@@ -107,16 +107,16 @@ exports.portfolioReplyPush = functions
 exports.postReplyPush = functions
   .region('asia-east2')
   .firestore.document('posts/{any}/post_replys/{anys}').onCreate((event, uid) => {
-    console.log('[info]', event.data().postReply.email);
+    console.log('[postreplynick]', event.data().postReply.nickName);
     console.log('[info]', 'posts/'+uid.params.any)
     const payload = {
         notification: {
             title: '푸쉬 알림',
-            body: '포스트에 댓글을 생성!',
+            body: '포스트에 댓글 작성',
         },
         data : {
             link: '/post/view/' + uid.params.any,
-            email: event.data().postReply.email
+            nickName: event.data().postReply.nickName
         }
     } 
     console.log('글변경');

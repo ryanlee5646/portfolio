@@ -1,11 +1,11 @@
 <template>
       <v-snackbar v-model="getPush.state">
           <v-icon dark right>check_circle</v-icon>
-              &nbsp; {{getPush.email}} {{getPush.message}}
+              &nbsp; {{getPush.nickName}}  {{getPush.message}}
           <v-btn color="pink" text :to="$store.state.push.link">
               Go
           </v-btn>
-          <v-btn color="pink" text @click="$store.commit('setPushState')">
+          <v-cbtn color="pink" text @click="$store.commit('setPushState')">
               Close
           </v-btn>
       </v-snackbar>

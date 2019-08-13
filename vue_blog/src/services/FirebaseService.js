@@ -30,17 +30,12 @@ messaging.usePublicVapidKey('BE71GiStXCZkedHmFGZLNsz7vP1bETIPB9Oiz8cd7s0aDepoiht
 
 // 화면을 보고 있을 때 푸쉬알림
 messaging.onMessage((payload) => {
-  console.log('[info11]', payload);
-  console.log('[info22]', payload.notification.title);
-  console.log('[info33]', payload.notification.body);
-  console.log('[info44]', payload.data.link);
-  console.log('[info55]', payload.data.email);
-
+  
   store.commit('setPush', {
     title: `${payload.notification.title}`,
     message: `${payload.notification.body}`,
-    email: `${payload.data.email}님이 `,
-    link: `${payload.data.link}`,
+    nickName: `${payload.data.nickName}님이 `,
+    link: `${payload.data.link}`
   });
 });
 
@@ -219,9 +214,24 @@ export default {
                 });
             });
     },
+    addSkillsInfo(skills) {
+        const user = firebase.auth().currentUser;
+        if (user === null) {
+            user == JSON.parse(localStorage.getItem('user') || '{}');
+        }
+        firestore.collection(USERS).doc(user.email).update({
+            skills
+        }).catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.log(`[error] fail addSkillsInfo : [CODE ${errorCode}] Error : ${errorMessage}`);
+        });    
+
+    },
+
     addGitlabInfo(gitlab) {
         console.log('[info] start addGitlabInfo func()');
-        let user = firebase.auth().currentUser;
+        const user = firebase.auth().currentUser;
         if (user === null) {
             user = JSON.parse(localStorage.getItem('user') || '{}');
         }
@@ -235,6 +245,8 @@ export default {
             console.log(`[error] fail addGitlabInfo : [CODE ${errorCode}] Error : ${errorMessage}`);
         });
     },
+
+
     isRegistered(email) {
         console.log('[info] start isRegistered func()');
         return firestore.collection(USERS).get()
