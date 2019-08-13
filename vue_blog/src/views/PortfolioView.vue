@@ -394,7 +394,7 @@ export default {
 }
 .btns{
   align-items: right;
-  margin-left: 75%;
+  margin-left: 70%;
 
 }
 #portfolioView{

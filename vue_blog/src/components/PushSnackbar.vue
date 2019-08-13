@@ -5,7 +5,7 @@
           <v-btn color="pink" text :to="$store.state.push.link">
               Go
           </v-btn>
-          <v-cbtn color="pink" text @click="$store.commit('setPushState')">
+          <v-btn color="pink" text @click="$store.commit('setPushState')">
               Close
           </v-btn>
       </v-snackbar>
