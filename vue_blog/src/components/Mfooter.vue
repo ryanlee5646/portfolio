@@ -36,7 +36,7 @@ export default {
   name: 'mfooter',
   data() {
     return {
-      html: '',
+      html: ''
     };
   },
   mounted() {
@@ -107,10 +107,10 @@ export default {
         }
       };
       return {
-        type: type,
+        type: type
       };
-    },
-  },
+    }
+  }
 };
 </script>
 

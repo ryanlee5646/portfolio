@@ -1,4 +1,4 @@
-importScripts("/precache-manifest.707e5c3ec344bc7790296897b1928764.js", "https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
+importScripts("/precache-manifest.137f3b953f688b8626908f1158d44f18.js", "https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 /**
   * Service Worker
@@ -7,7 +7,7 @@ importScripts("/precache-manifest.707e5c3ec344bc7790296897b1928764.js", "https:/
 const _version = 'v1';
 const CACHE_NAME = 'abdie-cache-v1';
 const urlsToCache = [
-  '/',
+  '/'
 ];
 
 self.addEventListener('install', (event) => {

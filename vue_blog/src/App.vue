@@ -21,7 +21,7 @@
     <mSnackbar :snackbar="snackbar"></mSnackbar>
     <!-- 푸시알림 스낵바 -->
     <PushSnackbar></PushSnackbar>
-    
+
 
 
   </v-app>
@@ -48,7 +48,7 @@ export default {
   data() {
     return {
       isLoaded: false,
-      snackbar: false,
+      snackbar: false
     };
   },
   created() {
@@ -59,7 +59,7 @@ export default {
     window.vueStore = this.$store;
     Promise.all([
       FirebaseService.getPortfolios(),
-      FirebaseService.getPosts(),
+      FirebaseService.getPosts()
     ]).then(([portfolios, posts]) => {
       this.$store.commit('updatePortfolios', portfolios);
       this.$store.commit('updatePosts', posts);
@@ -69,9 +69,9 @@ export default {
     // 조회수
     FirebaseService.addViews();
   },
-  methods:{
+  methods: {
     async check(){ // 알림허용
-      await FirebaseService.notificationCheck()
+      await FirebaseService.notificationCheck();
     }
   },
   mounted() {
@@ -79,7 +79,7 @@ export default {
     if (!isChrome) {
       this.snackbar = true;
     }
-    this.check() // 알림허용할지 확인
+    this.check(); // 알림허용할지 확인
   },
   components: {
     HomeBanner,
@@ -88,8 +88,8 @@ export default {
     Chatbot,
     mFooter,
     MessageModal,
-    PushSnackbar,
-  },
+    PushSnackbar
+  }
 };
 </script>
 

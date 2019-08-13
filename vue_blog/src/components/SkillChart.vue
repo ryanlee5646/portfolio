@@ -67,9 +67,9 @@ export default {
         chart: true,
         'chart--dev': this.currentFilter === 'development',
         'chart--design': this.currentFilter === 'design',
-        'chart--prod': this.currentFilter === 'productivity',
+        'chart--prod': this.currentFilter === 'productivity'
       };
-    },
+    }
   },
   methods: {
     convertPercentage(percentage) {
@@ -81,7 +81,6 @@ export default {
     filtering(filter) {
       this.currentFilter = filter;
     },
-
     checkEmail(){
       firebase.firestore().collection("users").doc(this.email).get().then((doc) => {
           if (doc.exists) {
@@ -97,7 +96,7 @@ export default {
     }
   },
   mounted() {
-    this.checkEmail()
+    this.checkEmail();
   }
 };
 </script>

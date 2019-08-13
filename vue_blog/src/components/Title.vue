@@ -14,8 +14,8 @@ export default {
   name: 'Title',
   props: [
     'title',
-    'description',
-  ],
+    'description'
+  ]
 };
 </script>
 

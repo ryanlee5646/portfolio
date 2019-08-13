@@ -138,7 +138,7 @@
                 </v-flex>
               </v-layout>
 
-              <markdown-editor  v-model="portfolioTemp.content" ref="markdownEditor"></markdown-editor>
+              <vue-simplemde v-model="portfolioTemp.content" ref="markdownEditor"></vue-simplemde>
               <v-text-field solo name="input-7-4" label="썸네일 URL" v-model="portfolioTemp.thumbnail"></v-text-field>
               <ImageComponent></ImageComponent>
 
@@ -213,7 +213,7 @@
 <script>
 import marked from 'marked';
 import FirebaseService from '@/services/FirebaseService'
-import markdownEditor from 'vue-simplemde/src/markdown-editor';
+import VueSimplemde from 'vue-simplemde';
 import ImageComponent from '../components/ImageComponent.vue';
 import Title from '../components/Title.vue';
 import Repository from '../components/Repository.vue';
@@ -251,7 +251,7 @@ export default {
         content: "",
         teams: "",
         thumbnail: "",
-        projectID : "",
+        projectID : ""
       },
       portfolioEmail: "",
       portfolioNickName : "",
@@ -260,7 +260,7 @@ export default {
       activator: null,
       index: -1,
       items: [
-        { header: 'Select an User' },
+        { header: 'Select an User' }
       ],
       nonce: 1,
       menu: false,
@@ -268,28 +268,27 @@ export default {
       x: 0,
       search: null,
       y: 0,
-      focus: true,
-
-    }
+      focus: true
+    };
   },
   components: {
-    markdownEditor,
+    VueSimplemde,
     ImageComponent,
     Repository,
-    Title,
+    Title
   },
   props: {
     id: {
       type: String,
       default: '-1'
-    },
+    }
   },
   computed: {
     compiledMarkdown() {
       return marked(this.$store.state.portfolios[this.index].portfolio.content, {
         sanitize: true
       });
-    },
+    }
   },
   created() {
     FirebaseService.addPortfoliosViews(this.id);
@@ -352,12 +351,12 @@ export default {
     filter (item, queryText, itemText) {
       if (item.header) return false
 
-      const hasValue = val => val != null ? val : ''
+      const hasValue = val => val != null ? val : '';
       const text = hasValue(itemText)
       const query = hasValue(queryText)
       return text.toString()
         .toLowerCase()
-        .indexOf(query.toString().toLowerCase()) > -1
+        .indexOf(query.toString().toLowerCase()) > -1;
     },
     async getMemberUser(){
       const result = await FirebaseService.getMemberUser();
@@ -372,15 +371,13 @@ export default {
         teamName += teams[i].name+" ";
       }
       return teamName;
-    },
+    }
   },
   mounted() {
     this.getMemberUser();
     this.getPortfolioReply();
   }
 };
-
-
 </script>
 
 <style>

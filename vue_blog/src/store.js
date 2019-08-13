@@ -19,7 +19,7 @@ export default new Vuex.Store({
       type: '',
       state: false,
       code: '',
-      message: '',
+      message: ''
     },
     push: {
       state: false,
@@ -87,14 +87,12 @@ export default new Vuex.Store({
             state.push.nickName = data.nickName;
             console.log("[setpush 222]", state.push.nickName);
         },
-
         setPushState(state) {
             state.push.state = false;
             state.push.title = '';
             state.push.message = '';
             state.push.link = '';
             state.push.nickName = '';
-            
         }
     },
     getters: {
@@ -107,6 +105,6 @@ export default new Vuex.Store({
         getPush: (state) => {
             console.log("[getpush 111]", state.push.nickName);
             return state.push;
-        },
-    },
+        }
+    }
 });

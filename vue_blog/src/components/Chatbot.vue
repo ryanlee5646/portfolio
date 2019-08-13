@@ -21,6 +21,7 @@
                 v-model="input"
                 label="궁금하신 사항을 물어보세요"
                 append-icon="send"
+                @click:append="submitEvent()"
                 ></v-text-field>
             </form>
           </div>
@@ -90,19 +91,19 @@ export default {
         {
           speaker: 'bot',
           type: 'text',
-          text: '안녕하세요. 무엇을 도와드릴까요? 사이트에 대해서 물어보시거나 개발자들에 대해 물어보세요!',
-        },
-      ],
+          text: '안녕하세요. 무엇을 도와드릴까요? 사이트에 대해서 물어보시거나 개발자들에 대해 물어보세요!'
+        }
+      ]
     };
   },
   components: {
-    Message,
+    Message
   },
   methods: {
     showDialog(flag) {
       this.dialogShow = flag;
     },
-    routePage(target, event) {
+    routePage(target) {
       this.$router.push({ path: target });
     },
     dialogScrollDown() {
@@ -119,13 +120,13 @@ export default {
                 speaker: 'bot',
                 type: 'template',
                 text: element.data.contentTable,
-                cover: element.data.cover,
+                cover: element.data.cover
               });
             } else {
               this.dialogs.push({
                 speaker: 'bot',
                 type: 'text',
-                text: element.data.description,
+                text: element.data.description
               });
             }
           });
@@ -136,7 +137,7 @@ export default {
         .then(() => {
           this.dialogScrollDown();
         });
-    },
+    }
   },
   mounted() {
     const userInput = document.getElementById('user-input-form');
@@ -146,20 +147,20 @@ export default {
       this.dialogs.push({
         speaker: 'user',
         type: 'text',
-        text: this.input,
+        text: this.input
       });
 
       let params = {
         message: this.input,
         action: 'send',
-        userid: 'dbsrhksdnd@gmail.com',
+        userid: 'dbsrhksdnd@gmail.com'
       };
 
       this.sendMessage(params);
 
       this.input = '';
     });
-  },
+  }
 };
 </script>
 
@@ -173,6 +174,7 @@ export default {
   flex-direction: column;
   margin: 0 auto;
   height: 100%;
+  z-index: 200;
 }
 
 .chat-output {
@@ -213,6 +215,7 @@ export default {
   border-radius: 15px;
   border: 1px solid white;
   background-color: white;
+  z-index: 500;
 }
 
 .chatbot-dialog-head{

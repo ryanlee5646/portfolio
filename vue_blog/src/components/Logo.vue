@@ -16,8 +16,8 @@ export default {
   methods: {
     siteMove(target) {
       this.$router.push({ path: target });
-    },
-  },
+    }
+  }
 };
 </script>
 

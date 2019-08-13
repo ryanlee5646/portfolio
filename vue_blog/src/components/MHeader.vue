@@ -81,7 +81,7 @@ export default {
   components: {
     BtnMenu,
     LoginPage: LoginPage,
-    Logo,
+    Logo
   },
   data: () => ({
     isMenuVisible: false,

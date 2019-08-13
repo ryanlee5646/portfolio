@@ -57,7 +57,7 @@ export default {
   data() {
     return {
       loaded: true,
-      currentFilter: 'all',
+      currentFilter: 'all'
     };
   },
   props: {
@@ -65,13 +65,10 @@ export default {
     loadMore: { type: Boolean, default: true },
     column: { type: Number, default: 1 },
     portfolios: { type: Array },
-    category: { type: Object },
+    category: { type: Object }
   },
   components: {
-    Title,
-  },
-  mounted() {
-    // this.$store.watch(() => this.$store.state.portfolios, portfolios => { console.log(""); this.portfolios = portfolios; })
+    Title
   },
   methods: {
     // 더보기 클릭했을 때 실행되는 함수
@@ -121,8 +118,8 @@ export default {
     },
     getTotalPosts() {
       return (this.filteredPosts.length < this.limits ? this.filteredPosts.length : this.limits);
-    },
-  },
+    }
+  }
 };
 </script>
 <style scoped lang="scss">

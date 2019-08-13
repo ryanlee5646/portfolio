@@ -17,12 +17,12 @@ export default {
   computed: {
     socialUrls() {
       return this.items.map((socialUrl) => {
-        const [icon, url] = socialUrl.split(/\s*,\s*/)
-        return { icon, url }
-      })
+        const [icon, url] = socialUrl.split(/\s*,\s*/);
+        return { icon, url };
+      });
     }
-  },
-}
+  }
+};
 </script>
 
 <style scoped lang="scss">

@@ -21,10 +21,8 @@ export default {
   name: 'ImgBanner',
   props: {
     imgSrc: { type: String },
-    text: { type: String },
-  },
-  methods: {
-  },
+    text: { type: String }
+  }
 };
 </script>
 <style>

@@ -65,7 +65,7 @@ export default {
       pageSize: 5,
       posts: [],
       selectPost: 'title',
-      inputSearch: '',
+      inputSearch: ''
     };
   },
   props: {
@@ -80,10 +80,10 @@ export default {
     column: {
       type: Number,
       default: 1
-    },
+    }
   },
   components: {
-    Title,
+    Title
   },
   mounted() {
     this.$store.watch(() => this.$store.state.posts, posts => {
@@ -109,7 +109,6 @@ export default {
       });
       $(window).scrollTop(750); //스크롤 위치 이동
     },
-
     sortBy(s) {
       this.sortDir = (this.sortDir === 'asc') ? 'desc' : 'asc';
       this.sort = s;
@@ -128,7 +127,7 @@ export default {
     async searchPost() {
       const result = await FirebaseService.searchPost(this.selectPost, this.inputSearch);
       this.posts = result;
-    },
+    }
   },
   computed: {
     sortedPosts() {
@@ -159,11 +158,11 @@ export default {
   },
   filters: {
     capitalize(v) {
-      if (!v) return ''
-      v = v.toString()
-      return v.charAt(0).toUpperCase() + v.slice(1)
+      if (!v) return '';
+      v = v.toString();
+      return v.charAt(0).toUpperCase() + v.slice(1);
     }
-  },
+  }
 };
 </script>
 

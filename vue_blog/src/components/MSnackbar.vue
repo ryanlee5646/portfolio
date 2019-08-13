@@ -20,11 +20,11 @@ export default {
       y: 'bottom',
       x: null,
       mode: '',
-      timeout: 3000,
+      timeout: 3000
     };
   },
   props: {
-    snackbar: { type: Boolean, default: false },
-  },
+    snackbar: { type: Boolean, default: false }
+  }
 };
 </script>

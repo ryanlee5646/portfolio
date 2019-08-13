@@ -18,24 +18,24 @@ export default {
     return {
       categories: [{
         name: 'Portfolio',
-        description: 'I can show you the portfolios',
+        description: 'I can show you the portfolios'
       },
       {
         name: 'Members',
-        description: 'Look at this awesome personnnnn',
+        description: 'Look at this awesome personnnnn'
       },
       {
         name: 'Post',
-        description: 'Draw your imagination',
+        description: 'Draw your imagination'
       }],
       users: [{
-        name: 'Kwanwoong Yoon',
+        name: 'Kwanwoong Yoon'
       }],
       aboutus: {
         이규진: {
-          title: 'Thie is secondary title',
+          title: "I'm super handsome mannnn",
           profile: '/img/lee.jpg',
-          content: '<p>I have no idea of this paragraph. Indeed, i just type any words to fill out this whitespace. damnnnnn.</p>',
+          content: "<p>I'm a leader of this Abdie's devlopers. I'm a king of the SSAFY. I'm a Programming God! DAMNNN </p>",
           meta: {
             email: 'ryanlee5646@gmail.com',
             skype: 'ryanlee5646@gmail.com',
@@ -44,44 +44,44 @@ export default {
             font_awesome: [
               'fa-apple, #',
               'fa-android, #',
-              'fa-facebook-square, #',
-            ],
+              'fa-facebook-square, #'
+            ]
           },
           skills: {
             development: [{
               name: 'HTML5',
-              level: 98,
+              level: 98
             }, {
               name: 'Javascript',
-              level: 60,
+              level: 60
             }, {
               name: 'Vue',
-              level: 65,
+              level: 65
             }, {
               name: 'CSS3',
-              level: 37,
+              level: 37
             }, {
               name: 'C++',
-              level: 55,
+              level: 55
             }],
             design: [{
               name: 'Photoshop',
-              level: 25,
+              level: 25
             }, {
               name: 'Illustrator',
-              level: 30,
+              level: 30
             }, {
               name: 'UserExperience',
-              level: 45,
+              level: 45
             }],
             productivity: [{
               name: 'Git + Github, Bitbucket & Sourcetree',
-              level: 70,
+              level: 70
             }, {
               name: 'Microsoft Office',
-              level: 55,
-            }],
-          },
+              level: 55
+            }]
+          }
         },
         문용성: {
           title: "I'm Developer",
@@ -95,44 +95,44 @@ export default {
             font_awesome: [
               'fa-apple, #',
               'fa-android, #',
-              'fa-facebook-square, #',
-            ],
+              'fa-facebook-square, #'
+            ]
           },
           skills: {
             development: [{
               name: 'HTML5',
-              level: 60,
+              level: 60
             }, {
               name: 'Javascript',
-              level: 70,
+              level: 70
             }, {
               name: 'Vue',
-              level: 75,
+              level: 75
             }, {
               name: 'CSS3',
-              level: 50,
+              level: 50
             }, {
               name: 'Java',
-              level: 85,
+              level: 85
             }],
             design: [{
               name: 'Photoshop',
-              level: 10,
+              level: 10
             }, {
               name: 'Illustrator',
-              level: 15,
+              level: 15
             }, {
               name: 'UserExperience',
-              level: 55,
+              level: 55
             }],
             productivity: [{
               name: 'Git + Github, Bitbucket & Sourcetree',
-              level: 70,
+              level: 70
             }, {
               name: 'Microsoft Office',
-              level: 75,
-            }],
-          },
+              level: 75
+            }]
+          }
         },
         신은정: {
           title: "I'm Developer",
@@ -146,41 +146,41 @@ export default {
             font_awesome: [
               'fa-apple, #',
               'fa-android, #',
-              'fa-facebook-square, #',
-            ],
+              'fa-facebook-square, #'
+            ]
           },
           skills: {
             development: [{
               name: 'HTML5',
-              level: 60,
+              level: 60
             }, {
               name: 'Javascript',
-              level: 50,
+              level: 50
             }, {
               name: 'Vue',
-              level: 70,
+              level: 70
             }, {
               name: 'CSS3',
-              level: 60,
+              level: 60
             }, {
               name: 'Java',
-              level: 85,
+              level: 85
             }],
             design: [{
               name: 'Illustrator',
-              level: 10,
+              level: 10
             }, {
               name: 'UserExperience',
-              level: 50,
+              level: 50
             }],
             productivity: [{
               name: 'Git + Github, Bitbucket & Sourcetree',
-              level: 70,
+              level: 70
             }, {
               name: 'Microsoft Office',
-              level: 75,
-            }],
-          },
+              level: 75
+            }]
+          }
         },
         윤관웅: {
           title: 'Super-duper humanity. Poor developement skills',
@@ -194,55 +194,55 @@ export default {
             font_awesome: [
               'fa-apple, #',
               'fa-android, #',
-              'fa-facebook-square, #',
-            ],
+              'fa-facebook-square, #'
+            ]
           },
           skills: {
             development: [{
               name: 'HTML5',
-              level: 55,
+              level: 55
             }, {
               name: 'Javascript',
-              level: 45,
+              level: 45
             }, {
               name: 'Vue',
-              level: 50,
+              level: 50
             }, {
               name: 'CSS3',
-              level: 35,
+              level: 35
             }, {
               name: 'Java',
-              level: 60,
+              level: 60
             }],
             design: [{
               name: 'Photoshop',
-              level: 25,
+              level: 25
             }, {
               name: 'Adobe Primere',
-              level: 25,
+              level: 25
             }],
             productivity: [{
               name: 'Github + Jira',
-              level: 65,
+              level: 65
             }, {
               name: 'Microsoft Office',
-              level: 45,
-            }],
-          },
-        },
-      },
+              level: 45
+            }]
+          }
+        }
+      }
     };
   },
   components: {
     Portfolios,
     AboutMe,
-    Posts,
+    Posts
   },
   computed: {
     getPortfolios() {
       return this.$store.state.portfolios;
-    },
-  },
+    }
+  }
 };
 </script>
 

@@ -322,9 +322,6 @@
       </v-card>
     </v-dialog>
   </div>
-
-
-
 </template>
 
 <script>
@@ -343,7 +340,6 @@ export default {
       gitlabQuestion: false,
       gitlabInfo : false,
       skillsInfo : false,
-
       login: {
         password: "",
         email: ""
@@ -426,11 +422,11 @@ export default {
         );
       }
       FirebaseService.FirebaseLoginLog();
-      
+
       // Check GitlabInfo
       const data = await FirebaseService.getUserInfo();
       if(data !== null){
-        if ((data.gitlabID === "" || data.gitlabToken === "") && data.gitlabAllow === false){ 
+        if ((data.gitlabID === "" || data.gitlabToken === "") && data.gitlabAllow === false){
           this.gitlabQuestion = true;
         }
       }
@@ -450,9 +446,8 @@ export default {
       this.$store.commit("loginDialog", false);
       this.$router.push("/");
       // localStorage.setItem("portfolios", this.$store.state.portfolios);
-      
+
       FirebaseService.gettingToken();
-    
     },
     // 페이스북 로그인
     async loginWithFacebook() {
@@ -475,14 +470,14 @@ export default {
           false
         );
       }
-      
+
       FirebaseService.FirebaseLoginLog();
-      
+
       // Check GitlabInfo
       const data = await FirebaseService.getUserInfo();
-      
+
       if(data !== null){
-        if ((data.gitlabID === "" || data.gitlabToken === "") && data.gitlabAllow === false){ 
+        if ((data.gitlabID === "" || data.gitlabToken === "") && data.gitlabAllow === false){
           this.gitlabQuestion = true;
         }
       }
@@ -499,7 +494,7 @@ export default {
 
       FirebaseService.gettingToken();
     },
-    
+
     async addGitlabInfo(){
       try {
         await FirebaseService.addGitlabInfo(this.gitlab);
@@ -533,7 +528,6 @@ export default {
         console.log(`[error] addSkillsInfo func() : ${error}`)
       }
     },
-
     closeDialog() {
       this.gitlabQuestion = false
       this.gitlabInfo = true
@@ -554,12 +548,12 @@ export default {
 
       if(result !== undefined){
         const user = await FirebaseService.getUserInfo();
-        
+
         if(user !== null){
           this.$store.state.user = user;
           localStorage.setItem("user", JSON.stringify(user));
         }
-      
+
       this.isLoginStage(true);
       this.$store.commit("loginDialog", false);
       this.$router.push("/");
@@ -569,7 +563,6 @@ export default {
           this.skillsInfo = true;
         }
       }
-        
       }
       FirebaseService.gettingToken();
     }

@@ -7,7 +7,7 @@ export default (baseURL, accessToken) => {
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'PRIVATE-TOKEN': '2KybhN5CUPV7pWSqYEXb',
-        },
+            'PRIVATE-TOKEN': '2KybhN5CUPV7pWSqYEXb'
+        }
     });
 };

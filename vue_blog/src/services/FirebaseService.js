@@ -19,7 +19,7 @@ const config = {
   projectId: 'vue-blog-f1b07',
   storageBucket: 'vue-blog-f1b07.appspot.com',
   messagingSenderId: '1084798491757',
-  appId: '1:1084798491757:web:0f3fe9dbe280e6f7',
+  appId: '1:1084798491757:web:0f3fe9dbe280e6f7'
 };
 
 firebase.initializeApp(config);
@@ -30,7 +30,7 @@ messaging.usePublicVapidKey('BE71GiStXCZkedHmFGZLNsz7vP1bETIPB9Oiz8cd7s0aDepoiht
 
 // 화면을 보고 있을 때 푸쉬알림
 messaging.onMessage((payload) => {
-  
+
   store.commit('setPush', {
     title: `${payload.notification.title}`,
     message: `${payload.notification.body}`,
@@ -40,7 +40,6 @@ messaging.onMessage((payload) => {
 });
 
 export default {
-
     /* User */
     addUser(email, name, auth, photoURL, gitlabID, gitlabToken, gitlabAllow) {
         console.log('[info] start addUser func()');
@@ -54,7 +53,7 @@ export default {
             gitlabID,
             gitlabToken,
             gitlabAllow,
-            created_at: firebase.firestore.FieldValue.serverTimestamp(),
+            created_at: firebase.firestore.FieldValue.serverTimestamp()
         });
     },
     getUserInfo() {
@@ -63,7 +62,6 @@ export default {
         if (user === null) {
             user = JSON.parse(localStorage.getItem('user') || '{}');
         }
-
         return firestore.collection(USERS).doc(user.email)
             .get()
             .then((doc) => {
@@ -108,7 +106,6 @@ export default {
     signUp(signup) {
         console.log('[info] start signUp func()');
         const nickName = signup.email.split('@')[0];
-
         firebase.auth().createUserWithEmailAndPassword(signup.email, signup.password)
             .catch((error) => {
                 const errorCode = error.code;
@@ -126,7 +123,7 @@ export default {
             gitlabID: signup.gitlabID,
             gitlabToken: signup.gitlabToken,
             gitlabAllow: false,
-            created_at: firebase.firestore.FieldValue.serverTimestamp(),
+            created_at: firebase.firestore.FieldValue.serverTimestamp()
         });
     },
     signIn(login) {
@@ -156,7 +153,6 @@ export default {
             console.log('[info] success signOut');
             this.FirebaseLogoutLog(user.email);
             this.outToken(user);
-
             return true;
         }).catch((error) => {
             const errorCode = error.code;
@@ -205,7 +201,7 @@ export default {
             const errorCode = error.code;
             const errorMessage = error.message;
             console.log(`[error] fail addSkillsInfo : [CODE ${errorCode}] Error : ${errorMessage}`);
-        });    
+        });
 
     },
 
@@ -218,7 +214,7 @@ export default {
         firestore.collection(USERS).doc(user.email).update({
             gitlabID: gitlab.gitlabID,
             gitlabToken: gitlab.gitlabToken,
-            gitlabAllow: true,
+            gitlabAllow: true
         }).catch((error) => {
             const errorCode = error.code;
             const errorMessage = error.message;
@@ -239,14 +235,12 @@ export default {
                 });
             });
     },
-
-    /* PortfolioReply
+    /* PortfolioRepy
       Create : PortfolioReply();
       Update : editReply();
       Read : getPortfolioReply();
       Delete : deleteReply();
     */
-
     PortfolioReply(portfolioReply, portfolioUID) {
         console.log('[info] start PortfolioReply func()');
         const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -318,20 +312,18 @@ export default {
             console.log(`[error] editReply func() : [CODE ${errorCode}] Error : ${errorMessage}`);
         });
     },
-
     /* Portfolio
       Create : PortfolioWriter();
       Update : editPortfolio();
       Read : getPortfolios();
       Delete : deletePortfolio();
     */
-
     PortfolioWriter(portfolio) {
         console.log('[info] start PortfolioWriter func()');
         return firestore.collection(PORTFOLIOS).add({
             portfolio,
             views: 0,
-            created_at: firebase.firestore.FieldValue.serverTimestamp(),
+            created_at: firebase.firestore.FieldValue.serverTimestamp()
         }).catch((error) => {
             const errorCode = error.code;
             const errorMessage = error.message;
@@ -354,7 +346,7 @@ export default {
         console.log('[info] start editPortfolio func()');
         firestore.collection(PORTFOLIOS).doc(portfolioUID)
             .update({
-                portfolio,
+                portfolio
             }).catch((error) => {
                 const errorCode = error.code;
                 const errorMessage = error.message;
@@ -381,9 +373,8 @@ export default {
     addPortfoliosViews(portfolioID) {
         console.log('[info] start addPortfoliosViews func()');
         const portfolioCollection = firestore.collection(PORTFOLIOS).doc(portfolioID);
-
         portfolioCollection.update({
-            views: firebase.firestore.FieldValue.increment(1),
+            views: firebase.firestore.FieldValue.increment(1)
         }).catch((error) => {
             const errorCode = error.code;
             const errorMessage = error.message;
@@ -404,41 +395,37 @@ export default {
             post,
             views: 0,
             created_at: firebase.firestore.FieldValue.serverTimestamp(),
-            writerTime: new Date().toLocaleString(),
+            writerTime: new Date().toLocaleString()
         }).catch((error) => {
             const errorCode = error.code;
             const errorMessage = error.message;
             console.log(`[error] PostoWriter func() : [CODE ${errorCode}] Error : ${errorMessage}`);
         });
     },
-
     editPost(postUID, post) {
         console.log('[info] start editPost func()');
-
         firestore.collection(POSTS).doc(postUID)
             .update({
-                post,
+                post
             }).catch((error) => {
                 const errorCode = error.code;
                 const errorMessage = error.message;
                 console.log(`[error] editPost func() : [CODE ${errorCode}] Error : ${errorMessage}`);
             });
     },
-
     getPosts() {
         console.log('[info] start getPosts func()');
         const postsCollection = firestore.collection(POSTS);
         console.log(postsCollection);
-
         return postsCollection
             .orderBy('created_at', 'desc')
             .get()
             .then((docSnapshots) => {
                 return docSnapshots.docs.map((doc) => {
-                    let data = doc.data()
-                    data.created_at = new Date(data.created_at.toDate())
+                    let data = doc.data();
+                    data.created_at = new Date(data.created_at.toDate());
                     data.uid = doc.id; // Post uid
-                    return data
+                    return data;
                 })
             })
             .catch((error) => {
@@ -447,11 +434,9 @@ export default {
                 console.log(`[error] getPosts func() : [CODE ${errorCode}] Error : ${errorMessage}`);
             });
     },
-
     deletePost(postUID) {
         console.log('[info] start deletePost func()');
         const postCollection = firestore.collection(POSTS).doc(postUID);
-
         postCollection.delete()
             .then(() => {
                 console.log('[info] Document successfully deleted.');
@@ -460,27 +445,22 @@ export default {
                 const errorMessage = error.message;
                 console.log(`[error] postCollection func() : [CODE ${errorCode}] Error : ${errorMessage}`);
             });
-
     },
-
     addPostViews(postID) {
         console.log('[info] start addPostViews func()');
         const postCollection = firestore.collection(POSTS).doc(postID);
-
         postCollection.update({
-            views: firebase.firestore.FieldValue.increment(1),
+            views: firebase.firestore.FieldValue.increment(1)
         }).catch((error) => {
             const errorCode = error.code;
             const errorMessage = error.message;
             console.log(`[error] addPostViews func() : [CODE ${errorCode}] Error : ${errorMessage}`);
         });
     },
-
     searchPost(selected, inputStr) {
         console.log('[info] start searchPost func()');
         const postsCollection = firestore.collection(POSTS).doc();
         const searchedPost = new Array;
-
         if (selected == 'title') {
             firestore.collection(POSTS)
                 .get()
@@ -498,7 +478,6 @@ export default {
                 .catch(function(error) {
                     console.log("Error getting documents: ", error);
                 });
-
         } else if (selected == 'id') {
             firestore.collection(POSTS)
                 .get()
@@ -534,14 +513,12 @@ export default {
         }
         return searchedPost;
     },
-
     /* PostReply
       Create : PostReplyWriter();
       Update : editPostReply();
       Read : getPostReplys();
       Delete : deletePostReply();
     */
-
     PostReplyWriter(postReply, postUID) {
         console.log('[info] start PostReplyWriter func()');
         const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -551,14 +528,13 @@ export default {
         postReply.photoURL = user.photoURL;
         return postCollection.doc(postUID).collection(POST_REPLYS).add({
             postReply,
-            created_at: firebase.firestore.FieldValue.serverTimestamp(),
+            created_at: firebase.firestore.FieldValue.serverTimestamp()
         }).catch((error) => {
             const errorCode = error.code;
             const errorMessage = error.message;
             console.log(`[error] PostReplyWriter func() : [CODE ${errorCode}] Error : ${errorMessage}`);
         });
     },
-
     editPostReply(postUID, replyUID, editReplyContent) {
         console.log('[info] start editPostReply func()');
         const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -570,19 +546,17 @@ export default {
                 email: user.email,
                 nickName: user.nickName,
                 photoURL: user.photoURL
-            },
+            }
         }).catch((error) => {
             const errorCode = error.code;
             const errorMessage = error.message;
             console.log(`[error] editReply func() : [CODE ${errorCode}] Error : ${errorMessage}`);
         });
     },
-
     getPostReplys(postUID) {
         console.log('[info] start getPostReplys func()');
         const postCollection = firestore.collection(POSTS);
         const replyCollection = postCollection.doc(postUID).collection(POST_REPLYS);
-
         return replyCollection
             .orderBy('created_at', 'desc')
             .get()
@@ -598,7 +572,6 @@ export default {
                 const errorMessage = error.message;
                 console.log(`[error] getPostReplys func() : [CODE ${errorCode}] Error : ${errorMessage}`);
             });
-
     },
     deletePostReply(postUID, replyUID) {
         console.log('[info] start deletePostReply func()');
@@ -615,7 +588,6 @@ export default {
                 console.log(`[error] deletePostReply func() : [CODE ${errorCode}] Error : ${errorMessage}`);
             });
     },
-
     /* Log */
     FirebaseLoginLog() {
         console.log('[info] start FirebaseLoginLog func()');
@@ -629,10 +601,9 @@ export default {
         const s = nowTime.getSeconds();
         const timeID = [y, '0', M, d, h, m, s, logIn].join('');
         const Email = firebase.auth().currentUser.email;
-
         firestore.collection(USERS).doc(Email).collection(LOGHISTORY).doc(timeID)
             .set({
-                log: firebase.firestore.FieldValue.serverTimestamp(),
+                log: firebase.firestore.FieldValue.serverTimestamp()
             })
             .catch((error) => {
                 const errorCode = error.code;
@@ -651,10 +622,9 @@ export default {
         const m = nowTime.getMinutes();
         const s = nowTime.getSeconds();
         const timeID = [y, '0', M, d, h, m, s, logOut].join('');
-
         firestore.collection(USERS).doc(email).collection(LOGHISTORY).doc(timeID)
             .set({
-                log: firebase.firestore.FieldValue.serverTimestamp(),
+                log: firebase.firestore.FieldValue.serverTimestamp()
             })
             .catch((error) => {
                 const errorCode = error.code;
@@ -757,12 +727,12 @@ export default {
                 if (doc.exists) {
                     views = doc.data().views + 1;
                     usersCollection.doc(d).set({
-                        views,
+                        views
                     });
                 } else {
                     console.log('[error] No such document.');
                     usersCollection.doc(d).set({
-                        views,
+                        views
                     });
                 }
             }).catch((error) => {
@@ -809,9 +779,9 @@ export default {
     notificationCheck() {
         Notification.requestPermission().then(function(permission) {
             if (permission === 'granted') {
-                console.log("[info] 알림이 허용됨")
+                console.log("[info] 알림이 허용됨");
             } else {
-                console.log("[info] 알림이 거부됨")
+                console.log("[info] 알림이 거부됨");
             }
         })
     },
@@ -826,7 +796,7 @@ export default {
                     token: test_token
                 })
             } else {
-                console.log("No Instance ID token availabe")
+                console.log("No Instance ID token availabe");
             }
         }).catch(function(err) {
             console.log("An error occurred while retrieving token", err);
@@ -846,6 +816,6 @@ export default {
             }
         }).catch(function(err) {
             console.log("An error occurred while retrieving token", err)
-        })
+        });
     }
 }; // eslint-disable-line

@@ -32,8 +32,11 @@
           <!-- 수정 폼 -->
           <div v-else>
             <v-text-field label="제목" v-model="postTemp.title"></v-text-field>
-            <markdown-editor v-model="postTemp.content" ref="markdownEditor"></markdown-editor><br>
+            <vue-simplemde v-model="postTemp.content" ref="markdownEditor"></vue-simplemde>
             <ImageComponent></ImageComponent>
+            <hr><button class="button" @click="editPost()">Edit</button>
+            <button class="button" @click="flag2 = false" block text>뒤로</button>
+          </div>
 
             <v-layout wrap justify-center>
                   <div v-if="$store.state.ImageLink == '' ">이 곳에 생성되는 url을 복사하여 사용해주세요 :-)</div>
@@ -110,7 +113,7 @@
 <script>
 import marked from 'marked';
 import FirebaseService from '@/services/FirebaseService'
-import markdownEditor from 'vue-simplemde/src/markdown-editor';
+import VueSimplemde from 'vue-simplemde';
 import ImageComponent from '../components/ImageComponent.vue';
 import Title from '../components/Title.vue';
 
@@ -139,29 +142,29 @@ export default {
         userID: "",
         nickName : "",
         title: "",
-        content: "",
+        content: ""
       },
       postEmail : "",
-      postNickName : "",
+      postNickName : ""
     }
   },
   components: {
-    markdownEditor,
+    VueSimplemde,
     ImageComponent,
-    Title,
+    Title
   },
   props: {
     id: {
       type: String,
       default: '-1'
-    },
+    }
   },
   computed: {
     compiledMarkdown() {
       return marked(this.$store.state.posts[this.index].post.content, {
         sanitize: true
       });
-    },
+    }
   },
   created() {
     FirebaseService.addPostViews(this.id);
@@ -211,54 +214,37 @@ export default {
       this.$store.commit('updatePosts', this.posts);
       this.flag2 = false;
       this.$router.replace('/post/view/' + this.id);
-    },
+    }
   },
   mounted() {
     this.getPostReplys();
     document.querySelectorAll('.card').forEach((elem) => {
-      const head = elem.querySelector('.card__head')
-      const image = elem.querySelector('.card__image')
-      const author = elem.querySelector('.card__author')
-      const body = elem.querySelector('.card__body')
-      const foot = elem.querySelector('.card__foot')
+      const head = elem.querySelector('.card__head');
+      const image = elem.querySelector('.card__image');
+      const author = elem.querySelector('.card__author');
+      const body = elem.querySelector('.card__body');
+      const foot = elem.querySelector('.card__foot');
 
       elem.onmouseenter = () => {
-        elem.classList.add('hover')
-        const imageScale = 1 + factor(head, body, 'height')
-        image.style.transform = `scale(${ imageScale })`
+        elem.classList.add('hover');
+        const imageScale = 1 + factor(head, body, 'height');
+        image.style.transform = `scale(${ imageScale })`;
 
-        const bodyDistance = height(foot) * -1
-        body.style.transform = `translateY(${ bodyDistance }px)`
+        const bodyDistance = height(foot) * -1;
+        body.style.transform = `translateY(${ bodyDistance }px)`;
 
-        const authorDistance = distance(head, author, 'height')
-        author.style.transform = `translateY(${ authorDistance }px)`
-
-      }
+        const authorDistance = distance(head, author, 'height');
+        author.style.transform = `translateY(${ authorDistance }px)`;
+      };
       elem.onmouseleave = () => {
-        elem.classList.remove('hover')
-        image.style.transform = `none`
-        body.style.transform = `none`
-        author.style.transform = `none`
-      }
-    })
+        elem.classList.remove('hover');
+        image.style.transform = `none`;
+        body.style.transform = `none`;
+        author.style.transform = `none`;
+      };
+    });
   }
 };
-//
-// const height = (elem) => {
-//   return elem.getBoundingClientRect().height
-// }
-//
-// const distance = (elemA, elemB, prop) => {
-//   const sizeA = elemA.getBoundingClientRect()[prop]
-//   const sizeB = elemB.getBoundingClientRect()[prop]
-//   return sizeB - sizeA
-// }
-//
-// const factor = (elemA, elemB, prop) => {
-//   const sizeA = elemA.getBoundingClientRect()[prop]
-//   const sizeB = elemB.getBoundingClientRect()[prop]
-//   return sizeB / sizeA
-// }
 </script>
 
 

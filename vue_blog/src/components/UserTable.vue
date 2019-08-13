@@ -41,11 +41,11 @@
 import FirebaseService from '@/services/FirebaseService'
 import { maxHeaderSize } from 'http';
 
-  export default {
-    name: 'UserTable',
-    data () {
+export default {
+  name: 'UserTable',
+  data() {
     return {
-      search:'',
+      search: '',
       loading: true,
       headers: [
         {
@@ -61,13 +61,13 @@ import { maxHeaderSize } from 'http';
         { text: 'Actions', value: 'email', sortable: false, align: 'center' }
       ],
       users: []
-    }
+    };
   },
-  mounted(){
+  mounted() {
     this.getUserData();
   },
-  methods:{
-    async getUserData(){
+  methods: {
+    async getUserData() {
       const allUsers = await FirebaseService.getAllUserInfo();
         allUsers.forEach(async (user) => {
         const portfolioNum = await FirebaseService.getUserPortfolioNumber(user.email);
@@ -77,15 +77,23 @@ import { maxHeaderSize } from 'http';
         let d = new Date(user.created_at.toDate());
         let month = d.getMonth();
         let date = d.getDate();
-        if(month < 10){
+        if (month < 10) {
           month = `0${month}`;
         }
-        if(date < 10){
+        if (date < 10) {
           date = `0${date}`;
         }
         d = `${d.getFullYear()}-${month}-${date}`;
         const replyNum = await FirebaseService.getUserReplyNumber(user.email);
-        this.users.push({value: false, email: user.email, name: user.name ,portfolio: portfolioNum, post: postNum, reply: replyNum, date: d});
+        this.users.push({
+          value: false,
+          email: user.email,
+          name: user.name,
+          portfolio: portfolioNum,
+          post: postNum,
+          reply: replyNum,
+          date: d
+        });
       });
     }
   },
@@ -93,7 +101,7 @@ import { maxHeaderSize } from 'http';
     filteredList() {
       return this.users.filter(user => {
         return (user.name.toLowerCase().includes(this.search.toLowerCase()) || user.email.toLowerCase().includes(this.search.toLowerCase()));
-      })
+      });
     }
   },
   watch: {
@@ -103,5 +111,5 @@ import { maxHeaderSize } from 'http';
       }
     }
   }
-  }
+}
 </script>

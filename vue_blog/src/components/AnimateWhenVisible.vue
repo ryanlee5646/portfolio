@@ -17,7 +17,7 @@ try {
     get: () => {
       isPassiveSupported = true;
       return isPassiveSupported;
-    },
+    }
   });
 
   window.addEventListener('test', null, options);
@@ -31,10 +31,10 @@ export default {
     appear: { type: Boolean, default: false },
     offsetTop: { type: Number, default: 0 },
     duration: { type: Number, default: 1 },
-    updatedFlag: { type: Boolean, default: true },
+    updatedFlag: { type: Boolean, default: true }
   },
   data: () => ({
-    isVisible: false,
+    isVisible: false
   }),
   methods: {
     inViewport() {
@@ -43,7 +43,7 @@ export default {
     },
     detectVisibility() {
       this.isVisible = this.inViewport();
-    },
+    }
   },
   mounted() {
     this.$nextTick(this.detectVisibility);
@@ -64,7 +64,7 @@ export default {
       } else if (!oldVal && newVal) {
         this.isVisible = true;
       }
-    },
-  },
+    }
+  }
 };
 </script>
