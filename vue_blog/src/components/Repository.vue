@@ -1,6 +1,12 @@
 <template>
     <v-layout wrap>
-       <v-flex xs12 class="py-5" v-for="(team, index) in teams" :key="index">
+      <v-flex xs12 class="py-5" v-if="this.projectID == undefined">
+        <v-flex class="px-5" text-center>
+          <h1 class="repo-name">연결된 gitLab Repogitory가 없습니다. </h1>
+        </v-flex>
+        <apexchart type=area height=160 :options="chartOptionsAreas[index]" :series="series[index]" />
+      </v-flex>
+       <v-flex xs12 class="py-5" v-else v-for="(team, index) in teams" :key="index">
         <v-flex class="px-5">
           <h1 class="repo-name">{{team.name}}</h1>
           
@@ -17,6 +23,7 @@
 <script>
     import VueApexCharts from 'vue-apexcharts';
     import GitlabService from '@/services/GitlabService';
+    import FirebaseService from '@/services/FirebaseService';
 
     // The global window.Apex variable below can be used to set common options for all charts on the page
     Apex = {
@@ -68,8 +75,9 @@
     export default({
       name: 'Repository',
       props: {
-        gitlabToken: {type: String},
-        teams: {type: Array}
+        userID: {type: String},
+        teams: {type: Array},
+        projectID: {type: String}
       },
       components: {
         apexchart: VueApexCharts,
@@ -79,6 +87,7 @@
           series:[],
           userCommitNum:[],
           chartOptionsAreas:[],
+          gitlabToken: ''
         }
       },
       computed: {
@@ -88,24 +97,29 @@
       },
       created() {
         console.log("[info] Repository Vue Created()");
-        console.log(this.teams);
-        console.log(this.gitlabToken);
-
-        this.drawChart().then((max)=>{
+        console.log(this.projectID);
+        this.getToken(this.userID).then((gitlabID)=>{
+          this.gitlabToken = gitlabID;
+          this.drawChart().then((max)=>{
             this.giveOptions(max);
-        });
+          });
+        }); 
       },
       methods: {
+        async getToken(email){
+          let result = await FirebaseService.getgitlabToken(email);
+          console.log(result);
+          return result;
+        },
         giveOptions(max){
-          console.log(max);
           for(let i = 0; i < this.teams.length; ++i){
             this.chartOptionsAreas.push({chart:{id: i+1, group: 'commits'}, colors:[], yaxis:{min:0, max: max, labels: {minWidth: -1,maxWidth: 160,},}});
-            this.chartOptionsAreas[i].colors.push("#"+Math.round(Math.random() * 0xffffff).toString(16));
+            this.chartOptionsAreas[i].colors.push("#"+(Math.random().toString(16) + "000000").substring(2,8));
           }
         },
         async drawChart(){
 
-          const response  = await GitlabService.getProjectCommits('6096', '');
+          const response  = await GitlabService.getProjectCommits(this.projectID, this.gitlabToken);
 
           // initialize series array
           for(let j = 0; j < this.teams.length; ++j){

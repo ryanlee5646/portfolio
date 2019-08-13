@@ -114,10 +114,10 @@
   </v-layout><br>
   <v-layout wrap justify-center>
     <v-flex xs12 sm3 md2 mr-2>
-      <v-btn @click="PortfolioWriter()" block text>작성하기</v-btn>
+      <v-btn @click="PortfolioWriter()" class="headline" block text>작성하기</v-btn>
     </v-flex>
     <v-flex xs12 sm3 md2>
-      <v-btn to="/#toolbar" block text>뒤로</v-btn>
+      <v-btn to="/#toolbar" class="headline" block text>뒤로</v-btn>
     </v-flex>
   </v-layout>
   <br>
@@ -215,15 +215,23 @@ export default {
   },
   beforeRouteEnter (to, from, next) {
       const user = JSON.parse(localStorage.getItem('user') || '{}');
-      if(user.email != undefined){
+      if(user.email != undefined){ 
+        if(user.auth === 'visitor'){
+          store.commit('setError', { type: 'error', code: '접근권한 오류', message: '접근권한이 없습니다. 관리자에게 문의하세요.' });
+          next({
+            path: '/#toolbar',
+          })
+        }
+        else{
           next();
+        }  
       }
       else{
-        store.commit('setError', { type: 'error', code: '로그인 오류', message: '로그인이 필요한 페이지입니다. 로그인 후 접속해 주세요.' });
-        next({
-          path: '/#toolbar',
-        })
-      }
+          store.commit('setError', { type: 'error', code: '로그인 오류', message: '로그인이 필요한 페이지입니다. 로그인 후 접속해 주세요.' });
+          next({
+            path: '/#toolbar',
+          })
+      }  
     },
 }
 </script>

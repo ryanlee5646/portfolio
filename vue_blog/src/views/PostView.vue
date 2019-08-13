@@ -15,7 +15,7 @@
                     <hr><p id="views" style="font-size : 1.0vw !important;" > [  조회수 :  {{$store.state.posts[i -1].views}}  ]</p>
                     <p id="views" style="font-size : 1.2vw !important;" >   작성자 :  {{$store.state.posts[i -1].post.nickName}}  </p>
                     <hr>
-                    <div id="content" v-html="compiledMarkdown">  {{$store.state.posts[i -1].post.content}} </div>
+                    <div id="postContent" v-html="compiledMarkdown">  {{$store.state.posts[i -1].post.content}} </div>
                   <br>
                   <div style="display: none !important;">
                     {{postNickName =  $store.state.posts[i -1].post.nickName}}
@@ -61,7 +61,7 @@
           <textarea v-model="postReply.content" class="form-control" placeholder="댓글을 입력하세요." maxlength="6000"></textarea>
         </div>
         <div class="bnts ">
-          <v-btn @click="PostReplyWriter() " block text>Add</v-btn>
+          <v-btn @click="PostReplyWriter() " class="headline" block text>Add</v-btn>
         </div>
       </div>
     </div>
@@ -289,12 +289,12 @@ export default {
 .cardDiv{
   width: 100% !important;
 }
-#content{
+#postContent{
   text-align: left;
   padding: 10px;
   margin: 10px;
   background-color: #fafbfc;
-    border-radius: 40px;
+  border-radius: 40px;
 }
 
 #content img {
