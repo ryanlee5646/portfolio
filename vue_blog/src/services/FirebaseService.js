@@ -45,27 +45,7 @@ messaging.onMessage((payload) => {
 });
 
 export default {
-    /* POST */
-    // getPosts() {
-    //     const postsCollection = firestore.collection(POSTS)
-    //     return postsCollection
-    //         .orderBy('created_at', 'desc')
-    //         .get()
-    //         .then((docSnapshots) => {
-    //             return docSnapshots.docs.map((doc) => {
-    //                 let data = doc.data()
-    //                 data.created_at = new Date(data.created_at.toDate())
-    //                 return data
-    //             })
-    //         })
-    // },
-    // postPost(title, body) {
-    //     return firestore.collection(POSTS).add({
-    //         title,
-    //         body,
-    //         created_at: firebase.firestore.FieldValue.serverTimestamp()
-    //     })
-    // },
+
     /* User */
     addUser(email, name, auth, photoURL, gitlabID, gitlabToken, gitlabAllow) {
         console.log('[info] start addUser func()');
@@ -408,18 +388,11 @@ export default {
     PostWriter(post) {
         console.log('[info] start PostoWriter func()');
         console.log(post);
-        var d = new Date().getMonth();
-        // console.log(d);
-        console.log("time!!");
-        console.log(new Date().toLocaleString());
         return firestore.collection(POSTS).add({
             post,
             views: 0,
             created_at: firebase.firestore.FieldValue.serverTimestamp(),
             writerTime: new Date().toLocaleString(),
-            // writerTime : firebase.firestore.FieldValue.serverTimestamp().split(" ")[0]
-            //firebase.firestore.Timestamp.fromDate(new Date());
-            //firebase.firestore.FieldValue.serverTimestamp(),
         }).catch((error) => {
             const errorCode = error.code;
             const errorMessage = error.message;
@@ -497,7 +470,6 @@ export default {
         const searchedPost = new Array;
 
         if (selected == 'title') {
-            // console.log("title!!");
             firestore.collection(POSTS)
                 .get()
                 .then(function(querySnapshot) {
@@ -507,7 +479,6 @@ export default {
                             const data = doc.data();
                             data.created_at = new Date(data.created_at.toDate());
                             data.uid = doc.id;
-
                             searchedPost.push(data);
                         }
                     });
@@ -517,13 +488,31 @@ export default {
                 });
 
         } else if (selected == 'id') {
-            // console.log('search ID!!');
             firestore.collection(POSTS)
                 .get()
                 .then(function(querySnapshot) {
                     querySnapshot.forEach(function(doc) {
                         if (doc.data().post.userID.includes(inputStr)) {
-                            searchedPost.push(doc.data());
+                          const data = doc.data();
+                          data.created_at = new Date(data.created_at.toDate());
+                          data.uid = doc.id;
+                          searchedPost.push(data);
+                        }
+                    });
+                })
+                .catch(function(error) {
+                    console.log("Error getting documents: ", error);
+                });
+        }else if (selected == 'date') {
+            firestore.collection(POSTS)
+                .get()
+                .then(function(querySnapshot) {
+                    querySnapshot.forEach(function(doc) {
+                        if (doc.data().writerTime.includes(inputStr)) {
+                          const data = doc.data();
+                          data.created_at = new Date(data.created_at.toDate());
+                          data.uid = doc.id;
+                          searchedPost.push(data);
                         }
                     });
                 })
@@ -531,10 +520,8 @@ export default {
                     console.log("Error getting documents: ", error);
                 });
         }
-
         return searchedPost;
     },
-
 
     /* PostReply
       Create : PostReplyWriter();
@@ -581,7 +568,6 @@ export default {
 
     getPostReplys(postUID) {
         console.log('[info] start getPostReplys func()');
-
         const postCollection = firestore.collection(POSTS);
         const replyCollection = postCollection.doc(postUID).collection(POST_REPLYS);
 

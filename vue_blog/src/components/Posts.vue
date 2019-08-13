@@ -5,7 +5,6 @@
   <AnimateWhenVisible name="fadeLeft" class="col-12 col-md">
     <div id="app" class="grid bigEntrance">
       <div class="search__container">
-        <!-- <p class="search__title">   Search   </p> -->
         <select class="selectPost" v-model="selectPost">
           <option value="title">TITLE</option>
           <option value="id">userID</option>
@@ -19,23 +18,20 @@
         <thead>
           <tr>
             <th></th>
-            <th @click="sortBy('userID')"> UserID </th>
-            <th @click="sortBy('title')"> <b>Title</b> </th>
+            <th> UserID </th>
+            <th> <b>Title</b> </th>
             <th @click="sortBy('views')"> views </th>
-            <th @click="sortBy('date')"> date </th>
+            <th @click="sortBy('writerTime')"> date </th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(p, index) in this.sortedPosts"  :uid="p.uid">
+          <tr v-for="(p, index) in this.sortedPosts" :uid="p.uid">
             <td>{{index + 1}}</td>
             <td><a @click="routePath(p.uid)">{{p.post.userID | capitalize}}</a></td>
             <td><b><a @click="routePath(p.uid)" style="font-size:1.5vw;">{{p.post.title}}</a></b></td>
             <td>{{p.views }}</td>
             <td>{{p.writerTime}}</td>
-            <!--  -->
-            <!-- response.data[i].committed_date.split("T")[0].replace(/-/gi,"/"))`` -->
           </tr>
-
         </tbody>
       </table>
 
@@ -48,11 +44,8 @@
           <option value="15">15</option>
         </select>
       </div>
-
     </div>
   </AnimateWhenVisible>
-  <!--  -->
-
 </section>
 </template>
 <script>
@@ -66,7 +59,6 @@ export default {
     return {
       loaded: true,
       currentFilter: 'all',
-      //
       sort: 'title',
       sortDir: 'asc',
       page: 0,
@@ -74,7 +66,6 @@ export default {
       posts: [],
       selectPost: 'title',
       inputSearch: '',
-
     };
   },
   props: {
@@ -90,16 +81,12 @@ export default {
       type: Number,
       default: 1
     },
-    // posts: { type: Array },
-    // category: { type: Object },
   },
   components: {
     Title,
   },
   mounted() {
-    console.log("Post.vue  mounted");
     this.$store.watch(() => this.$store.state.posts, posts => {
-      console.log("posts change");
       this.posts = posts;
     })
   },
@@ -116,32 +103,17 @@ export default {
         this.loaded = true;
       }, 1000);
     },
-    // isFiltered(name) {
-    //   return this.currentFilter === name;
-    // },
-    // filter(name) {
-    //   this.currentFilter = name;
-    // },
     routePath(uid) {
-      console.log(uid + " routePath 넘어옴?");
       this.$router.push({
         path: '/post/view/' + uid
       });
+      $(window).scrollTop(750); //스크롤 위치 이동
     },
 
     sortBy(s) {
-      // console.log("sortBy" + "IN!@!");
       this.sortDir = (this.sortDir === 'asc') ? 'desc' : 'asc';
-      // if (s === this.sort) {
-      //   this.sortDir = (this.sortDir === 'asc') ? 'desc' : 'asc';
-      // } else {
-      //   this.sortDir = 'asc';
-      // }
       this.sort = s;
     },
-    // isActiveSort(s) {
-    //   return this.sort === s;
-    // },
     hasPage(dir) {
       if (dir === -1 && (this.page > 0)) return true;
       if (dir === 1 && (((this.page + 1) * this.pageSize) < this.posts.length)) return true;
@@ -154,18 +126,10 @@ export default {
       if (this.hasPage(1)) this.page++;
     },
     async searchPost() {
-      // console.log(this.selectPost + " " +  this.inputSearch);
       const result = await FirebaseService.searchPost(this.selectPost, this.inputSearch);
-      // console.log("ddddddddddddddddddddddddddddddddddddddddddddd");
-      // console.log(result );
-      // this.post. - doc.data().dfa\
-
-      // this,post.uid = doc.id;''
       this.posts = result;
-      
     },
   },
-
   computed: {
     sortedPosts() {
       return this.posts.sort((a, b) => {
@@ -201,7 +165,6 @@ export default {
     }
   },
 };
-
 </script>
 
 <style scoped lang="scss">
@@ -211,8 +174,11 @@ $bg-post: map-get($colors, dark) !default;
 $btn: map-get($colors, secondary) !default;
 
 .search__container {
-    // padding-top: 64px;
-    width: 90%;
+    align-items: center;
+    text-align: center;
+    width: 75%;
+    white-space: nowrap;
+    margin-right: 15%;
 }
 
 .search__title {
@@ -225,7 +191,6 @@ $btn: map-get($colors, secondary) !default;
 .search__input {
     width: 100%;
     padding: 12px 24px;
-
     background-color: transparent;
     transition: transform 250ms ease-in-out;
     font-size: 14px;
@@ -233,7 +198,6 @@ $btn: map-get($colors, secondary) !default;
 
     color: #575756;
     background-color: transparent;
-
     background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z'/%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-size: 18px 18px;
@@ -261,10 +225,8 @@ $btn: map-get($colors, secondary) !default;
     background-position: 100% center;
 }
 
-//
 .my-portfolio {
     background-color: lighten($bg-post, 84.6%);
-    // color: map-get($colors, light);
 }
 
 .breadcrumbs {
@@ -278,7 +240,6 @@ $btn: map-get($colors, secondary) !default;
         cursor: pointer;
 
         &.active {
-            // color: map-get($colors, light);
             border-bottom: 1px solid $btn;
         }
     }
@@ -289,10 +250,6 @@ $btn: map-get($colors, secondary) !default;
     max-height: 250px;
     overflow: hidden;
     margin-bottom: 20px;
-}
-
-.section-content {
-    // width: 100%;
 }
 
 .portfolio-link {
@@ -339,8 +296,6 @@ th {
     text-align: left;
     border-bottom: 1px solid #ddd;
     font-size: 1vw;
-    // margin-top: 10px;
-
 }
 
 tr:hover {
@@ -362,6 +317,9 @@ tr:hover {
     max-width: 0 !important;
     min-height: 4rem !important;
     border-radius: 30px;
+    font-size: 1.4rem !important;
+    padding: 2.0px !important;
+    margin-right: 10px;
 }
 
 b {
@@ -371,12 +329,6 @@ p {
     margin: 0;
     line-height: 2.0;
 }
-// hr {
-//   width: 75%;
-//   margin: 4rem auto;
-//   border: 0;
-//   border-bottom: 0.1rem solid rgba(0, 0, 0, 0.1);
-// }
 
 form {
     width: 100%;

@@ -34,7 +34,7 @@
           <span class="subheading">No matches found</span>
         </v-list-item>
       </template>
-      
+
       <template v-slot:selection="{ attrs, item, parent, selected }">
         <v-chip
           v-if="item === Object(item)"
@@ -56,14 +56,14 @@
           <v-list-item-avatar>
             <v-img :src="item.img"></v-img>
           </v-list-item-avatar>
-  
+
           <v-list-item-content>
             <v-list-item-title v-text="item.name" style="font-size:16px; font-weight:bold;"></v-list-item-title>
             <v-list-item-subtitle v-text="item.ID" style="font-size:12px;"></v-list-item-subtitle>
           </v-list-item-content>
       </template>
     </v-combobox>
-      
+
     </v-flex>
   </v-layout>
 
@@ -134,12 +134,12 @@ import FirebaseService from '@/services/FirebaseService';
 import store from '../store';
 
 export default {
-  
+
   name: 'portfoliowrite',
   store,
   data() {
     return {
-      category: { 
+      category: {
               name : "Portfolio Writer",
               description : "This is PortfolioWriter Page. Thank you :)"
       },
@@ -169,7 +169,7 @@ export default {
     search: null,
     y: 0,
     focus: true,
-    } 
+    }
   },
   components: {
     ImageComponent,
@@ -186,22 +186,21 @@ export default {
       });
     },
     async PortfolioWriter() {
-      
+
       // defualt imageURL .... No image
       console.log("ddd");
       console.log(this.portfolio.thumbnail);
       if(this.portfolio.thumbnail == ""){
         this.portfolio.thumbnail = 'https://www.sylff.org/wp-content/uploads/2016/04/noImage.jpg';
       }
-
       this.model.forEach((user)=>{
         this.portfolio.teams.push(user);
       })
-
       const result = await FirebaseService.PortfolioWriter(this.portfolio);
       this.portfolios = await FirebaseService.getPortfolios();
       this.$store.commit('updatePortfolios', this.portfolios );
       this.$router.push('/');
+      alert("Portfolio가 작성되었습니다.");
     },
     filter (item, queryText, itemText) {
       if (item.header) return false
@@ -216,7 +215,7 @@ export default {
   },
   beforeRouteEnter (to, from, next) {
       const user = JSON.parse(localStorage.getItem('user') || '{}');
-      if(user.email != undefined){ 
+      if(user.email != undefined){
           next();
       }
       else{

@@ -24,6 +24,7 @@
                   <img :src="filteredPosts[index].portfolio.thumbnail" alt="Alt" style="width : 100%; height: 100%;"/>
                   <div class="portfolio-link">
                     <a @click="routePath(filteredPosts[index].uid)" class="popup_content"  target="_blank">See</a>
+
                   </div>
               </div>
             </transition-group>
@@ -49,7 +50,6 @@
 </template>
 <script>
 import $ from 'jquery';
-// import FirebaseService from '@/services/FirebaseService';
 import Title from './Title.vue';
 
 export default {
@@ -71,40 +71,6 @@ export default {
     Title,
   },
   mounted() {
-    console.log(this.filteredPosts.length);
-    // $(() => {
-    //   const Page = ((() => {
-    //     const $navArrows = $('#nav-arrows').hide();
-    //     const $shadow = $('#shadow').hide();
-    //     const slicebox = $('#sb-slider').slicebox({
-    //       onReady() {
-    //         $navArrows.show();
-    //         $shadow.show();
-    //       },
-    //       orientation: 'r',
-    //       cuboidsRandom: true,
-    //       disperseFactor: 30,
-    //     });
-    //     const initEvents = () => {
-    //       // add navigation events
-    //       $navArrows.children(':first').on('click', () => {
-    //         slicebox.next();
-    //         return false;
-    //       });
-    //       $navArrows.children(':last').on('click', () => {
-    //         slicebox.previous();
-    //         return false;
-    //       });
-    //     };
-    //     const init = () => {
-    //       initEvents();
-    //     };
-    //     return { init };
-    //   })());
-    //   Page.init();
-    // });
-    //
-    // console.log("app mounted");
     // this.$store.watch(() => this.$store.state.portfolios, portfolios => { console.log(""); this.portfolios = portfolios; })
   },
   methods: {
@@ -123,8 +89,8 @@ export default {
       this.currentFilter = name;
     },
     routePath(uid){
-      console.log(uid + " routePath 넘어옴?");
-      this.$router.push({path: '/portfolio/view/' + uid })
+      this.$router.push({path: '/portfolio/view/' + uid });
+      $(window).scrollTop(800);
     },
     getIndices(row) {
       let result = [];

@@ -1,6 +1,6 @@
 <template>
 <v-container justify-center py-5>
-  <v-flex xs12>
+  <v-flex xs12><br>
     <Title :title="category.name" :description="category.description"/>
   </v-flex>
   <v-layout justify-center>
@@ -9,31 +9,43 @@
         <div v-if="$store.state.posts[i -1].uid === id">
           <div v-if="flag2 === false">
             <a style="display: none !important;">{{index = i-1}}</a>
-            <!-- <div  > -->
-              <!-- class="max-w-sm rounded overflow-hidden shadow-lg" -->
               <AnimateWhenVisible name="fadeLeft" class="col-12 col-md">
                 <div class="cardDiv slideDown ">
-                  <!-- <div class="px-6 py-4 portfolioDiv2"> -->
                     <br><p class="font-bold text-xl mb-2 title" style="font-size : 2.2vw !important;">  <b> {{$store.state.posts[i -1].post.title}}</b> </p>
                     <hr><p id="views" style="font-size : 1.0vw !important;" > [  조회수 :  {{$store.state.posts[i -1].views}}  ]</p>
                     <p id="views" style="font-size : 1.2vw !important;" >   작성자 :  {{$store.state.posts[i -1].post.nickName}}  </p>
                     <hr>
-                    <div id="content" style="font-size : 1.5vw !important;" v-html="compiledMarkdown">  {{$store.state.posts[i -1].post.content}} </div>
+                    <div id="content" v-html="compiledMarkdown">  {{$store.state.posts[i -1].post.content}} </div>
                   <br>
-                  <button class="button" v-show=" $store.state.posts[i -1].post.userID ===  $store.state.user.email || 'manager' ===  $store.state.user.auth "  @click="deletePost()">Delete</button>
-                  <button class="button" v-show="$store.state.posts[i -1].post.userID ===  $store.state.user.email || 'manager' ===  $store.state.user.auth"  @click="editPostClick(i)">Edit</button>
+                  <div style="display: none !important;">
+                    {{postNickName =  $store.state.posts[i -1].post.nickName}}
+                    {{postEmail =  $store.state.posts[i -1].post.userID}}
+                  </div>
+                  <div class="btns">
+                    <button class="button" v-show="$store.state.posts[i -1].post.userID ===  $store.state.user.email || 'manager' ===  $store.state.user.auth"  @click="editPostClick(i)">수 정</button>
+                    &nbsp;&nbsp;
+                    <button class="button" v-show=" $store.state.posts[i -1].post.userID ===  $store.state.user.email || 'manager' ===  $store.state.user.auth "  @click="deletePost()">삭 제</button>
+                  </div>
                 </div>
               </AnimateWhenVisible>
-            <!-- </div> -->
           </div>
           <!-- 수정 폼 -->
           <div v-else>
             <v-text-field label="제목" v-model="postTemp.title"></v-text-field>
-            <markdown-editor v-model="postTemp.content" ref="markdownEditor"></markdown-editor>
-            <hr><button class="button" @click="editPost()">Edit</button>
-            <button class="button" @click="flag2 = false" block text>뒤로</button>
-          </div>
+            <markdown-editor v-model="postTemp.content" ref="markdownEditor"></markdown-editor><br>
+            <ImageComponent></ImageComponent>
 
+            <v-layout wrap justify-center>
+                  <div v-if="$store.state.ImageLink == '' ">이 곳에 생성되는 url을 복사하여 사용해주세요 :-)</div>
+                      <div v-else style="color : #43b848de;">
+                      <b><span v-html="$store.state.ImageLink"></span></b><br>
+                  </div><br><br>
+            </v-layout><br>
+            <div class="btns">
+              <button class="button" @click="editPost()">Edit</button>
+              <button class="button" @click="flag2 = false" block text>뒤로</button>
+            </div>
+          </div>
         </div>
       </div>
     </v-flex>
@@ -55,7 +67,7 @@
     </div>
     <!-- 작성 댓글 출력 -->
     <v-flex xs12>
-         <hr><br><h1>Comments 😊</h1>
+        <Title title=" Comments 😊" style="font-size:1rem !important;" />
         <section class="comment-list">
           <article v-for="(r, index) in this.postReplys" class="row">
 
@@ -63,7 +75,6 @@
               <figure class="profile">
                 <img class="img-responsive" :src="r.postReply.photoURL" />
               </figure>
-              <!-- photoURL -->
             </div>
             <div class="col-md-10 col-sm-10">
               <div class="panel panel-default arrow left">
@@ -74,10 +85,12 @@
                   </header>
                   <div class="comment-post" v-if="flag === false">
                     <p> {{r.postReply.content}} </p>
-                    <button v-show="r.postReply.email ===  $store.state.user.email  || 'manager' ===  $store.state.user.auth " class="button" @click="editClick(index)">수 정</button>
-                    <button v-show="r.postReply.email ===  $store.state.user.email  || 'manager' ===  $store.state.user.auth " class="button" @click="deletePostReply(index)">삭 제</button>
+                    <div class="btnsR">
+                      <button v-show="r.postReply.email ===  $store.state.user.email  || 'manager' ===  $store.state.user.auth " class="button" @click="editClick(index)">수 정</button>
+                      <button v-show="r.postReply.email ===  $store.state.user.email  || 'manager' ===  $store.state.user.auth " class="button" @click="deletePostReply(index)">삭 제</button>
+                    </div>
                   </div>
-                  <div class="comment-post" v-else-if="r.postReply.email ===  $store.state.user.email  || manager ===  $store.state.user.auth">
+                  <div class="comment-post" v-else-if="r.postReply.email ===  $store.state.user.email  || 'manager' ===  $store.state.user.auth">
                     <p v-if="editIdx === index">
                       <input type="text" v-model="editReplyContent" :placeholder="r.postReply.content"></input> </p>
                     <button class="button" @click="editPostReply(index)">O K</button>
@@ -91,7 +104,6 @@
     </div>
     </div>
   </v-layout><br>
-
 </v-container>
 </template>
 
@@ -105,7 +117,7 @@ import Title from '../components/Title.vue';
 export default {
   data() {
     return {
-      category: { 
+      category: {
               name : "Post",
               description : "This is Post Page. Thank you :)"
       },
@@ -117,8 +129,6 @@ export default {
         content: "",
         photoURL : ""
       },
-      // emailArr: this.$store.state.user.email.split('@'),
-      // nowEmail: this.$store.state.user.nickName,
       index: "",
       postIdx: 0,
       flag: false,
@@ -126,12 +136,13 @@ export default {
       editReplyContent: "",
       editIdx: "",
       postTemp: {
-        userID: this.$store.state.user.email, //this.$store.state.user
-        nickName : this.$store.state.user.nickName,
+        userID: "",
+        nickName : "",
         title: "",
         content: "",
       },
-      // photoURL : "",
+      postEmail : "",
+      postNickName : "",
     }
   },
   components: {
@@ -173,8 +184,8 @@ export default {
     async editPostReply(index) {
       this.flag = true;
       const result = await FirebaseService.editPostReply(this.id, this.$store.state.postReplys[index].uid, this.editReplyContent);
-      this.flag = false;
       this.getPostReplys();
+      this.flag = false;
     },
     editClick(index) {
       this.flag = true;
@@ -183,8 +194,8 @@ export default {
     editPostClick(idx) {
       this.flag2 = true;
       this.postIdx = idx - 1;
-      this.postTemp.nickName = this.$store.state.user.nickName;
-      this.postTemp.userID = this.$store.state.user.email;
+      this.postTemp.nickName = this.postNickName;
+      this.postTemp.userID = this.postEmail;
       this.postTemp.title = this.$store.state.posts[this.postIdx].post.title;
       this.postTemp.content = this.$store.state.posts[this.postIdx].post.content;
     },
@@ -196,9 +207,9 @@ export default {
     },
     async editPost() {
       const result = await FirebaseService.editPost(this.id, this.postTemp);
-      this.flag2 = false;
       this.posts = await FirebaseService.getPosts();
       this.$store.commit('updatePosts', this.posts);
+      this.flag2 = false;
       this.$router.replace('/post/view/' + this.id);
     },
   },
@@ -206,7 +217,7 @@ export default {
     this.getPostReplys();
     document.querySelectorAll('.card').forEach((elem) => {
       const head = elem.querySelector('.card__head')
-      const image = elem.querySelector('.card__image')``
+      const image = elem.querySelector('.card__image')
       const author = elem.querySelector('.card__author')
       const body = elem.querySelector('.card__body')
       const foot = elem.querySelector('.card__foot')
@@ -233,25 +244,28 @@ export default {
   }
 };
 //
-const height = (elem) => {
-  return elem.getBoundingClientRect().height
-}
-
-const distance = (elemA, elemB, prop) => {
-  const sizeA = elemA.getBoundingClientRect()[prop]
-  const sizeB = elemB.getBoundingClientRect()[prop]
-  return sizeB - sizeA
-}
-
-const factor = (elemA, elemB, prop) => {
-  const sizeA = elemA.getBoundingClientRect()[prop]
-  const sizeB = elemB.getBoundingClientRect()[prop]
-  return sizeB / sizeA
-}
+// const height = (elem) => {
+//   return elem.getBoundingClientRect().height
+// }
+//
+// const distance = (elemA, elemB, prop) => {
+//   const sizeA = elemA.getBoundingClientRect()[prop]
+//   const sizeB = elemB.getBoundingClientRect()[prop]
+//   return sizeB - sizeA
+// }
+//
+// const factor = (elemA, elemB, prop) => {
+//   const sizeA = elemA.getBoundingClientRect()[prop]
+//   const sizeB = elemB.getBoundingClientRect()[prop]
+//   return sizeB / sizeA
+// }
 </script>
 
 
 <style>
+.reply-write-area {
+  margin-bottom: 30px;
+}
 .textarea{
   height: 150px;
 }
@@ -262,8 +276,10 @@ const factor = (elemA, elemB, prop) => {
 .userPhoto{
   border-radius: 50px;
 }
+
 .title{
   font-size: 2vw;
+  text-align: center;
 }
 
 #views{
@@ -279,65 +295,12 @@ const factor = (elemA, elemB, prop) => {
   margin: 10px;
   background-color: #fafbfc;
     border-radius: 40px;
-  /* border: 2px solid gray;
-  border-radius: 40px; */
-}
-/*  */
-
-/* .slideDown{
-	animation-name: slideDown;
-	-webkit-animation-name: slideDown;
-
-	animation-duration: 3s;
-	-webkit-animation-duration: 3s;
-
-	animation-timing-function: ease;
-	-webkit-animation-timing-function: ease;
-
-	visibility: visible !important;
 }
 
-@keyframes slideDown {
-	0% {
-		transform: translateY(-100%);
-	}
-	50%{
-		transform: translateY(8%);
-	}
-	65%{
-		transform: translateY(-4%);
-	}
-	80%{
-		transform: translateY(4%);
-	}
-	95%{
-		transform: translateY(-2%);
-	}
-	100% {
-		transform: translateY(0%);
-	}
+#content img {
+  width: 80%;
+  text-align: center;
+  margin: 10%;
 }
-
-@-webkit-keyframes slideDown {
-	0% {
-		-webkit-transform: translateY(-100%);
-	}
-	50%{
-		-webkit-transform: translateY(8%);
-	}
-	65%{
-		-webkit-transform: translateY(-4%);
-	}
-	80%{
-		-webkit-transform: translateY(4%);
-	}
-	95%{
-		-webkit-transform: translateY(-2%);
-	}
-	100% {
-		-webkit-transform: translateY(0%);
-	}
-} */
-
 
 </style>
