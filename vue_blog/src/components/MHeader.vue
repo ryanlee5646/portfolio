@@ -100,8 +100,10 @@ export default {
     });
 
     // refresh 시 state 재입력
-    this.$store.state.user = JSON.parse(localStorage.getItem("user") || "{}");
-    this.$store.state.accessToken = localStorage.getItem("accessToken");
+    if(localStorage.getItem("user") != null){
+      this.$store.state.user = JSON.parse(localStorage.getItem("user") || "{}");
+      this.$store.state.accessToken = localStorage.getItem("accessToken");
+    }
   },
   methods: {
     siteMove(target) {
@@ -153,8 +155,8 @@ export default {
   computed: {
     isLogined() {
       console.log("[isLogined]");
-      console.log(this.$store.state.user);
-      return this.$store.state.user !== "" && this.$store.state.user != null;
+      console.log(this.$store.state);
+      return (this.$store.state.user !== "" && this.$store.state.user != null);
     },
     isAuth() {
       return this.$store.state.user.auth === 'manager';

@@ -28,22 +28,11 @@
                   </div><hr>
 
                   <div  id="intro">
-                      <!-- <div class="max-w-sm rounded rounded-lg overflow-hidden shadow-lg bg-gray">
-                        <div class="px-6 py-8">
-                          <br><p class="font-bold text-xl mb-2 title" style="font-size : 2.2vw !important;">  <b> {{$store.state.portfolios[i -1].portfolio.title}}</b> </p>
-                          <a class="no-underline text-grey hover:underline">
-                          </a>
-                            <p id="viewsPortfolio" style="font-size : 1.1vw !important;" >[  조회수 :  {{$store.state.portfolios[i -1].views}}  ]</p>
-                            <p id="viewsPortfolio"style="font-size : 1.4vw !important;" >   작성자 :  {{$store.state.portfolios[i -1].portfolio.nickName}}  </p>
-                            <p id="viewsPortfolio" style="font-size : 1.4vw !important;">{{$store.state.portfolios[i -1].portfolio.sdate}} ~ {{$store.state.portfolios[i -1].portfolio.edate}}</p>
-                            <p id="viewsPortfolio" style="font-size : 1.4vw !important;" > 팀원 : {{getTeamName($store.state.portfolios[i -1].portfolio.teams)}}</p>
-                        </div>
-                      </div><hr> -->
                      <br><br><p class="font-bold text-xl mb-2 title" style="font-size : 2.2vw !important;">  <b> {{$store.state.portfolios[i -1].portfolio.title}}</b> </p>
                       &nbsp;&nbsp;
                       <p id="viewsPortfolio" style="font-size : 1.1vw !important;" >[  조회수 :  {{$store.state.portfolios[i -1].views}}  ]</p>
                       <hr>
-                      <p id="viewsPortfolio"style="font-size : 1.4vw !important;" >   작성자 :{{$store.state.portfolios[i -1].portfolio.nickName}}  </p>
+                      <p id="viewsPortfolio" style="font-size : 1.4vw !important;" >   작성자 :{{$store.state.portfolios[i -1].portfolio.nickName}}  </p>
                       <p id="viewsPortfolio" style="font-size : 1.4vw !important;">{{$store.state.portfolios[i -1].portfolio.sdate}} ~ {{$store.state.portfolios[i -1].portfolio.edate}}</p>
                       <p id="viewsPortfolio" style="font-size : 1.4vw !important;" > 팀원 : {{getTeamName($store.state.portfolios[i -1].portfolio.teams)}}</p>
                       <hr>
@@ -52,7 +41,7 @@
                    <div id="markdownP" style="font-size : 1.5vw !important;" v-html="compiledMarkdown">  {{$store.state.portfolios[i -1].portfolio.content}} </div>
                 <hr><br><h1 style="text-align: center;" id="git">👩‍💻 Commit 👨‍💻</h1>
                 <div class="cardDiv slideDown "  >
-                  <repository :gitlabToken="gitlabToken" :teams="$store.state.portfolios[i -1].portfolio.teams"></repository>
+                  <repository :userID="$store.state.portfolios[i -1].portfolio.userID" :teams="$store.state.portfolios[i -1].portfolio.teams" :projectID="$store.state.portfolios[i -1].portfolio.projectID"></repository>
                 </div>
                 <div class="btns">
                   <button class="button" v-if="$store.state.portfolios[i -1].portfolio.userID === $store.state.user.email || 'manager' === $store.state.user.auth "  @click="editPortfolioClick(i)">수 정</button>
@@ -148,8 +137,11 @@
                       <b><span v-html="$store.state.ImageLink"></span></b><br>
                   </div><br><br>
             </v-layout><br>
-            <hr><button class="button"  @click="editPortfolio()">Edit</button>
+            <hr>
+            <div class="btns">
+              <button class="button"  @click="editPortfolio()">수 정</button>
             <button  class="button" @click="flag2 = false" block flat>뒤로</button>
+          </div>
           </div>
         </div>
       </div>
@@ -167,7 +159,7 @@
           <textarea v-model="portfolioReply.content" class="form-control noresize" placeholder="댓글을 입력하세요." maxlength="3000"></textarea>
         </div>
         <div class="bnts ">
-          <v-btn @click="PortfolioReply() " block text>Add</v-btn>
+          <v-btn @click="PortfolioReply() " class="headline" block text>Add</v-btn>
         </div>
       </div>
     </div>
@@ -256,7 +248,6 @@ export default {
       portfolioEmail: "",
       portfolioNickName : "",
       clickDiv : "intro",
-      gitlabToken : "2KybhN5CUPV7pWSqYEXb",
       activator: null,
       index: -1,
       items: [
@@ -345,8 +336,8 @@ export default {
       const result = await FirebaseService.editPortfolio(this.id, this.portfolioTemp);
       this.portfolios = await FirebaseService.getPortfolios();
       this.$store.commit('updatePortfolios', this.portfolios);
-      this.flag2 = false;
       this.$router.replace('/portfolio/view/' + this.id);
+      this.flag2 = false;
     },
     filter (item, queryText, itemText) {
       if (item.header) return false
@@ -365,7 +356,6 @@ export default {
       });
     },
     getTeamName(teams){
-      console.log(teams);
       let teamName = '';
       for(let i = 0; i < teams.length; ++i){
         teamName += teams[i].name+" ";

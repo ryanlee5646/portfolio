@@ -13,13 +13,13 @@ const POST_REPLYS = 'post_replys';
 const LOGHISTORY = 'logHistory';
 // Setup Firebase
 const config = {
-  apiKey: 'AIzaSyBaK-tJRZvUUOHQYSTidhKMf16c5FCF_nE',
-  authDomain: 'vue-blog-f1b07.firebaseapp.com',
-  databaseURL: 'https://vue-blog-f1b07.firebaseio.com',
-  projectId: 'vue-blog-f1b07',
-  storageBucket: 'vue-blog-f1b07.appspot.com',
-  messagingSenderId: '1084798491757',
-  appId: '1:1084798491757:web:0f3fe9dbe280e6f7'
+    apiKey: 'AIzaSyBaK-tJRZvUUOHQYSTidhKMf16c5FCF_nE',
+    authDomain: 'vue-blog-f1b07.firebaseapp.com',
+    databaseURL: 'https://vue-blog-f1b07.firebaseio.com',
+    projectId: 'vue-blog-f1b07',
+    storageBucket: 'vue-blog-f1b07.appspot.com',
+    messagingSenderId: '1084798491757',
+    appId: '1:1084798491757:web:0f3fe9dbe280e6f7'
 };
 
 firebase.initializeApp(config);
@@ -30,13 +30,12 @@ messaging.usePublicVapidKey('BE71GiStXCZkedHmFGZLNsz7vP1bETIPB9Oiz8cd7s0aDepoiht
 
 // 화면을 보고 있을 때 푸쉬알림
 messaging.onMessage((payload) => {
-
-  store.commit('setPush', {
-    title: `${payload.notification.title}`,
-    message: `${payload.notification.body}`,
-    nickName: `${payload.data.nickName}님이 `,
-    link: `${payload.data.link}`
-  });
+    store.commit('setPush', {
+        title: `${payload.notification.title}`,
+        message: `${payload.notification.body}`,
+        nickName: `${payload.data.nickName}님이 `,
+        link: `${payload.data.link}`
+    });
 });
 
 export default {
@@ -69,7 +68,7 @@ export default {
                 if (doc.exists) {
                     data = doc.data();
                 } else {
-                    console.log('[error] doc does not exist.');
+                    console.clog('[error] doc does not exist.');
                 }
                 return data;
             })
@@ -80,16 +79,23 @@ export default {
             });
     },
     getAllUserInfo() {
-        return firestore.collection(USERS).get()
+        console.log('[info] start getAllUserInfo func()');
+        return firestore.collection(USERS).orderBy('created_at', 'desc').get()
             .then(function(querySnapshot) { // eslint-disable-line
                 let users = []; // eslint-disable-line
                 querySnapshot.forEach(function(doc) { // eslint-disable-line
                     users.push(doc.data());
                 });
                 return users;
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.log(`[error] fail getAllUserInfo : [CODE ${errorCode}] Error : ${errorMessage}`);
             });
     },
     getMemberUser() {
+        console.log('[info] start getMemberUser func()');
         return firestore.collection(USERS).get()
             .then(function(querySnapshot) { // eslint-disable-line
                 let users = []; // eslint-disable-line
@@ -99,6 +105,26 @@ export default {
                     }
                 });
                 return users;
+            }).catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.log(`[error] fail getMemberUser : [CODE ${errorCode}] Error : ${errorMessage}`);
+            });
+    },
+    getgitlabToken(email) {
+        console.log('[info] start getgitlabToken func()');
+        return firestore.collection(USERS).doc(email).get()
+            .then(function(doc) {
+                if (doc.exists) {
+                    return doc.data().gitlabToken;
+                } else {
+                    console.log('[error] No such document.');
+                }
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.log(`[error] fail getgitlabToken : [CODE ${errorCode}] Error : ${errorMessage}`);
             });
     },
 
@@ -484,26 +510,26 @@ export default {
                 .then(function(querySnapshot) {
                     querySnapshot.forEach(function(doc) {
                         if (doc.data().post.userID.includes(inputStr)) {
-                          const data = doc.data();
-                          data.created_at = new Date(data.created_at.toDate());
-                          data.uid = doc.id;
-                          searchedPost.push(data);
+                            const data = doc.data();
+                            data.created_at = new Date(data.created_at.toDate());
+                            data.uid = doc.id;
+                            searchedPost.push(data);
                         }
                     });
                 })
                 .catch(function(error) {
                     console.log("Error getting documents: ", error);
                 });
-        }else if (selected == 'date') {
+        } else if (selected == 'date') {
             firestore.collection(POSTS)
                 .get()
                 .then(function(querySnapshot) {
                     querySnapshot.forEach(function(doc) {
                         if (doc.data().writerTime.includes(inputStr)) {
-                          const data = doc.data();
-                          data.created_at = new Date(data.created_at.toDate());
-                          data.uid = doc.id;
-                          searchedPost.push(data);
+                            const data = doc.data();
+                            data.created_at = new Date(data.created_at.toDate());
+                            data.uid = doc.id;
+                            searchedPost.push(data);
                         }
                     });
                 })
@@ -679,7 +705,7 @@ export default {
             .then(function(querySnapshot) { // eslint-disable-line
                 let cnt = 0;
                 for (let j = 0; j < querySnapshot.size; j += 1) {
-                    if (querySnapshot.docs[j].data().portfolioReply.userID === email) {
+                    if (querySnapshot.docs[j].data().portfolioReply.email === email) {
                         cnt += 1;
                     }
                 }

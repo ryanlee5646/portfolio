@@ -20,17 +20,17 @@
       </v-flex>
     </v-layout><br>
     <v-layout wrap justify-center>
-      <div v-if="this.$store.state.ImageLink == '' ">이 곳에 생성되는 url을 복사하여 사용해주세요 :-)</div>
+      <div v-if="$store.state.ImageLink == '' ">이 곳에 생성되는 url을 복사하여 사용해주세요 :-)</div>
       <div v-else style="color : #43b848de;">
-        <b><span v-html="this.$store.state.ImageLink"></span></b><br>
+        <b><span v-html="$store.state.ImageLink"></span></b><br>
       </div><br><br>
     </v-layout><br>
     <v-layout wrap justify-center>
       <v-flex xs12 sm3 md2 mr-2>
-        <v-btn @click="PostWriter()" block text>작성하기</v-btn>
+        <v-btn @click="PostWriter()" class="headline" block text>작성하기</v-btn>
       </v-flex>
       <v-flex xs12 sm3 md2>
-        <v-btn to="/#toolbar" block text>뒤로</v-btn><br>
+        <v-btn to="/#toolbar" class="headline" block text>뒤로</v-btn><br>
       </v-flex>
     </v-layout>
   </div>
@@ -63,10 +63,8 @@
     },
     methods:{
       async PostWriter() {
-        console.log(this.$store.state.user.nickName + " 작성 유저 닉네임");
         const result = await FirebaseService.PostWriter(this.post)
         this.$router.push('/');
-        alert("Post가 작성되었습니다.");
       }
     },
     components: {

@@ -15,7 +15,7 @@
                     <hr><p id="views" style="font-size : 1.0vw !important;" > [  조회수 :  {{$store.state.posts[i -1].views}}  ]</p>
                     <p id="views" style="font-size : 1.2vw !important;" >   작성자 :  {{$store.state.posts[i -1].post.nickName}}  </p>
                     <hr>
-                    <div id="content" v-html="compiledMarkdown">  {{$store.state.posts[i -1].post.content}} </div>
+                    <div id="postContent" v-html="compiledMarkdown">  {{$store.state.posts[i -1].post.content}} </div>
                   <br>
                   <div style="display: none !important;">
                     {{postNickName =  $store.state.posts[i -1].post.nickName}}
@@ -30,13 +30,11 @@
               </AnimateWhenVisible>
           </div>
           <!-- 수정 폼 -->
-          <div v-else>
+
+            <div v-else>
             <v-text-field label="제목" v-model="postTemp.title"></v-text-field>
-            <vue-simplemde v-model="postTemp.content" ref="markdownEditor"></vue-simplemde>
+            <vue-simplemde v-model="postTemp.content" ref="markdownEditor" id="content"></vue-simplemde><br>
             <ImageComponent></ImageComponent>
-            <hr><button class="button" @click="editPost()">Edit</button>
-            <button class="button" @click="flag2 = false" block text>뒤로</button>
-          </div>
 
             <v-layout wrap justify-center>
                   <div v-if="$store.state.ImageLink == '' ">이 곳에 생성되는 url을 복사하여 사용해주세요 :-)</div>
@@ -45,9 +43,10 @@
                   </div><br><br>
             </v-layout><br>
             <div class="btns">
-              <button class="button" @click="editPost()">Edit</button>
+              <button class="button" @click="editPost()">수 정</button>
               <button class="button" @click="flag2 = false" block text>뒤로</button>
             </div>
+          </div>
           </div>
         </div>
       </div>
@@ -64,7 +63,7 @@
           <textarea v-model="postReply.content" class="form-control" placeholder="댓글을 입력하세요." maxlength="6000"></textarea>
         </div>
         <div class="bnts ">
-          <v-btn @click="PostReplyWriter() " block text>Add</v-btn>
+          <v-btn @click="PostReplyWriter() " class="headline" block text>Add</v-btn>
         </div>
       </div>
     </div>
@@ -171,7 +170,6 @@ export default {
   },
   methods: {
     async PostReplyWriter() {
-      console.log("PostReplyWriter in?");
       const result = await FirebaseService.PostReplyWriter(this.postReply, this.id);
       this.postReply.content = '';
       this.getPostReplys();
@@ -212,8 +210,8 @@ export default {
       const result = await FirebaseService.editPost(this.id, this.postTemp);
       this.posts = await FirebaseService.getPosts();
       this.$store.commit('updatePosts', this.posts);
-      this.flag2 = false;
       this.$router.replace('/post/view/' + this.id);
+      this.flag2 = false;
     }
   },
   mounted() {
@@ -280,7 +278,7 @@ export default {
   padding: 10px;
   margin: 10px;
   background-color: #fafbfc;
-    border-radius: 40px;
+  border-radius: 40px;
 }
 
 #content img {

@@ -85,7 +85,6 @@ export default new Vuex.Store({
             state.push.message = data.message;
             state.push.link = data.link;
             state.push.nickName = data.nickName;
-            console.log("[setpush 222]", state.push.nickName);
         },
         setPushState(state) {
             state.push.state = false;

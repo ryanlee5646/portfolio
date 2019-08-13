@@ -16,6 +16,7 @@
           :items-per-page="5"
           class="elevation-1"
           :loading = "loading"
+          disable-initial-sort
         >
         <template slot="items" slot-scope="props">
         <td >{{ props.item.email }}</td>
@@ -58,7 +59,6 @@ export default {
         { text: 'Post', value: 'post', align: 'right' },
         { text: 'Reply', value: 'reply', align: 'right' },
         { text: 'Date', value: 'date', align: 'right' },
-        { text: 'Actions', value: 'email', sortable: false, align: 'center' }
       ],
       users: []
     };
