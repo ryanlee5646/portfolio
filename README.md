@@ -151,3 +151,4 @@ root(/)는 git repository 최상위 폴더를 의미합니다.
 
 ### 게시물 및 댓글 등록 알람
 
+![](./img/push_alarm.gif)
